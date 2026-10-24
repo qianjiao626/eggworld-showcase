@@ -1,0 +1,32 @@
+/* 爆料 UI：不触碰旧打听的数据结构与样式。 */
+#page-gossip .report-switch{display:flex;gap:8px;margin:0 0 8px;flex-wrap:wrap}
+#page-gossip .report-switch button{border:1px solid #d8c7eb;border-radius:999px;background:#fff;color:#544074;padding:10px 20px;font-weight:700;cursor:pointer}
+#page-gossip .report-switch button[aria-selected="true"]{background:#5c3b84;color:#fff;border-color:#5c3b84}
+#page-gossip #gossipAskPane[hidden],#page-gossip #gossipReportPane[hidden],#page-gossip #reportDetails[hidden],#page-gossip #reportCards[hidden]{display:none!important}
+.report-pane{display:flex;flex-direction:column;gap:18px;min-width:0}
+.report-pane h2,.report-pane h3,.report-admin h3{margin:0;color:#362755}
+.report-intro{padding:20px;border-radius:18px;background:linear-gradient(120deg,#ece3fc,#fff5e7)}
+.report-intro p{line-height:1.6;margin:6px 0 0;color:#5a4a6b}
+.report-form,.report-detail-card,.report-card,.report-comment,.report-admin,.report-manage-card{border-radius:16px;background:#fff;border:1px solid #ede6f4;padding:17px;box-shadow:0 3px 14px rgba(49,31,77,.06)}
+.report-form{display:flex;flex-direction:column;gap:12px;max-width:720px}
+.report-form label,.report-comment-form label,.report-manage-card label,.announcement-dialog label{display:flex;flex-direction:column;gap:7px;color:#493867;font-weight:600}
+.report-form .report-anonymous{flex-direction:row;align-items:center}
+.report-form input:not([type="checkbox"]),.report-form textarea,.report-comment-form textarea,.report-manage-card input{box-sizing:border-box;width:100%;max-width:100%;padding:10px;border:1px solid #d8c7eb;border-radius:10px;font:inherit;background:#fff;color:#302844;min-width:0}
+.report-pane button,.report-admin button{cursor:pointer}
+.report-form button,.report-comment-form button,.report-manage-actions button{align-self:flex-start;border:0;border-radius:10px;padding:10px 16px;background:#694d97;color:#fff;font-weight:700}
+.report-form button:disabled,.report-comment-form button:disabled,.report-manage-actions button:disabled{opacity:.55;cursor:wait}
+.report-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,290px),1fr));gap:14px}
+.report-card-open{display:flex;width:100%;padding:0;flex-direction:column;gap:8px;background:transparent;border:0;text-align:left;color:#362755;cursor:pointer}
+.report-card-open strong{font-size:17px;overflow-wrap:anywhere}
+.report-card-meta{font-size:12px;color:#7b6b90;overflow-wrap:anywhere}
+.report-preview{color:#635775;line-height:1.5;overflow-wrap:anywhere}
+.report-detail-card p,.report-comment p,.report-manage-card p{line-height:1.7;overflow-wrap:anywhere;white-space:normal}
+.report-detail-card button,.report-details>button,.report-pagination button,.report-admin-heading button{padding:8px 13px;border-radius:9px;border:1px solid #ddd0ed;background:#f9f5ff;color:#533b75}
+.report-comment{margin:10px 0}.report-comment time{margin-left:8px;font-size:11px;color:#9386a0}
+.report-comment-form{display:grid;gap:10px;max-width:720px}
+.report-pagination,.report-admin-heading,.report-manage-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.report-empty{color:#786e86;padding:12px}.report-admin{display:grid;gap:13px}.report-admin h4{margin:0 0 7px}
+.report-manage-card{margin:12px 0;max-width:900px}.report-manage-card>span{font-size:12px;color:#786e86}
+.report-manage-card input{margin:6px 0}.report-manage-actions{margin-top:10px}
+.report-form :focus-visible,.report-admin :focus-visible,.report-details :focus-visible,.report-switch :focus-visible{outline:2px solid #5c3b84;outline-offset:2px}
+@media(max-width:768px){.report-intro{padding:15px}.report-form,.report-detail-card,.report-card,.report-admin{padding:13px}.report-grid{grid-template-columns:1fr}.report-switch button{flex:1}}

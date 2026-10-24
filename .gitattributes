@@ -1,0 +1,11 @@
+# 换行符统一：仓库内一律以 LF 存储，避免 Windows 与 Linux 服务器之间出现整文件差异
+* text=auto eol=lf
+
+# 二进制文件不做换行符转换
+*.jpg binary
+*.jpeg binary
+*.png binary
+*.gif binary
+*.ico binary
+*.jar binary
+*.zip binary

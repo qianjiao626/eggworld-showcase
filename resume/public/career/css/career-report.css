@@ -1,0 +1,1083 @@
+/* 职业测评报告版式：深色档案（作用域 .career-dossier）
+   报告由后端 career-report.html 模板生成，注入 career.html / report.html 的 #main。
+   目标是「冷静、精确、可交付」的职业情报档案，而不是学生活动页。 */
+
+.career-dossier {
+    --cd-ink: #0a0c11;
+    --cd-ink-2: #10141b;
+    --cd-line: rgba(201, 168, 106, 0.24);
+    --cd-line-soft: rgba(233, 231, 226, 0.1);
+    --cd-brass: #c9a86a;
+    --cd-brass-2: #e8d5ae;
+    --cd-fg: #e9e7e2;
+    --cd-muted: #9ba1ac;
+    --cd-sans: "Space Grotesk", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    --cd-serif: "Noto Serif SC", "Source Han Serif SC", "Songti SC", "STSong", serif;
+
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding: clamp(26px, 4.6vw, 68px);
+    color: var(--cd-fg);
+    font-family: var(--cd-sans);
+    background:
+        radial-gradient(120% 78% at 84% -12%, rgba(201, 168, 106, 0.17), transparent 56%),
+        radial-gradient(90% 62% at -6% 4%, rgba(74, 104, 152, 0.14), transparent 62%),
+        linear-gradient(180deg, #0d1016 0%, #0a0c11 44%, #0b0e14 100%);
+    border: 1px solid rgba(201, 168, 106, 0.18);
+    border-radius: 2px;
+    box-shadow: 0 34px 90px -46px rgba(4, 6, 10, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+/* 细网格 + 顶部金线：提供「仪器刻度」的秩序感，不承载信息 */
+.career-dossier::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image:
+        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 64px 64px;
+    -webkit-mask-image: radial-gradient(120% 100% at 50% 0%, #000 26%, transparent 82%);
+    mask-image: radial-gradient(120% 100% at 50% 0%, #000 26%, transparent 82%);
+}
+
+.career-dossier::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(201, 168, 106, 0.85), transparent);
+}
+
+/* 报告上方的状态条（生成成功 / 历史记录元信息），与档案同色系 */
+.cd-banner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin: 0 0 20px;
+    padding: 12px 18px;
+    border-left: 2px solid #c9a86a;
+    background: #10141b;
+    color: #b9bec7;
+    font-family: "Space Grotesk", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    font-size: 12.5px;
+    letter-spacing: 0.04em;
+}
+
+.cd-banner a {
+    color: #e8d5ae;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(201, 168, 106, 0.45);
+}
+
+.cd-banner a:hover {
+    color: #fff;
+    border-bottom-color: #e8d5ae;
+}
+
+/* ---------- 报告页整页深色 ---------- */
+/* 查看报告时外层页面也压成同一底色，避免白底包一张黑卡 */
+body.career-report-page,
+body.career-report-page > .relative {
+    background: #07090d;
+    color: #e9e7e2;
+}
+
+body.career-report-page > .relative > header {
+    background: rgba(10, 12, 17, 0.94);
+    border-bottom-color: rgba(201, 168, 106, 0.16);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+}
+
+body.career-report-page > .relative > header h2 {
+    color: #f2eee6;
+}
+
+body.career-report-page > .relative > header a {
+    color: #9ba1ac;
+}
+
+body.career-report-page > .relative > header a:hover {
+    color: #e8d5ae;
+}
+
+body.career-report-page > .relative > header a[href*="reports"] {
+    color: #e8d5ae;
+}
+
+body.career-report-page > .relative > header .bg-primary {
+    background: rgba(201, 168, 106, 0.16);
+    color: #e8d5ae;
+}
+
+body.career-report-page > .relative > footer {
+    background: #07090d;
+    border-top-color: rgba(255, 255, 255, 0.06);
+}
+
+body.career-report-page > .relative > footer div {
+    color: #6f7681;
+}
+
+/* ---------- 抬头 ---------- */
+.cd-head {
+    position: relative;
+    padding-bottom: clamp(24px, 3vw, 36px);
+    border-bottom: 1px solid var(--cd-line-soft);
+}
+
+.cd-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin: 0 0 clamp(18px, 2.4vw, 28px);
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: 0.34em;
+    text-transform: uppercase;
+    color: var(--cd-brass);
+}
+
+.cd-meta .cd-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--cd-brass);
+    box-shadow: 0 0 10px rgba(201, 168, 106, 0.8);
+}
+
+.cd-meta .cd-date {
+    letter-spacing: 0.16em;
+    color: var(--cd-muted);
+    text-transform: none;
+}
+
+.cd-title {
+    margin: 0;
+    font-family: var(--cd-serif);
+    font-weight: 600;
+    font-size: clamp(30px, 4.2vw, 52px);
+    line-height: 1.2;
+    letter-spacing: 0.02em;
+    color: #f5f2eb;
+}
+
+.cd-sub {
+    max-width: 54ch;
+    margin: 18px 0 0;
+    color: var(--cd-muted);
+    font-size: 15px;
+    line-height: 1.95;
+}
+
+.cd-head-main {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: clamp(24px, 4vw, 64px);
+}
+
+.cd-head-copy {
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+/* 档案持有人：替代头像位，只印名字，不做任何卡通化处理 */
+.cd-owner {
+    flex: 0 0 auto;
+    margin-top: 6px;
+    padding: 10px 0 10px 22px;
+    border-left: 1px solid var(--cd-line);
+    text-align: right;
+}
+
+.cd-owner-label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.34em;
+    text-transform: uppercase;
+    color: var(--cd-brass);
+}
+
+.cd-owner-name {
+    display: block;
+    max-width: 16ch;
+    font-family: var(--cd-serif);
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    line-height: 1.5;
+    color: #f2eee6;
+    overflow-wrap: anywhere;
+}
+
+.cd-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: clamp(22px, 3vw, 32px);
+}
+
+.cd-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border: 1px solid rgba(201, 168, 106, 0.42);
+    border-radius: 1px;
+    background: transparent;
+    color: var(--cd-brass-2);
+    font-family: var(--cd-sans);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.cd-btn:hover {
+    background: rgba(201, 168, 106, 0.1);
+    border-color: rgba(201, 168, 106, 0.8);
+    color: #fff;
+}
+
+.cd-btn .material-symbols-outlined {
+    font-size: 18px;
+}
+
+/* ---------- 报告正文 ---------- */
+.cd-body {
+    counter-reset: cd-path;
+    max-width: 58em;
+    margin-top: 8px;
+}
+
+/* 「基础总结 / 发展路径」这类一级分节 */
+.cd-body > h1 {
+    margin: clamp(40px, 5vw, 58px) 0 18px;
+    padding-top: 24px;
+    border-top: 1px solid var(--cd-line);
+    font-family: var(--cd-serif);
+    font-size: clamp(19px, 2vw, 24px);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    line-height: 1.5;
+    color: #f2eee6;
+}
+
+.cd-body > h1::before {
+    content: "";
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    margin-right: 12px;
+    transform: rotate(45deg);
+    border: 1px solid var(--cd-brass);
+    background: rgba(201, 168, 106, 0.3);
+    vertical-align: 0.14em;
+}
+
+.cd-body > h1:first-child {
+    margin-top: 12px;
+    padding-top: 0;
+    border-top: 0;
+}
+
+.cd-body > h2 {
+    counter-increment: cd-path;
+    position: relative;
+    margin: clamp(38px, 5vw, 60px) 0 10px;
+    padding-top: 30px;
+    border-top: 1px solid var(--cd-line-soft);
+    font-family: var(--cd-serif);
+    font-size: clamp(21px, 2.3vw, 29px);
+    font-weight: 600;
+    line-height: 1.45;
+    letter-spacing: 0.01em;
+    color: #f2eee6;
+}
+
+.cd-body > h2::before {
+    content: "PATH " counter(cd-path, decimal-leading-zero);
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-family: var(--cd-sans);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.36em;
+    color: var(--cd-brass);
+}
+
+.cd-body > h2::after {
+    content: "";
+    position: absolute;
+    top: 23px;
+    left: 0;
+    width: 44px;
+    height: 1px;
+    background: linear-gradient(90deg, var(--cd-brass), transparent);
+}
+
+.cd-body > h3 {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: clamp(26px, 3vw, 34px) 0 14px;
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: 0.24em;
+    color: var(--cd-brass-2);
+}
+
+.cd-body > h3::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--cd-line-soft);
+}
+
+.cd-body p {
+    margin: 0 0 14px;
+    color: #c4c8ce;
+    font-size: 15.5px;
+    line-height: 1.95;
+}
+
+.cd-body strong {
+    color: #f6f3ec;
+    font-weight: 600;
+}
+
+/* 关键结论：独立陈述块，菱形刻点替代卡通圆点 */
+.cd-body ul {
+    display: grid;
+    gap: 10px;
+    margin: 4px 0 8px;
+    padding: 0;
+    list-style: none;
+}
+
+.cd-body ul > li {
+    position: relative;
+    margin: 0;
+    padding: 14px 18px 14px 40px;
+    border: 1px solid var(--cd-line-soft);
+    background: linear-gradient(90deg, rgba(201, 168, 106, 0.07), transparent 72%);
+    color: #dedbd4;
+    font-size: 15.5px;
+    line-height: 1.8;
+}
+
+.cd-body ul > li::before {
+    content: "";
+    position: absolute;
+    top: 22px;
+    left: 18px;
+    width: 6px;
+    height: 6px;
+    transform: rotate(45deg);
+    border: 1px solid var(--cd-brass);
+    background: rgba(201, 168, 106, 0.28);
+}
+
+/* 必做动作：编号台账，等宽数字对齐 */
+.cd-body ol {
+    counter-reset: cd-step;
+    margin: 4px 0 8px;
+    padding: 0;
+    list-style: none;
+}
+
+.cd-body ol > li {
+    counter-increment: cd-step;
+    position: relative;
+    margin: 0;
+    padding: 16px 0 16px 62px;
+    border-bottom: 1px solid var(--cd-line-soft);
+    color: #c4c8ce;
+    font-size: 15.5px;
+    line-height: 1.85;
+}
+
+.cd-body ol > li:first-child {
+    border-top: 1px solid var(--cd-line-soft);
+}
+
+.cd-body ol > li::before {
+    content: counter(cd-step, decimal-leading-zero);
+    position: absolute;
+    top: 17px;
+    left: 0;
+    font-family: var(--cd-sans);
+    font-size: 12.5px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    color: var(--cd-brass);
+}
+
+/* ---------- 页脚 ---------- */
+.cd-foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-top: clamp(44px, 6vw, 72px);
+    padding-top: clamp(26px, 3vw, 36px);
+    border-top: 1px solid var(--cd-line);
+}
+
+.cd-kicker {
+    margin: 0;
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: 0.34em;
+    text-transform: uppercase;
+    color: var(--cd-brass);
+}
+
+.cd-next h3 {
+    margin: 12px 0 8px;
+    font-family: var(--cd-serif);
+    font-size: clamp(20px, 2.2vw, 25px);
+    font-weight: 600;
+    color: #f4f1ea;
+}
+
+.cd-next p {
+    margin: 0 0 18px;
+    color: var(--cd-muted);
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+.cd-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 22px;
+    border: 1px solid transparent;
+    border-radius: 1px;
+    background: var(--cd-brass);
+    color: #14110a;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.cd-cta:hover {
+    background: var(--cd-brass-2);
+    color: #14110a;
+}
+
+/* 下一步行动：两条并列，求助在前、写简历在后 */
+.cd-next-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.cd-cta--ghost {
+    border-color: rgba(201, 168, 106, 0.45);
+    background: transparent;
+    color: var(--cd-brass-2);
+}
+
+.cd-cta--ghost:hover {
+    border-color: rgba(201, 168, 106, 0.8);
+    background: rgba(201, 168, 106, 0.1);
+    color: #fff;
+}
+
+.cd-cta .material-symbols-outlined {
+    font-size: 18px;
+}
+
+.cd-return a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--cd-muted);
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.cd-return a:hover {
+    color: var(--cd-brass-2);
+}
+
+/* ---------- 窄屏 ---------- */
+@media (max-width: 640px) {
+    /* 报告页/答题页顶栏在 390 宽下会被挤成竖排，这里只保字不换行 */
+    .career-question-page > .relative > header h2,
+    .career-question-page > .relative > header a {
+        white-space: nowrap;
+    }
+
+    .career-question-page > .relative > header .size-10 {
+        display: none;
+    }
+
+    .career-dossier {
+        padding: 24px 18px 30px;
+    }
+
+    .cd-head-main {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .cd-owner {
+        order: -1;
+        display: flex;
+        align-items: baseline;
+        gap: 12px;
+        width: 100%;
+        margin: 0 0 18px;
+        padding: 12px 0 0;
+        border-left: 0;
+        border-top: 1px solid var(--cd-line-soft);
+        text-align: left;
+    }
+
+    .cd-owner-label {
+        margin: 0;
+    }
+
+    .cd-owner-name {
+        font-size: 17px;
+        max-width: 100%;
+    }
+
+    .cd-meta {
+        letter-spacing: 0.22em;
+    }
+
+    .cd-sub {
+        font-size: 14px;
+    }
+
+    .cd-body p,
+    .cd-body ul > li,
+    .cd-body ol > li {
+        font-size: 14.5px;
+        line-height: 1.9;
+    }
+
+    .cd-body ul > li {
+        padding: 12px 14px 12px 34px;
+    }
+
+    .cd-body ul > li::before {
+        left: 14px;
+    }
+
+    .cd-body ol > li {
+        padding: 14px 0 14px 46px;
+    }
+
+    .cd-cta {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .cd-return {
+        width: 100%;
+    }
+}
+
+/* ---------- 分享：主按钮与弹窗 ---------- */
+.cd-btn--primary {
+    border-color: var(--cd-brass);
+    background: var(--cd-brass);
+    color: #14110a;
+    font-weight: 600;
+}
+
+.cd-btn--primary:hover {
+    border-color: var(--cd-brass-2);
+    background: var(--cd-brass-2);
+    color: #14110a;
+}
+
+.cd-modal {
+    /* 弹窗挂在 body 下，不在 .career-dossier 内，变量要单独给一份 */
+    --cd-line: rgba(201, 168, 106, 0.24);
+    --cd-line-soft: rgba(233, 231, 226, 0.1);
+    --cd-brass: #c9a86a;
+    --cd-brass-2: #e8d5ae;
+    --cd-fg: #e9e7e2;
+    --cd-muted: #9ba1ac;
+    --cd-sans: "Space Grotesk", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    --cd-serif: "Noto Serif SC", "Source Han Serif SC", "Songti SC", "STSong", serif;
+
+    position: fixed;
+    inset: 0;
+    z-index: 120;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.cd-modal.is-open {
+    display: flex;
+}
+
+.cd-modal-mask {
+    position: absolute;
+    inset: 0;
+    background: rgba(4, 6, 10, 0.72);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+}
+
+.cd-modal-panel {
+    position: relative;
+    width: min(560px, 100%);
+    max-height: 88vh;
+    overflow: auto;
+    padding: clamp(22px, 4vw, 32px);
+    background: linear-gradient(180deg, #10141b, #0b0e14);
+    border: 1px solid rgba(201, 168, 106, 0.28);
+    box-shadow: 0 40px 100px -40px #000;
+    color: var(--cd-fg);
+    font-family: var(--cd-sans);
+}
+
+.cd-modal-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.cd-modal-head h3 {
+    margin: 10px 0 0;
+    font-family: var(--cd-serif);
+    font-size: clamp(21px, 3vw, 25px);
+    font-weight: 600;
+    color: #f4f1ea;
+}
+
+.cd-modal-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 2;
+    display: inline-flex;
+    padding: 6px;
+    border: 0;
+    border-radius: 2px;
+    background: none;
+    color: var(--cd-muted);
+    cursor: pointer;
+}
+
+.cd-modal-close:hover {
+    color: #fff;
+}
+
+/* 轻提示：浮在弹窗顶部，不占布局 */
+.cd-toast {
+    position: absolute;
+    top: 14px;
+    left: 50%;
+    z-index: 3;
+    max-width: calc(100% - 96px);
+    padding: 8px 16px;
+    border: 1px solid rgba(201, 168, 106, 0.5);
+    background: rgba(201, 168, 106, 0.14);
+    color: #f0e2c4;
+    font-size: 12.5px;
+    letter-spacing: 0.04em;
+    text-align: center;
+    opacity: 0;
+    transform: translate(-50%, -6px);
+    transition: opacity 0.2s, transform 0.2s;
+    pointer-events: none;
+}
+
+.cd-toast.is-show {
+    opacity: 1;
+    transform: translate(-50%, 0);
+}
+
+/* 长图预览：窗口内滚动，不把整张长图铺满屏幕 */
+.cd-preview {
+    margin: 4px 0 14px;
+    max-height: 52vh;
+    overflow: auto;
+    border: 1px solid var(--cd-line-soft);
+    background: #0a0c11;
+    -webkit-overflow-scrolling: touch;
+}
+
+.cd-preview img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.cd-preview-hint {
+    min-height: 1.2em;
+    margin: 0 0 14px;
+    color: var(--cd-brass-2);
+    font-size: 12.5px;
+    line-height: 1.7;
+}
+
+.cd-share-back {
+    margin-top: 14px;
+    padding: 4px 0;
+    border: 0;
+    background: none;
+    color: var(--cd-muted);
+    font-family: inherit;
+    font-size: 12.5px;
+    cursor: pointer;
+}
+
+.cd-share-back:hover {
+    color: var(--cd-brass-2);
+}
+
+.cd-modal-desc {
+    margin: 16px 0 22px;
+    color: var(--cd-muted);
+    font-size: 13.5px;
+    line-height: 1.8;
+}
+
+.cd-share-options {
+    display: grid;
+    gap: 12px;
+}
+
+.cd-share-option {
+    display: grid;
+    grid-template-columns: 26px 1fr;
+    grid-template-rows: auto auto;
+    column-gap: 12px;
+    row-gap: 4px;
+    align-items: center;
+    padding: 16px 18px;
+    border: 1px solid var(--cd-line-soft);
+    background: rgba(255, 255, 255, 0.02);
+    color: var(--cd-fg);
+    text-align: left;
+    font-family: inherit;
+    cursor: pointer;
+    transition: border-color 0.2s, background-color 0.2s;
+}
+
+.cd-share-option:hover {
+    border-color: rgba(201, 168, 106, 0.55);
+    background: rgba(201, 168, 106, 0.06);
+}
+
+.cd-share-option .material-symbols-outlined {
+    grid-row: 1 / span 2;
+    font-size: 22px;
+    color: var(--cd-brass);
+}
+
+.cd-share-option-title {
+    font-size: 14.5px;
+    font-weight: 600;
+    color: #f2eee6;
+}
+
+.cd-share-option-desc {
+    font-size: 12.5px;
+    color: var(--cd-muted);
+}
+
+.cd-share-result {
+    margin-top: 22px;
+    padding-top: 20px;
+    border-top: 1px solid var(--cd-line-soft);
+}
+
+.cd-share-image {
+    margin-top: 22px;
+    padding-top: 20px;
+    border-top: 1px solid var(--cd-line-soft);
+}
+
+.cd-share-image-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+/* 长图捕获：html2canvas 对 mask / 多层渐变的支持不稳定，
+   捕获期间降级为纯色底与实线，避免 canvas 尺寸为 0 的报错 */
+.career-dossier.is-capturing {
+    background: #0a0c11;
+    box-shadow: none;
+}
+
+.career-dossier.is-capturing::before {
+    display: none;
+}
+
+.career-dossier.is-capturing::after {
+    background: #c9a86a;
+}
+
+.career-dossier.is-capturing,
+.career-dossier.is-capturing * {
+    background-image: none !important;
+}
+
+.cd-share-label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--cd-brass);
+}
+
+.cd-share-field {
+    display: flex;
+    gap: 10px;
+}
+
+.cd-share-input {
+    flex: 1;
+    min-width: 0;
+    padding: 10px 12px;
+    border: 1px solid var(--cd-line-soft);
+    background: #0a0c11;
+    color: #e9e7e2;
+    font-family: var(--cd-sans);
+    font-size: 12.5px;
+}
+
+.cd-share-input:focus {
+    outline: none;
+    border-color: rgba(201, 168, 106, 0.6);
+}
+
+.cd-share-hint {
+    margin: 10px 0 0;
+    color: var(--cd-muted);
+    font-size: 12px;
+}
+
+.cd-share-revoke {
+    margin-top: 14px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: #c28176;
+    font-family: inherit;
+    font-size: 12.5px;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.cd-share-status {
+    margin: 16px 0 0;
+    font-size: 12.5px;
+    color: var(--cd-brass-2);
+}
+
+.cd-share-status.is-error {
+    color: #e08c7d;
+}
+
+/* 分享页：令牌失效 / 缺少令牌 */
+.cd-share-error {
+    max-width: 640px;
+    margin: 40px auto;
+    padding: clamp(24px, 4vw, 40px);
+    border: 1px solid rgba(201, 168, 106, 0.24);
+    background: linear-gradient(180deg, #10141b, #0b0e14);
+    color: #e9e7e2;
+    font-family: "Space Grotesk", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+}
+
+.cd-share-error .cd-kicker {
+    margin: 0;
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: 0.34em;
+    text-transform: uppercase;
+    color: #c9a86a;
+}
+
+.cd-share-error h2 {
+    margin: 14px 0 12px;
+    font-family: "Noto Serif SC", "Source Han Serif SC", "Songti SC", STSong, serif;
+    font-size: clamp(20px, 3vw, 26px);
+    font-weight: 600;
+    color: #f4f1ea;
+}
+
+.cd-share-error p {
+    margin: 0 0 10px;
+    color: #9ba1ac;
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+.cd-share-error-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 18px;
+    margin-top: 22px;
+}
+
+.cd-share-error .cd-share-revoke {
+    margin-top: 0;
+    color: #9ba1ac;
+    text-decoration: none;
+}
+
+.cd-share-error .cd-share-revoke:hover {
+    color: #e8d5ae;
+}
+
+/* .cd-cta 依赖 .career-dossier 上的变量，失效态里单独给一套 */
+.cd-share-error .cd-cta {
+    background: #c9a86a;
+    color: #14110a;
+}
+
+.cd-share-error .cd-cta:hover {
+    background: #e8d5ae;
+    color: #14110a;
+}
+
+@media (max-width: 480px) {
+    .cd-share-field {
+        flex-direction: column;
+    }
+
+    .cd-share-field .cd-btn {
+        justify-content: center;
+    }
+
+    .cd-preview {
+        max-height: 46vh;
+    }
+}
+
+/* ---------- 打印 / 导出 PDF：还原为可读的纸质档案 ---------- */
+@media print {
+    body.career-report-page,
+    body.career-report-page > .relative {
+        background: #fff;
+        color: #111;
+    }
+
+    .career-question-page > .relative > header,
+    .career-question-page > .relative > footer,
+    .cd-actions,
+    .cd-return,
+    .cd-modal {
+        display: none !important;
+    }
+
+    .career-dossier {
+        padding: 0;
+        border: 0;
+        background: #fff;
+        color: #111;
+        box-shadow: none;
+    }
+
+    .career-dossier::before,
+    .career-dossier::after {
+        display: none;
+    }
+
+    .cd-head {
+        border-bottom-color: #ddd;
+    }
+
+    .cd-banner {
+        border-left-color: #b08d4f;
+        background: #fff;
+        color: #444;
+    }
+
+    .cd-meta,
+    .cd-kicker,
+    .cd-body > h2::before,
+    .cd-body ol > li::before {
+        color: #7a6231;
+    }
+
+    .cd-title,
+    .cd-owner-name,
+    .cd-body > h1,
+    .cd-body > h2,
+    .cd-body > h3,
+    .cd-body strong,
+    .cd-next h3 {
+        color: #111;
+    }
+
+    .cd-sub,
+    .cd-next p,
+    .cd-body p,
+    .cd-body ul > li,
+    .cd-body ol > li {
+        color: #2b2b2b;
+    }
+
+    .cd-body > h1,
+    .cd-body > h2,
+    .cd-body > h3 {
+        border-top-color: #ddd;
+        break-after: avoid;
+    }
+
+    .cd-body ul > li {
+        border-color: #e2ddcf;
+        background: none;
+    }
+
+    .cd-body ol > li {
+        border-color: #e5e5e5;
+    }
+
+    .cd-body ol > li,
+    .cd-body ul > li {
+        break-inside: avoid;
+    }
+
+    .cd-cta {
+        background: #111;
+        color: #fff;
+    }
+
+    .cd-cta--ghost {
+        border-color: #111;
+        background: #fff;
+        color: #111;
+    }
+}

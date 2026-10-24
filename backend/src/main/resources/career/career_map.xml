@@ -1,0 +1,515 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mappings>
+    <mapping>
+        <question id="0" value="0" /> <!-- Const: 基础总结 -->
+        <result>89</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="1" /> 
+        <result>1</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="2" />
+        <result>2</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="3" />
+        <result>3</result>
+    </mapping>
+    <mapping>
+        <question id="3" value="1" /> 
+        <result>4</result>
+    </mapping>
+    <mapping>
+        <question id="3" value="2" />
+        <result>5</result>
+    </mapping>
+    <mapping>
+        <question id="3" value="3" />
+        <result>6</result>
+    </mapping>
+    <mapping>
+        <question id="4" value="1" />
+        <result>7</result>  
+    </mapping>
+    <mapping>
+        <question id="4" value="2" />
+        <result>8</result>
+    </mapping>
+        <mapping>
+        <question id="4" value="3" />
+        <result>9</result>
+    </mapping>
+    <mapping>
+        <question id="4" value="4" />
+        <result>10</result>
+    </mapping>
+    <mapping>
+        <question id="4" value="5" />
+        <result>11</result>  
+    </mapping>
+    <mapping>
+        <question id="5" value="1" />
+        <result>12</result>
+    </mapping>
+    <mapping>
+        <question id="5" value="2" />
+        <result>13</result>
+    </mapping>
+    <mapping>
+        <question id="5" value="3" />
+        <result>14</result>
+    </mapping>
+    <mapping>
+        <question id="9" value="1" />
+        <result>15</result>
+    </mapping>
+    <mapping>
+        <question id="9" value="2" />
+        <result>16</result>
+    </mapping>
+    <mapping>
+        <question id="9" value="3" />
+        <result>16</result>
+    </mapping>
+    <mapping>
+        <question id="0" value="0" /> <!-- Const: 发展路径 -->
+        <result>90</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="1" />
+        <question id="17" value="1" />
+        <question id="19" value="1" />
+        <result>17</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="2" />
+        <question id="17" value="1" />
+        <question id="19" value="1" />
+        <result>18</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="3" />
+        <question id="17" value="1" />
+        <question id="19" value="1" />
+        <result>19</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="1" />
+        <question id="17" value="1" />
+        <question id="19" value="2" />
+        <result>20</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="2" />
+        <question id="17" value="1" />
+        <question id="19" value="2" />
+        <result>21</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="3" />
+        <question id="17" value="1" />
+        <question id="19" value="2" />
+        <result>22</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="1" />
+        <question id="17" value="1" />
+        <question id="19" value="3" />
+        <result>23</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="2" />
+        <question id="17" value="1" />
+        <question id="19" value="3" />
+        <result>24</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="3" />
+        <question id="17" value="1" />
+        <question id="19" value="3" />
+        <result>25</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="1" />
+        <question id="17" value="1" />
+        <question id="19" value="4" />
+        <result>26</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="2" />
+        <question id="17" value="1" />
+        <question id="19" value="4" />
+        <result>27</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="3" />
+        <question id="17" value="1" />
+        <question id="19" value="4" />
+        <result>28</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="1" />
+        <question id="17" value="2" />
+        <question id="19" value="1" />
+        <result>29</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="2" />
+        <question id="17" value="2" />
+        <question id="19" value="1" />
+        <result>30</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="3" />
+        <question id="17" value="2" />
+        <question id="19" value="1" />
+        <result>31</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="1" />
+        <question id="17" value="2" />
+        <question id="19" value="2" />
+        <result>32</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="2" />
+        <question id="17" value="2" />
+        <question id="19" value="2" />
+        <result>33</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="3" />
+        <question id="17" value="2" />
+        <question id="19" value="2" />
+        <result>34</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="1" />
+        <question id="17" value="2" />
+        <question id="19" value="3" />
+        <result>35</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="2" />
+        <question id="17" value="2" />
+        <question id="19" value="3" />
+        <result>36</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="3" />
+        <question id="17" value="2" />
+        <question id="19" value="3" />
+        <result>37</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="1" />
+        <question id="17" value="2" />
+        <question id="19" value="4" />
+        <result>38</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="2" />
+        <question id="17" value="2" />
+        <question id="19" value="4" />
+        <result>39</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="3" />
+        <question id="17" value="2" />
+        <question id="19" value="4" />
+        <result>40</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="1" />
+        <question id="17" value="3" />
+        <question id="19" value="1" />
+        <result>41</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="2" />
+        <question id="17" value="3" />
+        <question id="19" value="1" />
+        <result>42</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="3" />
+        <question id="17" value="3" />
+        <question id="19" value="1" />
+        <result>43</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="1" />
+        <question id="17" value="3" />
+        <question id="19" value="2" />
+        <result>44</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="2" />
+        <question id="17" value="3" />
+        <question id="19" value="2" />
+        <result>45</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="3" />
+        <question id="17" value="3" />
+        <question id="19" value="2" />
+        <result>46</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="1" />
+        <question id="17" value="3" />
+        <question id="19" value="3" />
+        <result>47</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="2" />
+        <question id="17" value="3" />
+        <question id="19" value="3" />
+        <result>48</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="3" />
+        <question id="17" value="3" />
+        <question id="19" value="3" />
+        <result>49</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="1" />
+        <question id="17" value="3" />
+        <question id="19" value="4" />
+        <result>50</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="2" />
+        <question id="17" value="3" />
+        <question id="19" value="4" />
+        <result>51</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="3" />
+        <question id="17" value="3" />
+        <question id="19" value="4" />
+        <result>52</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="1" />
+        <question id="17" value="4" />
+        <question id="19" value="1" />
+        <result>53</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="2" />
+        <question id="17" value="4" />
+        <question id="19" value="1" />
+        <result>54</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="3" />
+        <question id="17" value="4" />
+        <question id="19" value="1" />
+        <result>55</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="1" />
+        <question id="17" value="4" />
+        <question id="19" value="2" />
+        <result>56</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="2" />
+        <question id="17" value="4" />
+        <question id="19" value="2" />
+        <result>57</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="3" />
+        <question id="17" value="4" />
+        <question id="19" value="2" />
+        <result>58</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="1" />
+        <question id="17" value="4" />
+        <question id="19" value="3" />
+        <result>59</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="2" />
+        <question id="17" value="4" />
+        <question id="19" value="3" />
+        <result>60</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="3" />
+        <question id="17" value="4" />
+        <question id="19" value="3" />
+        <result>61</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="1" />
+        <question id="17" value="4" />
+        <question id="19" value="4" />
+        <result>62</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="2" />
+        <question id="17" value="4" />
+        <question id="19" value="4" />
+        <result>63</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="3" />
+        <question id="17" value="4" />
+        <question id="19" value="4" />
+        <result>64</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="1" />
+        <question id="17" value="5" />
+        <question id="19" value="1" />
+        <result>65</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="2" />
+        <question id="17" value="5" />
+        <question id="19" value="1" />
+        <result>66</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="3" />
+        <question id="17" value="5" />
+        <question id="19" value="1" />
+        <result>67</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="1" />
+        <question id="17" value="5" />
+        <question id="19" value="2" />
+        <result>68</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="2" />
+        <question id="17" value="5" />
+        <question id="19" value="2" />
+        <result>69</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="3" />
+        <question id="17" value="5" />
+        <question id="19" value="2" />
+        <result>70</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="1" />
+        <question id="17" value="5" />
+        <question id="19" value="3" />
+        <result>71</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="2" />
+        <question id="17" value="5" />
+        <question id="19" value="3" />
+        <result>72</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="3" />
+        <question id="17" value="5" />
+        <question id="19" value="3" />
+        <result>73</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="1" />
+        <question id="17" value="5" />
+        <question id="19" value="4" />
+        <result>74</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="2" />
+        <question id="17" value="5" />
+        <question id="19" value="4" />
+        <result>75</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="3" />
+        <question id="17" value="5" />
+        <question id="19" value="4" />
+        <result>76</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="1" />
+        <question id="17" value="6" />
+        <question id="19" value="1" />
+        <result>77</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="2" />
+        <question id="17" value="6" />
+        <question id="19" value="1" />
+        <result>78</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="3" />
+        <question id="17" value="6" />
+        <question id="19" value="1" />
+        <result>79</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="1" />
+        <question id="17" value="6" />
+        <question id="19" value="2" />
+        <result>80</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="2" />
+        <question id="17" value="6" />
+        <question id="19" value="2" />
+        <result>81</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="3" />
+        <question id="17" value="6" />
+        <question id="19" value="2" />
+        <result>82</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="1" />
+        <question id="17" value="6" />
+        <question id="19" value="3" />
+        <result>83</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="2" />
+        <question id="17" value="6" />
+        <question id="19" value="3" />
+        <result>84</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="3" />
+        <question id="17" value="6" />
+        <question id="19" value="3" />
+        <result>85</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="1" />
+        <question id="17" value="6" />
+        <question id="19" value="4" />
+        <result>86</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="2" />
+        <question id="17" value="6" />
+        <question id="19" value="4" />
+        <result>87</result>
+    </mapping>
+    <mapping>
+        <question id="2" value="3" />
+        <question id="17" value="6" />
+        <question id="19" value="4" />
+        <result>88</result>
+    </mapping>
+    <mapping>
+        <question id="0" value="0" /> <!-- Const: 推荐微信 -->
+        <result>91</result>
+    </mapping>
+</mappings>

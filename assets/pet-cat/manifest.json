@@ -1,0 +1,179 @@
+{
+  "version": "demo-v1",
+  "canvas": [
+    512,
+    512
+  ],
+  "origin": "top-left",
+  "scaleFilter": "nearest",
+  "layerOrder": [
+    "tail",
+    "tail_pattern_if_tabby",
+    "body",
+    "pattern",
+    "ear",
+    "eye",
+    "face",
+    "blush"
+  ],
+  "optionalPaths": {
+    "coat": "coat_variants/body_{body:02}/cat_{ear_or_tail}_{index:02}.png",
+    "tailPattern": "tail_patterns/cat_pattern_01_tail_{tail:02}.png"
+  },
+  "assets": [
+    {
+      "file": "cat_body_01.png",
+      "name": "奶白色猫身"
+    },
+    {
+      "file": "cat_body_02.png",
+      "name": "纯黑色猫身"
+    },
+    {
+      "file": "cat_body_03.png",
+      "name": "橘色猫身"
+    },
+    {
+      "file": "cat_body_04.png",
+      "name": "灰蓝色猫身"
+    },
+    {
+      "file": "cat_body_05.png",
+      "name": "三花猫身"
+    },
+    {
+      "file": "cat_body_06.png",
+      "name": "奶油色猫身"
+    },
+    {
+      "file": "cat_ear_01.png",
+      "name": "直耳"
+    },
+    {
+      "file": "cat_ear_02.png",
+      "name": "折耳"
+    },
+    {
+      "file": "cat_ear_03.png",
+      "name": "圆耳"
+    },
+    {
+      "file": "cat_ear_04.png",
+      "name": "大耳"
+    },
+    {
+      "file": "cat_ear_05.png",
+      "name": "卷耳"
+    },
+    {
+      "file": "cat_ear_06.png",
+      "name": "垂耳"
+    },
+    {
+      "file": "cat_eye_01.png",
+      "name": "黑眼睛"
+    },
+    {
+      "file": "cat_eye_02.png",
+      "name": "蓝眼睛"
+    },
+    {
+      "file": "cat_eye_03.png",
+      "name": "绿眼睛"
+    },
+    {
+      "file": "cat_eye_04.png",
+      "name": "琥珀眼睛"
+    },
+    {
+      "file": "cat_eye_05.png",
+      "name": "吊梢眼"
+    },
+    {
+      "file": "cat_eye_06.png",
+      "name": "异色瞳"
+    },
+    {
+      "file": "cat_eye_07.png",
+      "name": "眯眼笑"
+    },
+    {
+      "file": "cat_eye_08.png",
+      "name": "星星眼"
+    },
+    {
+      "file": "cat_tail_01.png",
+      "name": "长直尾"
+    },
+    {
+      "file": "cat_tail_02.png",
+      "name": "蓬松尾"
+    },
+    {
+      "file": "cat_tail_03.png",
+      "name": "短尾"
+    },
+    {
+      "file": "cat_tail_04.png",
+      "name": "卷尾"
+    },
+    {
+      "file": "cat_tail_05.png",
+      "name": "折角尾"
+    },
+    {
+      "file": "cat_pattern_01.png",
+      "name": "橘色条纹"
+    },
+    {
+      "file": "cat_pattern_02.png",
+      "name": "狸花斑块"
+    },
+    {
+      "file": "cat_pattern_03.png",
+      "name": "奶牛斑"
+    },
+    {
+      "file": "cat_pattern_04.png",
+      "name": "三花斑点"
+    },
+    {
+      "file": "cat_pattern_05.png",
+      "name": "白手套"
+    },
+    {
+      "file": "cat_face_01.png",
+      "name": "小三角鼻"
+    },
+    {
+      "file": "cat_face_02.png",
+      "name": "包子嘴"
+    },
+    {
+      "file": "cat_face_03.png",
+      "name": "吐舌头"
+    },
+    {
+      "file": "cat_face_04.png",
+      "name": "腮红"
+    }
+  ],
+  "anchors": {
+    "centerX": 256,
+    "eyeCenters": [
+      [
+        204,
+        244
+      ],
+      [
+        308,
+        244
+      ]
+    ],
+    "nose": [
+      256,
+      280
+    ],
+    "feetY": 480
+  }
+}

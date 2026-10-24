@@ -1,0 +1,238 @@
+/* ============================================================
+   猫咪小屋 · 内嵌适配（移动端通铺 + 桌面居中卡片）
+   ------------------------------------------------------------
+   引擎（pet-ui.js）把整个 UI 造为一个 appendChild 到 body 的
+   全屏遮罩 .pet-modal-mask。迁移到「任务广场」第 4 个 tab 后，
+   由 js/cat-cabin-bridge.js 把该遮罩节点搬进 #catCabinHost，
+   这里再用作用域覆盖把它从「fixed 全屏弹窗」改成「页面内铺满」。
+   所有规则都挂在 #page-catcabin 作用域下，不污染主文件其它页面。
+   2026-10-12：取消「仅移动端开放」限制，桌面端从学生工坊进入，
+   内嵌布局见文件末尾 @media(min-width:769px)。
+   ============================================================ */
+
+/* 猫咪小屋页（学生工坊子页）：移动端顶部是 44px 的工坊返回栏（.workshop-sub-head），
+   面包屑由主文件移动端媒体查询统一隐藏；桌面端保留面包屑 + 返回栏。 */
+
+/* 移动端通铺：去掉 .page 的 18px 纵向 gap，让宿主贴住返回栏（返回栏与游戏画面无缝衔接） */
+@media (max-width: 768px) {
+  #page-catcabin { gap: 0; }
+}
+
+/* 宿主：上下通铺满（返回栏底缘 → 吸底导航顶缘，左右到屏幕边）。
+   负 margin 抵消 .main 的 12px 左右内边距；
+   高度 = 100dvh − .main 上内边距16 − 返回栏44 − 底栏预留84 − 安全区。 */
+#page-catcabin #catCabinHost {
+  position: relative;
+  height: calc(100vh - 144px - env(safe-area-inset-bottom));
+  height: calc(100dvh - 144px - env(safe-area-inset-bottom));
+  margin: 0 -12px;
+  overflow: hidden;
+  background: var(--pet-bg-page);
+  border-radius: 0;
+}
+
+/* 把引擎遮罩从全屏 fixed 改为在宿主内铺满（position 提升特异性，压过引擎的 fixed） */
+#page-catcabin .pet-modal-mask {
+  position: absolute;
+  inset: 0;
+  background: transparent;
+  z-index: 1;
+  animation: none;
+}
+
+/* 弹窗本体铺满宿主，去掉圆角/阴影/入场动画（内嵌态不需要"弹窗感"） */
+#page-catcabin .pet-modal-mask .pet-modal {
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
+  max-height: 100%;
+  min-height: 0;
+  border-radius: 0;
+  box-shadow: none;
+  animation: none;
+}
+
+/* 内嵌态下隐藏引擎自带的关闭按钮（退出靠切 tab，避免留下空白宿主） */
+#page-catcabin #petCloseBtn { display: none; }
+
+/* ============================================================
+   融入移动端整体风格（纯样式覆盖，不改任何功能/结构）
+   主项目语言：米色底 + 白色卡片 + 柔和阴影 + 深蓝/暖橙点缀；
+   引擎原皮肤是独立弹窗风（厚橙头栏、红黄条纹门票亭、3D 硬阴影按钮），
+   以下只调视觉，不动布局骨架与交互。
+   ============================================================ */
+
+/* 宿主卡片：通铺方案下不再需要白卡描边/阴影（见上方 #catCabinHost），
+   此处仅保留注释锚点，避免误恢复圆角卡片样式。 */
+
+/* 全局头栏（"🐱 猫咪小屋 + 金额"那一行）在移动端内嵌态整行隐藏：
+   标题与吸顶 tab 重复、金额已挪到侧栏图鉴下方（side-coin-badge）、
+   关闭按钮本就隐藏（退出靠切 tab）。引擎结构不动，纯作用域覆盖。 */
+#page-catcabin .pet-modal-mask .pet-header { display: none; }
+
+/* 引擎子页（我的猫窝/公园/家园/专注）顶部：去掉整条标题栏，返回钮改悬浮圆钮。
+   原因：标题与入口点击信息重复；固定行高在吸顶 tab 与内容间造成断层。
+   返回钮是子页回地图的唯一入口，保留但悬浮在左上角（移动端常见模式），
+   内容加 padding-top 净空，滚动时从钮下方经过（钮不透明保证可读）。
+   ⚠️ 与页面级「< 工坊」胶囊钮刻意区分：这里是深色半透明圆钮、无文字，
+   只负责游戏内回地图；页面级回工坊是白底带目的地文字的胶囊（见 student-workshop.css）。
+   引擎结构不动：header 仍在 DOM，仅改定位与可见性，[data-page-back] 绑定不受影响。 */
+#page-catcabin .pet-modal .page-header {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: auto;
+  height: auto;
+  padding: 0;
+  background: none;
+  border-bottom: none;
+  z-index: 20;
+}
+#page-catcabin .pet-modal .page-title,
+#page-catcabin .pet-modal .page-header-spacer { display: none; }
+#page-catcabin .pet-modal .page-back-btn {
+  width: 32px;
+  height: 32px;
+  background: rgba(27, 58, 91, .55);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  color: #fff;
+  font-size: 16px;
+  box-shadow: 0 2px 8px rgba(27, 58, 91, .25);
+  transition: transform .15s, box-shadow .15s;
+}
+#page-catcabin .pet-modal .page-back-btn:hover {
+  transform: scale(1.06);
+  box-shadow: 0 3px 10px rgba(27, 58, 91, .22);
+}
+#page-catcabin .pet-modal .page-back-btn:active { transform: scale(.94); }
+/* 内容顶到吸顶 tab 下方，仅留出悬浮返回钮的净空 */
+#page-catcabin .pet-modal .full-page .page-content { padding-top: 50px; }
+
+/* 栏位状态（🏠 栏位 n/m）挪到悬浮返回钮同一行、贴页面右缘：
+   原来独占一行白卡，净空 50px 被白白占掉一整行。改绝对定位挂到返回钮同行右侧
+   （pen-status 在 .page-content 内，.full-page 为定位祖先）。
+   updatePenStatus() 照常刷新计数。 */
+#page-catcabin .cat-pen-status {
+  position: absolute;
+  top: 10px;
+  left: auto;
+  right: 12px;
+  margin: 0;
+  padding: 6px 12px;
+  width: auto;
+  gap: 6px;
+  font-size: 12.5px;
+  background: rgba(255, 255, 255, .92);
+  box-shadow: 0 2px 8px rgba(27, 58, 91, .12);
+  z-index: 21;
+}
+#page-catcabin .cat-pen-status .pen-status-count { margin: 0; font-size: 13.5px; }
+
+/* ===== 缩放：猫咪画布加高 =====
+   renderer 按 catSize = min(canvas宽, canvas高) × 0.65 画猫；
+   原固定 180px 高把猫卡在 ~117px，卡片大片留白。
+   220px：猫约 143px（+22%），详情页溢出仅 ~27px（轻微可滚，
+   引擎本就是可滚内容）；250px 实测溢出 ~70px 过多，取此平衡点。 */
+#page-catcabin .cat-canvas { height: 220px; }
+
+/* 猫咪展示卡：与全站卡片同语言（细描边 + 柔影），去厚边框感 */
+#page-catcabin .cat-display-box {
+  border: 1px solid #F0E2D2;
+  box-shadow: 0 3px 10px rgba(27, 58, 91, .06);
+}
+
+/* 左侧「门票亭」菜单柔化：红黄条纹遮阳棚 + 3D 硬阴影是独立小游戏皮肤，
+   与米色 App 冲突最强。保留票亭造型记忆（暖渐变+圆钮），去条纹与硬阴影。 */
+#page-catcabin .side-menu {
+  background: linear-gradient(180deg, #FFF6EC 0%, #FFEBD6 100%);
+  border-right: 1px solid #F2DFC6;
+  box-shadow: 2px 0 10px rgba(139, 69, 19, .06);
+}
+#page-catcabin .side-menu::before { display: none; }
+#page-catcabin .side-menu-header { margin-top: 10px; }
+#page-catcabin .side-menu-btn {
+  border: 1px solid #FFD9BC;
+  box-shadow: 0 2px 8px rgba(242, 112, 58, .10);
+}
+#page-catcabin .side-menu-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(242, 112, 58, .16);
+}
+#page-catcabin .side-menu-btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 4px rgba(242, 112, 58, .12);
+}
+
+/* ============================================================
+   猫咪图鉴弹窗（collectionModal · 挂在 body 下，不在宿主内，
+   作用域用 .collection-modal 自身，等价精确）
+   ============================================================ */
+
+/* 修「照片偏下」的连带缺陷：引擎原 .collection-card 用 aspect-ratio:1 强方卡，
+   但卡片内容（72 图标 + 名称 + 稀有度 + 描述 + 已拥有行）实测 ~137px，
+   113px 方卡 overflow:hidden 把「已拥有 ×N」整行裁没（锁定卡连提示行也被裁）。
+   取消强制方卡，行高交给内容（列宽不变，3 列布局不动）。
+   照片本体居中已由 pet-ui.js 绘制锚点修正（去掉 +4 下移）。 */
+.collection-modal .collection-card {
+  aspect-ratio: auto;
+}
+
+/* 修「切到全部后整排卡片被压扁裁切」：引擎 .collection-grid 是 flex:1
+   （= flex-basis:0 + 可收缩），在弹窗定高列里拿到固定高度，
+   再被 align-content 默认 stretch 把行高均摊填满 → 3 行时刚好有余量看不出问题，
+   14 只（5 行）时每行被压到 ~89px，卡片 overflow:hidden 直接裁掉名字以下全部内容。
+   改法：高度由内容决定（basis auto + 不收缩，超出部分交给弹窗自身滚动），
+   并让行保持内容高度、不拉伸填满。 */
+.collection-modal .collection-grid {
+  flex: 1 0 auto;
+  align-content: start;
+}
+
+/* 修「假可点」：卡片带 cursor:pointer + hover 上移，但图鉴卡片没有任何点击行为
+   （详情展示走名字/描述文本，无 handler），交互暗示与实际能力不一致。
+   与项目规则「纯展示元素移除按钮交互特征、与功能性按钮保持清晰视觉边界」同源，
+   这里只去掉指针与位移，保留稀有度配色与柔影。 */
+.collection-modal .collection-card,
+.collection-modal .collection-card:hover {
+  cursor: default;
+  transform: none;
+}
+
+/* 图片加载稳健性：精灵异步到达前 canvas 是空白，给图标容器一个占位底色，
+   避免"卡片闪白→猫突然出现"的跳变（纯展示层，不动绘制逻辑）。 */
+.collection-modal .collection-cat-icon {
+  background: rgba(255, 255, 255, 0.55);
+  border-radius: 12px;
+}
+
+/* 键盘焦点可见（tab 可聚焦后需要焦点态；触屏无影响） */
+.collection-modal .collection-tab:focus-visible {
+  outline: 2px solid var(--pet-primary, #FF8A4C);
+  outline-offset: 1px;
+}
+
+/* 减少动效偏好：弹窗弹入动画在 prefers-reduced-motion 下关闭
+   （卡片 hover 位移已在上方整体移除，无需重复处理） */
+@media (prefers-reduced-motion: reduce) {
+  .collection-modal, .collection-modal .collection-modal-content { animation: none; }
+}
+
+/* ============================================================
+   桌面端（>768px）· 居中卡片布局（2026-10-12 取消「仅移动端开放」限制）
+   上方移动端通铺规则（100dvh−144px、负 margin 通到屏幕边）在桌面端不适用：
+   宿主改为居中卡片，高度随视口（min/clamp 兜底矮窗口），宽度收在 460px ——
+   引擎内部布局按移动端宽度设计，桌面端不拉宽重排，两侧留米色页面底色。
+   遮罩 absolute inset:0、弹窗铺满、悬浮返回钮等规则两端共用，不改。
+   ============================================================ */
+@media (min-width: 769px) {
+  #page-catcabin { gap: 12px; }
+  #page-catcabin #catCabinHost {
+    height: clamp(520px, calc(100vh - 230px), 780px);
+    width: min(100%, 460px);
+    margin: 0 auto;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+  }
+}

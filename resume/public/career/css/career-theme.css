@@ -1,0 +1,236 @@
+/* 职业测评统一深色档案皮肤
+   入口 / 答题 / 报告记录 三页共用；报告页与分享页本身已是深色档案。
+   做法：页面 <html class="dark"> 激活原有 dark: 变体，再用本文件把
+   slate 深灰、亮蓝主色收拢到「墨黑 + 黄铜 + 细线」一套语言。 */
+
+html.dark {
+    color-scheme: dark;
+}
+
+html.dark body {
+    background: #0a0c11 !important;
+    color: #e9e7e2 !important;
+}
+
+/* ---------- 顶栏 / 页脚 ---------- */
+html.dark header {
+    background: rgba(10, 12, 17, 0.92) !important;
+    border-bottom-color: rgba(201, 168, 106, 0.18) !important;
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+}
+
+html.dark header .bg-primary {
+    background: rgba(201, 168, 106, 0.16);
+}
+
+html.dark header .bg-primary .material-symbols-outlined {
+    color: #e8d5ae;
+}
+
+html.dark footer {
+    background: #07090d !important;
+    border-top-color: rgba(233, 231, 226, 0.08) !important;
+    color: #6f7681;
+}
+
+html.dark footer a,
+html.dark footer p,
+html.dark footer span {
+    color: #6f7681;
+}
+
+/* ---------- 卡片：深灰 → 墨色分层 ---------- */
+html.dark .bg-white,
+html.dark .dark\:bg-gray-900,
+html.dark .dark\:bg-gray-800,
+html.dark .dark\:bg-white\/5 {
+    background-color: #12161e;
+}
+
+html.dark .bg-gray-100,
+html.dark .dark\:bg-gray-800 {
+    background-color: #1a1f28;
+}
+
+html.dark .border-\[\#dbe0e6\],
+html.dark .border-slate-200,
+html.dark .border-gray-100,
+html.dark .border-gray-200,
+html.dark .dark\:border-gray-800,
+html.dark .dark\:border-gray-700,
+html.dark .dark\:border-white\/10,
+html.dark .dark\:border-slate-800 {
+    border-color: rgba(233, 231, 226, 0.1);
+}
+
+html.dark .text-\[\#617589\],
+html.dark .text-gray-500,
+html.dark .text-slate-400,
+html.dark .dark\:text-gray-400 {
+    color: #9ba1ac;
+}
+
+html.dark .shadow-sm,
+html.dark .shadow-lg,
+html.dark .shadow-xl,
+html.dark .shadow-2xl {
+    box-shadow: none;
+}
+
+/* 卡片直角化，跟报告页的细线直角对齐 */
+html.dark .rounded-lg,
+html.dark .rounded-xl,
+html.dark .rounded-2xl,
+html.dark .rounded-3xl {
+    border-radius: 2px;
+}
+
+/* ---------- 主色：亮蓝 → 黄铜 ---------- */
+html.dark .bg-primary {
+    background-color: #c9a86a;
+    color: #14110a;
+}
+
+html.dark .bg-primary\/10 {
+    background-color: rgba(201, 168, 106, 0.1);
+}
+
+html.dark .bg-primary\/20 {
+    background-color: rgba(201, 168, 106, 0.2);
+}
+
+html.dark .dark\:bg-primary\/5 {
+    background-color: rgba(201, 168, 106, 0.05);
+}
+
+html.dark .dark\:bg-primary\/10,
+html.dark .dark\:bg-primary\/20 {
+    background-color: rgba(201, 168, 106, 0.08);
+}
+
+html.dark .text-primary {
+    color: #e8d5ae;
+}
+
+html.dark .border-primary {
+    border-color: rgba(201, 168, 106, 0.6);
+}
+
+html.dark .hover\:border-primary:hover {
+    border-color: rgba(201, 168, 106, 0.6);
+}
+
+html.dark .hover\:text-primary:hover {
+    color: #e8d5ae;
+}
+
+html.dark .border-primary\/20 {
+    border-color: rgba(201, 168, 106, 0.24);
+}
+
+html.dark .bg-primary\/10.text-primary,
+html.dark .text-primary.bg-primary\/10 {
+    color: #e8d5ae;
+}
+
+/* 答题页主按钮与选项 */
+html.dark #next-button {
+    background: #c9a86a;
+    color: #14110a;
+    box-shadow: none;
+}
+
+html.dark #next-button:hover {
+    background: #e8d5ae;
+}
+
+html.dark #previous-button {
+    border-color: rgba(201, 168, 106, 0.35);
+    color: #e9e7e2;
+}
+
+html.dark #previous-button:hover {
+    background: rgba(201, 168, 106, 0.08);
+}
+
+html.dark #question-options label {
+    border-color: rgba(233, 231, 226, 0.14);
+    background: #12161e;
+}
+
+html.dark #question-options label:hover {
+    border-color: rgba(201, 168, 106, 0.5);
+}
+
+html.dark #question-options label:has(input:checked) {
+    border-color: #c9a86a;
+    background: rgba(201, 168, 106, 0.08);
+}
+
+html.dark #question-options input[type="radio"] {
+    accent-color: #c9a86a;
+}
+
+html.dark #question-options input[type="text"],
+html.dark #question-options input:not([type]) {
+    background: #12161e;
+    border-color: rgba(233, 231, 226, 0.14);
+    color: #e9e7e2;
+}
+
+/* ---------- 入口页：主视觉与案例卡 ---------- */
+html.dark .career-hero {
+    background:
+        radial-gradient(120% 90% at 85% -10%, rgba(201, 168, 106, 0.18), transparent 60%),
+        radial-gradient(90% 70% at 0% 0%, rgba(74, 104, 152, 0.18), transparent 62%),
+        linear-gradient(180deg, #11151d, #0a0c11);
+    border: 1px solid rgba(201, 168, 106, 0.22);
+    border-radius: 2px;
+}
+
+html.dark .career-hero .bg-white {
+    background-color: rgba(201, 168, 106, 0.22);
+}
+
+html.dark #start-assessment {
+    background: #c9a86a;
+    color: #14110a;
+    border-radius: 2px;
+    box-shadow: none;
+}
+
+html.dark #start-assessment:hover {
+    background: #e8d5ae;
+}
+
+html.dark .text-yellow-500 {
+    color: #c9a86a;
+}
+
+/* ---------- 标题：统一衬线 ---------- */
+html.dark h1,
+html.dark h2 {
+    font-family: "Noto Serif SC", "Source Han Serif SC", "Songti SC", "STSong", serif;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+html.dark header h2 {
+    font-size: 18px;
+}
+
+/* ---------- 滚动条 ---------- */
+html.dark ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+html.dark ::-webkit-scrollbar-thumb {
+    background: rgba(201, 168, 106, 0.25);
+    border-radius: 4px;
+}
+
+html.dark ::-webkit-scrollbar-track {
+    background: #0a0c11;
+}

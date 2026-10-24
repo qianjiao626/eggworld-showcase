@@ -1,0 +1,52 @@
+:where(a[href], button:not(:disabled)):active {
+  filter: brightness(0.96);
+}
+
+[data-navigation-pending] {
+  cursor: progress !important;
+}
+
+[data-navigation-pending="delayed"] {
+  position: relative;
+  opacity: 0.86;
+}
+
+[data-navigation-pending="delayed"]::after {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  width: 0.75rem;
+  height: 0.75rem;
+  content: "";
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: navigation-feedback-spin 0.7s linear infinite;
+}
+
+.navigation-feedback-toast {
+  position: fixed;
+  z-index: 1000;
+  right: 1rem;
+  bottom: 1rem;
+  max-width: min(22rem, calc(100vw - 2rem));
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 8px;
+  background: #ffffff;
+  color: #292524;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14);
+  font-size: 0.875rem;
+}
+
+@keyframes navigation-feedback-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-navigation-pending="delayed"]::after {
+    animation: none;
+  }
+}

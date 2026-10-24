@@ -1,0 +1,144 @@
+.material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+/* Material Symbols 是 ligature 图标：字体就绪前会把 arrow_back / rocket_launch
+   这类名字当英文渲染出来（刷新时最明显）。先隐藏占位，字体加载完再显示。 */
+html:not(.icons-ready) .material-symbols-outlined {
+    visibility: hidden;
+}
+
+.radio-dot-svg {
+    --radio-dot-svg: url('data:image/svg+xml,%3csvg viewBox=%270 0 16 16%27 fill=%27%232b8cee%27 xmlns=%27http://www.w3.org/2000/svg%27%3e%3ccircle cx=%278%27 cy=%278%27 r=%273%27/%3e%3c/svg%3e');
+}
+
+/* ---------- 主题化提示框（替代原生 alert） ---------- */
+.cr-dialog {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.cr-dialog.is-open {
+    display: flex;
+}
+
+.cr-dialog-mask {
+    position: absolute;
+    inset: 0;
+    background: rgba(8, 11, 17, 0.62);
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+}
+
+.cr-dialog-panel {
+    position: relative;
+    width: min(420px, 100%);
+    padding: 26px 26px 22px;
+    border: 1px solid rgba(201, 168, 106, 0.28);
+    background: linear-gradient(180deg, #10141b, #0b0e14);
+    box-shadow: 0 30px 80px -40px #000;
+    color: #e9e7e2;
+    font-family: "Space Grotesk", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+}
+
+.cr-dialog-kicker {
+    margin: 0;
+    font-size: 10px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: #c9a86a;
+}
+
+.cr-dialog-title {
+    margin: 10px 0;
+    font-family: "Noto Serif SC", "Source Han Serif SC", "Songti SC", STSong, serif;
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1.5;
+    color: #f4f1ea;
+}
+
+.cr-dialog-msg {
+    margin: 0 0 22px;
+    font-size: 14px;
+    line-height: 1.85;
+    color: #9ba1ac;
+}
+
+.cr-dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.cr-dialog-btn {
+    padding: 10px 20px;
+    border: 1px solid rgba(201, 168, 106, 0.5);
+    border-radius: 1px;
+    background: transparent;
+    color: #e8d5ae;
+    font-family: inherit;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.cr-dialog-btn:hover {
+    background: rgba(201, 168, 106, 0.12);
+    color: #fff;
+}
+
+.cr-dialog-btn.is-primary {
+    background: #c9a86a;
+    border-color: #c9a86a;
+    color: #14110a;
+    font-weight: 600;
+}
+
+.cr-dialog-btn.is-primary:hover {
+    background: #e8d5ae;
+    color: #14110a;
+}
+
+/* ---------- 生成长图/报告时的轻遮罩 ---------- */
+.cr-loading {
+    position: fixed;
+    inset: 0;
+    z-index: 150;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(8, 11, 17, 0.72);
+    -webkit-backdrop-filter: blur(3px);
+    backdrop-filter: blur(3px);
+}
+
+.cr-loading-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 28px 34px;
+    border: 1px solid rgba(201, 168, 106, 0.24);
+    background: #0b0e14;
+    color: #e9e7e2;
+    font-size: 14px;
+    letter-spacing: 0.04em;
+}
+
+.cr-spinner {
+    width: 30px;
+    height: 30px;
+    border: 2px solid rgba(201, 168, 106, 0.25);
+    border-top-color: #c9a86a;
+    border-radius: 50%;
+    animation: cr-spin 0.9s linear infinite;
+}
+
+@keyframes cr-spin {
+    to { transform: rotate(360deg); }
+}

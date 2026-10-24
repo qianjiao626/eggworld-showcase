@@ -1,0 +1,87 @@
+# ===== Java / Maven =====
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+
+# ===== IDE: IntelliJ IDEA =====
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+.vscode/
+
+# ===== 系统文件 =====
+.DS_Store
+Thumbs.db
+
+# ===== 日志 =====
+*.log
+logs/
+
+# ===== 敏感配置（含明文密码 / 邮箱授权码，禁止提交）=====
+# 本地开发配置：放在 backend/ 下，由 Spring Boot 从工作目录（file:./）加载
+# ⚠️ 不要放 src/main/resources —— 那儿的文件会被打进 jar（虽然 pom 已排除，但仍不应存在）
+backend/application-local.yml
+backend/application-prod.yml
+# 旧位置规则保留：防止误放回 src/main/resources 后又被提交
+backend/src/main/resources/application-local.yml
+backend/src/main/resources/application-prod.yml
+# 线上部署配置：含明文数据库密码与邮箱授权码，禁止提交
+# 注意：该文件此前已被 git 跟踪，本规则需配合 `git rm --cached backend/deploy/application-prod.yml` 才生效
+backend/deploy/application-prod.yml
+
+# ===== 编译产物 =====
+build/
+backend/release/
+# 增量部署包（含 jar 等二进制产物，由 backend/build-deploy.ps1 本地生成）
+releases/deploy/
+# 打包时注入的版本信息（由 build-deploy.ps1 生成/删除，不入库）
+backend/src/main/resources/build-info.properties
+
+# ===== 线上数据备份（含全站用户邮箱 / 密码哈希 / 联系方式，禁止提交） =====
+线上服务器数据/
+
+# ===== 本地临时 / 参考文件（不参与部署）=====
+# 2026-09-14 起统一归拢在 local-only/ 下；下列旧路径规则保留，防止再次散落在根目录
+local-only/
+1.html
+images-original/
+new/
+onboard-guide-package(1)/
+growth-schoolv1 - 副本.html
+unlock-character-package.txt
+tasks/*.txt
+
+# 密钥与证书（工单 A.3）
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+id_rsa*
+id_ed25519*
+.env
+.env.*
+credentials*
+*secret*
+
+# 本地自动化产物
+.playwright-cli/
+output/
+
+# AOCI agent host integration (machine-bound; do not commit)
+.codex/config.toml
+.codex/config.toml.backup.*
+
+# Trae 本地工作区与临时备份（机器本地产物，不入库）
+.trae/
+AGENTS.md.backup.*
+# 本地 AI 工具配置（含机器绑定信息，不公开）
+.aoci/
+.codex/

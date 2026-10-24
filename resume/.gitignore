@@ -1,0 +1,16 @@
+# 依赖与构建产物（源码入库，产物由 backend/build-release.ps1 构建后打进部署包）
+/node_modules
+/.next
+/out
+
+# Next 自动生成
+next-env.d.ts
+*.tsbuildinfo
+
+# 本地环境变量（AI 密钥等一律外部注入，不入库）
+.env
+.env*.local
+
+# 系统 / 编辑器
+.DS_Store
+*.log

@@ -1,0 +1,410 @@
+[
+  {
+    "name": "北京师范大学-香港浸会大学联合国际学院",
+    "actual": "北师香港浸会大学",
+    "url": "https://www.dxsbb.com/news/123171.html",
+    "mapping": "目录旧校名/目录名称对应页面现名北师香港浸会大学，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "华南理工大学广州学院",
+    "actual": "广州城市理工学院",
+    "url": "https://www.dxsbb.com/news/23141.html",
+    "mapping": "目录旧校名/目录名称对应页面现名广州城市理工学院，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "南京化工职业技术学院",
+    "actual": "南京科技职业学院",
+    "url": "https://www.dxsbb.com/news/?26503.html",
+    "mapping": "目录旧校名/目录名称对应页面现名南京科技职业学院，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "呼和浩特职业学院",
+    "actual": "呼和浩特职业技术大学",
+    "url": "https://www.dxsbb.com/news/17466.html",
+    "mapping": "目录旧校名/目录名称对应页面现名呼和浩特职业技术大学，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "哈尔滨职业技术学院",
+    "actual": "哈尔滨职业技术大学",
+    "url": "https://www.dxsbb.com/news/20734.html",
+    "mapping": "目录旧校名/目录名称对应页面现名哈尔滨职业技术大学，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "四川大学锦城学院",
+    "actual": "成都锦城学院",
+    "url": "https://www.dxsbb.com/news/22064.html",
+    "mapping": "目录旧校名/目录名称对应页面现名成都锦城学院，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "大连艺术职业学院",
+    "actual": "大连艺术学院",
+    "url": "https://www.dxsbb.com/news/18814.html",
+    "mapping": "目录旧校名/目录名称对应页面现名大连艺术学院，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "宁夏职业技术学院",
+    "actual": "宁夏职业技术大学",
+    "url": "https://www.dxsbb.com/news/24795.html",
+    "mapping": "目录旧校名/目录名称对应页面现名宁夏职业技术大学，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "安徽农业大学经济技术学院",
+    "actual": "合肥经济学院",
+    "url": "https://www.dxsbb.com/news/18137.html",
+    "mapping": "目录旧校名/目录名称对应页面现名合肥经济学院，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "安徽大学江淮学院",
+    "actual": "合肥理工学院",
+    "url": "https://www.dxsbb.com/news/18133.html",
+    "mapping": "目录旧校名/目录名称对应页面现名合肥理工学院，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "安徽师范大学皖江学院",
+    "actual": "芜湖学院",
+    "url": "https://www.dxsbb.com/news/91399.html",
+    "mapping": "目录旧校名/目录名称对应页面现名芜湖学院，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "安徽建筑大学城市建设学院",
+    "actual": "合肥城市学院",
+    "url": "https://www.dxsbb.com/news/91160.html",
+    "mapping": "目录旧校名/目录名称对应页面现名合肥城市学院，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "山东凯文科技职业学院",
+    "actual": "山东工程职业技术大学",
+    "url": "https://www.dxsbb.com/news/19255.html",
+    "mapping": "目录旧校名/目录名称对应页面现名山东工程职业技术大学，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "山西建筑职业技术学院",
+    "actual": "山西工程科技职业大学",
+    "url": "https://www.dxsbb.com/news/16374.html",
+    "mapping": "目录旧校名/目录名称对应页面现名山西工程科技职业大学，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "广东海洋大学寸金学院",
+    "actual": "湛江科技学院",
+    "url": "https://www.dxsbb.com/news/23425.html",
+    "mapping": "目录旧校名/目录名称对应页面现名湛江科技学院，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "广西师范大学漓江学院",
+    "actual": "桂林学院",
+    "url": "https://www.dxsbb.com/news/19985.html",
+    "mapping": "目录旧校名/目录名称对应页面现名桂林学院，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "新乡医学院",
+    "actual": "河南医药大学",
+    "url": "https://www.dxsbb.com/news/19666.html",
+    "mapping": "目录旧校名/目录名称对应页面现名河南医药大学，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "新乡医学院三全学院",
+    "actual": "豫北医学院",
+    "url": "https://www.dxsbb.com/news/92449.html",
+    "mapping": "目录旧校名/目录名称对应页面现名豫北医学院，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "新疆医科大学厚博学院",
+    "actual": "新疆第二医学院",
+    "url": "https://www.dxsbb.com/news/24941.html",
+    "mapping": "目录旧校名/目录名称对应页面现名新疆第二医学院，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "日照职业技术学院",
+    "actual": "日照职业技术大学",
+    "url": "https://m.dxsbb.com/news/19041.html",
+    "mapping": "目录旧校名/目录名称对应页面现名日照职业技术大学，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "景德镇陶瓷大学科技艺术学院",
+    "actual": "景德镇艺术职业大学",
+    "url": "https://www.dxsbb.com/news/17460.html",
+    "mapping": "目录旧校名/目录名称对应页面现名景德镇艺术职业大学，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "桂林师范高等专科学校",
+    "actual": "桂林师范学院",
+    "url": "https://m.dxsbb.com/news/20422.html",
+    "mapping": "目录旧校名/目录名称对应页面现名桂林师范学院，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "桂林理工大学博文管理学院",
+    "actual": "南宁理工学院",
+    "url": "https://www.dxsbb.com/news/19989.html",
+    "mapping": "目录旧校名/目录名称对应页面现名南宁理工学院，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "武威职业学院",
+    "actual": "武威职业技术大学",
+    "url": "https://www.dxsbb.com/news/24090.html",
+    "mapping": "目录旧校名/目录名称对应页面现名武威职业技术大学，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "武汉工业职业技术学院",
+    "actual": "武汉城市职业学院",
+    "url": "https://www.dxsbb.com/news/18878.html",
+    "mapping": "目录旧校名/目录名称对应页面现名武汉城市职业学院，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "江苏建康职业学院",
+    "actual": "江苏卫生健康职业学院",
+    "url": "https://www.dxsbb.com/news/92785.html",
+    "mapping": "目录旧校名/目录名称对应页面现名江苏卫生健康职业学院，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "江西中医药大学科技学院",
+    "actual": "南昌医学院",
+    "url": "https://m.dxsbb.com/news/17467.html",
+    "mapping": "目录旧校名/目录名称对应页面现名南昌医学院，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "江西中医药高等专科学校",
+    "actual": "抚州医药学院",
+    "url": "https://www.dxsbb.com/news/18200.html",
+    "mapping": "目录旧校名/目录名称对应页面现名抚州医药学院，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "江西大宇职业技术学院",
+    "actual": "南昌职业大学",
+    "url": "https://www.dxsbb.com/news/18188.html",
+    "mapping": "目录旧校名/目录名称对应页面现名南昌职业大学，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "江西护理职业技术学院",
+    "actual": "江西卫生职业学院",
+    "url": "https://www.dxsbb.com/news/89980.html",
+    "mapping": "目录旧校名/目录名称对应页面现名江西卫生职业学院，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "江西渝州科技职业学院",
+    "actual": "江西工程学院",
+    "url": "https://www.dxsbb.com/news/87328.html",
+    "mapping": "目录旧校名/目录名称对应页面现名江西工程学院，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "江西蓝天学院",
+    "actual": "江西科技学院",
+    "url": "https://www.dxsbb.com/news/17350.html",
+    "mapping": "目录旧校名/目录名称对应页面现名江西科技学院，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "江西赣江职业技术学院",
+    "actual": "南昌工学院",
+    "url": "https://www.dxsbb.com/news/17382.html",
+    "mapping": "目录旧校名/目录名称对应页面现名南昌工学院，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "河南农业大学华豫学院",
+    "actual": "商丘学院",
+    "url": "https://www.dxsbb.com/news/20041.html",
+    "mapping": "目录旧校名/目录名称对应页面现名商丘学院，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "河南大学民生学院",
+    "actual": "河南开封科技传媒学院",
+    "url": "https://www.dxsbb.com/news/19910.html",
+    "mapping": "目录旧校名/目录名称对应页面现名河南开封科技传媒学院，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "河南理工大学万方科技学院",
+    "actual": "郑州工商学院",
+    "url": "https://www.dxsbb.com/news/19929.html",
+    "mapping": "目录旧校名/目录名称对应页面现名郑州工商学院，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "河池职业学院",
+    "actual": "广西现代职业技术学院",
+    "url": "https://www.dxsbb.com/news/20516.html",
+    "mapping": "目录旧校名/目录名称对应页面现名广西现代职业技术学院，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "浙江科技学院",
+    "actual": "浙江科技大学",
+    "url": "https://www.dxsbb.com/news/17256.html",
+    "mapping": "目录旧校名/目录名称对应页面现名浙江科技大学，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "海南医学院",
+    "actual": "海南医科大学",
+    "url": "https://www.dxsbb.com/news/20917.html",
+    "mapping": "目录旧校名/目录名称对应页面现名海南医科大学，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "淮安信息职业技术学院",
+    "actual": "江苏电子信息职业学院",
+    "url": "https://www.dxsbb.com/news/26302.html",
+    "mapping": "目录旧校名/目录名称对应页面现名江苏电子信息职业学院，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "淮阴工学院",
+    "actual": "淮安大学",
+    "url": "https://www.dxsbb.com/news/24558.html",
+    "mapping": "目录旧校名/目录名称对应页面现名淮安大学，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "温州大学瓯江学院",
+    "actual": "温州理工学院",
+    "url": "https://www.dxsbb.com/news/92661.html",
+    "mapping": "目录旧校名/目录名称对应页面现名温州理工学院，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "湖南冶金职业技术学院",
+    "actual": "湖南工业大学",
+    "url": "https://www.dxsbb.com/news/21030.html",
+    "mapping": "目录旧校名/目录名称对应页面现名湖南工业大学，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "湖南同德职业学院",
+    "actual": "湖南应用技术学院",
+    "url": "https://www.dxsbb.com/news/21739.html",
+    "mapping": "目录旧校名/目录名称对应页面现名湖南应用技术学院，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "湖南师范大学树达学院",
+    "actual": "长沙工业学院",
+    "url": "https://www.dxsbb.com/news/21443.html",
+    "mapping": "目录旧校名/目录名称对应页面现名长沙工业学院，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "湖南文理学院芙蓉学院",
+    "actual": "常德学院",
+    "url": "https://www.dxsbb.com/news/21439.html",
+    "mapping": "目录旧校名/目录名称对应页面现名常德学院，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "湖南软件职业学院",
+    "actual": "湖南软件职业技术大学",
+    "url": "https://www.dxsbb.com/news/22282.html",
+    "mapping": "目录旧校名/目录名称对应页面现名湖南软件职业技术大学，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "滨州学院",
+    "actual": "山东航空学院",
+    "url": "https://www.dxsbb.com/news/18634.html",
+    "mapping": "目录旧校名/目录名称对应页面现名山东航空学院，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "滨州职业学院",
+    "actual": "滨州职业技术大学",
+    "url": "https://www.dxsbb.com/news/19093.html",
+    "mapping": "目录旧校名/目录名称对应页面现名滨州职业技术大学，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "潍坊医学院",
+    "actual": "山东第二医科大学",
+    "url": "https://m.dxsbb.com/news/18622.html",
+    "mapping": "目录旧校名/目录名称对应页面现名山东第二医科大学，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "甘肃林业职业技术学院",
+    "actual": "甘肃林业职业技术大学",
+    "url": "https://www.dxsbb.com/news/24088.html",
+    "mapping": "目录旧校名/目录名称对应页面现名甘肃林业职业技术大学，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "皖南医学院",
+    "actual": "皖南医科大学",
+    "url": "https://www.dxsbb.com/news/86631.html",
+    "mapping": "目录旧校名/目录名称对应页面现名皖南医科大学，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "绍兴文理学院元培学院",
+    "actual": "绍兴理工学院",
+    "url": "https://www.dxsbb.com/news/17349.html",
+    "mapping": "目录旧校名/目录名称对应页面现名绍兴理工学院，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "肇庆医学高等专科学校",
+    "actual": "肇庆医学院",
+    "url": "https://m.dxsbb.com/news/24206.html",
+    "mapping": "目录旧校名/目录名称对应页面现名肇庆医学院，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "苏州高博软件技术职业学院",
+    "actual": "苏州高博职业学院",
+    "url": "https://www.dxsbb.com/news/27109.html",
+    "mapping": "目录旧校名/目录名称对应页面现名苏州高博职业学院，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "西南科技大学城市学院",
+    "actual": "绵阳城市学院",
+    "url": "https://www.dxsbb.com/news/22136.html",
+    "mapping": "目录旧校名/目录名称对应页面现名绵阳城市学院，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "西安航空技术高等专科学校",
+    "actual": "西安航空学院",
+    "url": "https://www.dxsbb.com/news/22369.html",
+    "mapping": "目录旧校名/目录名称对应页面现名西安航空学院，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "贵州大学明德学院",
+    "actual": "贵阳信息科技学院",
+    "url": "https://www.dxsbb.com/news/20106.html",
+    "mapping": "目录旧校名/目录名称对应页面现名贵阳信息科技学院，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "贵港职业学院",
+    "actual": "广西工业职业技术学院",
+    "url": "https://www.dxsbb.com/news/?20433.html",
+    "mapping": "目录旧校名/目录名称对应页面现名广西工业职业技术学院，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "辽宁林业职业技术学院",
+    "actual": "辽宁生态工程职业学院",
+    "url": "https://www.dxsbb.com/news/?19366.html",
+    "mapping": "目录旧校名/目录名称对应页面现名辽宁生态工程职业学院，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "连云港师范高等专科学校",
+    "actual": "连云港师范学院",
+    "url": "https://www.dxsbb.com/news/25861.html",
+    "mapping": "目录旧校名/目录名称对应页面现名连云港师范学院，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "邢台医学高等专科学校",
+    "actual": "邢台医学院",
+    "url": "https://www.dxsbb.com/news/18844.html",
+    "mapping": "目录旧校名/目录名称对应页面现名邢台医学院，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "邢台职业技术学院",
+    "actual": "河北科技工程职业技术大学",
+    "url": "https://www.dxsbb.com/news/18784.html",
+    "mapping": "目录旧校名/目录名称对应页面现名河北科技工程职业技术大学，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "铜仁职业技术学院",
+    "actual": "铜仁职业技术大学",
+    "url": "https://www.dxsbb.com/news/20551.html",
+    "mapping": "目录旧校名/目录名称对应页面现名铜仁职业技术大学，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "陇南师范高等专科学校",
+    "actual": "陇南师范学院",
+    "url": "https://www.dxsbb.com/news/24041.html",
+    "mapping": "目录旧校名/目录名称对应页面现名陇南师范学院，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "陕西电子科技职业学院",
+    "actual": "西安信息职业大学",
+    "url": "https://www.dxsbb.com/news/23517.html",
+    "mapping": "目录旧校名/目录名称对应页面现名西安信息职业大学，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "陕西警官职业学院",
+    "actual": "陕西警察学院",
+    "url": "https://www.dxsbb.com/news/123190.html",
+    "mapping": "目录旧校名/目录名称对应页面现名陕西警察学院，正文包含目录校名或旧校名线索"
+  },
+  {
+    "name": "黑龙江畜牧兽医职业学院",
+    "actual": "黑龙江职业学院",
+    "url": "https://www.dxsbb.com/news/20152.html",
+    "mapping": "目录旧校名/目录名称对应页面现名黑龙江职业学院，正文包含目录校名或旧校名线索"
+  }
+]

@@ -1,0 +1,177 @@
+-- ============================================================
+-- 蛋蛋世界 · 成就特效系统 增量迁移脚本（v2.5）
+-- 日期: 2026-09-15
+-- 状态: 【暂时下线 · 整节已注释 · 线上不要执行】
+-- 执行: mysql -u eggworld -p eggworld < migrate-achievement.sql
+--
+-- 内容：
+--   1) titles              称号定义（24 条）
+--   2) achievements        成就定义（30 条）
+--   3) user_achievements   用户成就解锁记录
+--   4) user_equip          用户当前穿戴（7 槽位，存 key 字符串）
+--   5) 上述 3/4 的种子与索引
+--
+-- 说明：
+--   - 特效（aura/cloak/outfit/frame/charm/skin）是代码定义的静态资源，
+--     没有对应数据表，故 user_equip 直接存 key 字符串而非 item_id。
+--   - 「用户已解锁哪些装扮」由 user_achievements JOIN achievements 派生，
+--     不额外冗余存储。
+--   - 全部永久有效，无过期机制。
+-- ============================================================
+
+-- 数据库由调用方显式选择；增量脚本禁止 USE / CREATE DATABASE，避免测试或迁移串库。
+
+-- ============================================================
+-- 【暂时下线：本脚本整节已注释，线上不要执行】
+--
+-- 下线原因：线上数据库未执行本脚本，后端每次请求都会查
+--   titles / achievements / user_achievements / user_equip 导致报错。
+-- 现状：后端代码已抽到 backend/achievement-pending/（不参与编译），
+--   前端页面已抽到 js/achievement-page.css / js/achievement-page.js（不加载）。
+-- 恢复：取消本文件全部注释后，在线上执行本脚本（增量），
+--   并放开 init.sql 顶部 4 行 DROP 注释与第 19 节注释。
+-- ============================================================
+-- -- ============================================================
+-- -- 1. 称号定义
+-- -- ============================================================
+-- CREATE TABLE IF NOT EXISTS titles (
+--   id          BIGINT PRIMARY KEY AUTO_INCREMENT,
+--   title_key   VARCHAR(48) NOT NULL COMMENT '称号标识，如 t-steady',
+--   name        VARCHAR(20) NOT NULL COMMENT '称号文本，如「雷打不动」',
+--   style_class VARCHAR(32) NOT NULL COMMENT '样式：title-plain/title-gold/title-neon/title-flame/title-holo',
+--   rarity      ENUM('N','R','SR','SSR','UR') NOT NULL DEFAULT 'N' COMMENT '档次（仅用于排序与展示）',
+--   sort_order  INT NOT NULL DEFAULT 0,
+--   created_at  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+--   UNIQUE KEY uk_title_key (title_key)
+-- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='称号定义';
+
+-- -- ============================================================
+-- -- 2. 成就定义
+-- -- ============================================================
+-- CREATE TABLE IF NOT EXISTS achievements (
+--   id                 BIGINT PRIMARY KEY AUTO_INCREMENT,
+--   ach_key            VARCHAR(48)  NOT NULL COMMENT '成就标识，如 ach_checkin_1',
+--   name               VARCHAR(40)  NOT NULL COMMENT '成就名',
+--   category           VARCHAR(20)  NOT NULL COMMENT 'checkin/publish/complete/team/rating/gossip/invite/complaint/meta',
+--   description        VARCHAR(200) NOT NULL COMMENT '条件描述（前端展示）',
+--   cond_type          VARCHAR(32)  NOT NULL COMMENT '判定类型',
+--   cond_value         INT          NOT NULL COMMENT '阈值',
+--   reward_effect_key  VARCHAR(64)  NULL COMMENT '奖励特效 key（deco 类名）',
+--   reward_effect_slot VARCHAR(16)  NULL COMMENT '特效槽位 aura/cloak/outfit/frame/charm/skin',
+--   reward_title_key   VARCHAR(48)  NULL COMMENT '奖励称号 key',
+--   sort_order         INT NOT NULL DEFAULT 0,
+--   enabled            TINYINT NOT NULL DEFAULT 1 COMMENT '1启用 0停用',
+--   created_at         DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+--   UNIQUE KEY uk_ach_key (ach_key),
+--   KEY idx_cat_sort (category, sort_order, enabled)
+-- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='成就定义';
+
+-- -- ============================================================
+-- -- 3. 用户成就解锁记录
+-- -- ============================================================
+-- CREATE TABLE IF NOT EXISTS user_achievements (
+--   id          BIGINT PRIMARY KEY AUTO_INCREMENT,
+--   user_id     BIGINT NOT NULL,
+--   ach_id      BIGINT NOT NULL,
+--   unlocked_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+--   is_read     TINYINT  NOT NULL DEFAULT 0 COMMENT '0未读 1已查看解锁弹窗',
+--   UNIQUE KEY uk_user_ach (user_id, ach_id) COMMENT '幂等：同一用户同一成就只能解锁一次',
+--   KEY idx_user_unread (user_id, is_read),
+--   CONSTRAINT fk_ua_user FOREIGN KEY (user_id) REFERENCES users(id),
+--   CONSTRAINT fk_ua_ach  FOREIGN KEY (ach_id)  REFERENCES achievements(id)
+-- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户成就解锁记录';
+
+-- -- ============================================================
+-- -- 4. 用户当前穿戴（7 槽位）
+-- -- ============================================================
+-- CREATE TABLE IF NOT EXISTS user_equip (
+--   user_id    BIGINT PRIMARY KEY,
+--   aura_key   VARCHAR(64) NULL COMMENT '光环',
+--   cloak_key  VARCHAR(64) NULL COMMENT '披风',
+--   outfit_key VARCHAR(64) NULL COMMENT '服装',
+--   frame_key  VARCHAR(64) NULL COMMENT '边框',
+--   charm_key  VARCHAR(64) NULL COMMENT '挂件',
+--   title_key  VARCHAR(48) NULL COMMENT '称号',
+--   skin_key   VARCHAR(64) NULL COMMENT '调色皮肤',
+--   updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+--   CONSTRAINT fk_ue_user FOREIGN KEY (user_id) REFERENCES users(id)
+-- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户当前穿戴的装扮（7 槽位，存 key）';
+
+-- -- ============================================================
+-- -- 5. 种子数据：称号（24 条）
+-- -- ============================================================
+-- INSERT INTO titles (title_key,name,style_class,rarity,sort_order) VALUES
+-- ('t-newbie','早起的蛋','title-plain','N',10),
+-- ('t-tasker','任务达人','title-plain','N',20),
+-- ('t-buddy','靠谱搭子','title-plain','N',30),
+-- ('t-sharp','一针见血','title-plain','N',40),
+-- ('t-guide','引路人','title-plain','N',50),
+-- ('t-frank','有话直说','title-plain','N',60),
+-- ('t-diligent','勤勉不辍','title-gold','R',110),
+-- ('t-lord','一方诸侯','title-gold','R',120),
+-- ('t-worker','黄金打工人','title-gold','R',130),
+-- ('t-goldsign','金字招牌','title-gold','R',140),
+-- ('t-steady','雷打不动','title-neon','SR',210),
+-- ('t-mentor','桃李满门','title-neon','SR',220),
+-- ('t-core','团队核心','title-neon','SR',230),
+-- ('t-partner','最佳拍档','title-neon','SR',240),
+-- ('t-brain','智囊','title-neon','SR',250),
+-- ('t-model','劳模蛋','title-flame','SSR',310),
+-- ('t-allround','全能蛋','title-flame','SSR',320),
+-- ('t-hexa','六边形蛋','title-flame','SSR',330),
+-- ('t-star','星辰不眠','title-holo','UR',410),
+-- ('t-legend','传奇蛋','title-holo','UR',420),
+-- ('t-acclaim','众望所归','title-holo','UR',430),
+-- ('t-genius','智多星','title-holo','UR',440),
+-- ('t-network','人脉王','title-holo','UR',450),
+-- ('t-veteran','元老','title-holo','UR',460)
+-- ON DUPLICATE KEY UPDATE
+--   name=VALUES(name), style_class=VALUES(style_class), rarity=VALUES(rarity), sort_order=VALUES(sort_order);
+
+-- -- ============================================================
+-- -- 6. 种子数据：成就（30 条）
+-- -- ============================================================
+-- INSERT INTO achievements (ach_key,name,category,description,cond_type,cond_value,reward_effect_key,reward_effect_slot,reward_title_key,sort_order) VALUES
+-- ('ach_checkin_1','初来乍到','checkin','累计签到 1 天','checkin_total',1,'a-moon','aura',NULL,10),
+-- ('ach_checkin_3','早起的蛋','checkin','累计签到 3 天','checkin_total',3,'f-cloud','frame','t-newbie',20),
+-- ('ach_checkin_streak_7','小有坚持','checkin','连续签到 7 天','checkin_streak',7,'ch-cap','charm',NULL,30),
+-- ('ach_checkin_15','勤勉不辍','checkin','累计签到 15 天','checkin_total',15,'of-scarf','outfit','t-diligent',40),
+-- ('ach_checkin_streak_30','雷打不动','checkin','连续签到 30 天','checkin_streak',30,'a-thunder','aura','t-steady',50),
+-- ('ach_checkin_100','星辰不眠','checkin','累计签到 100 天','checkin_total',100,'a-cosmos','aura','t-star',60),
+-- ('ach_publish_1','初出茅庐','publish','发布第 1 个任务','publish_count',1,'cl-cloth','cloak',NULL,110),
+-- ('ach_publish_5','任务达人','publish','累计发布 5 个任务','publish_count',5,'ch-bolt','charm','t-tasker',120),
+-- ('ach_publish_15','一方诸侯','publish','累计发布 15 个任务','publish_count',15,'f-flow','frame','t-lord',130),
+-- ('ach_publish_30','桃李满门','publish','累计发布 30 个任务','publish_count',30,'cl-dragon','cloak','t-mentor',140),
+-- ('ach_complete_1','热心肠','complete','完成第 1 个任务','complete_count',1,'of-uniform','outfit',NULL,210),
+-- ('ach_complete_5','靠谱搭子','complete','累计完成 5 个任务','complete_count',5,'ch-cat','charm','t-buddy',220),
+-- ('ach_complete_15','黄金打工人','complete','累计完成 15 个任务','complete_count',15,'of-armor','outfit','t-worker',230),
+-- ('ach_complete_30','劳模蛋','complete','累计完成 30 个任务','complete_count',30,'cl-flame','cloak','t-model',240),
+-- ('ach_complete_60','传奇蛋','complete','累计完成 60 个任务','complete_count',60,'of-rune','outfit','t-legend',250),
+-- ('ach_team_1','并肩作战','team','首次组队完成','team_count',1,'cl-feather','cloak',NULL,310),
+-- ('ach_team_5','团队核心','team','组队完成 5 次','team_count',5,'ch-wing','charm','t-core',320),
+-- ('ach_team_10','最佳拍档','team','组队完成 10 次','team_count',10,'sk-ice','skin','t-partner',330),
+-- ('ach_rating_five_1','好评如潮','rating','首次收到 5 星评价','rating_five_count',1,'sk-flame','skin',NULL,410),
+-- ('ach_rating_five_10','金字招牌','rating','累计收到 10 条 5 星评价','rating_five_count',10,NULL,NULL,'t-goldsign',420),
+-- ('ach_rating_quality','众望所归','rating','口碑均分 4.8 以上且评价数达 20','rating_quality',20,'f-star','frame','t-acclaim',430),
+-- ('ach_gossip_1','一针见血','gossip','首次回答被采纳','gossip_adopted_count',1,'of-lab','outfit','t-sharp',510),
+-- ('ach_gossip_10','智囊','gossip','累计被采纳 10 次','gossip_adopted_count',10,'a-ember','aura','t-brain',520),
+-- ('ach_gossip_30','蛋总智多星','gossip','累计被采纳 30 次','gossip_adopted_count',30,'cl-galaxy','cloak','t-genius',530),
+-- ('ach_invite_1','引路人','invite','成功邀请 1 位好友','invite_count',1,'f-rainbow','frame',NULL,610),
+-- ('ach_invite_5','人脉王','invite','成功邀请 5 位好友','invite_count',5,'ch-crown','charm','t-network',620),
+-- ('ach_complaint_1','有话直说','complaint','首次参与大学吐槽','complaint_count',1,'sk-night','skin','t-frank',710),
+-- ('ach_meta_cat_4','全能蛋','meta','在 4 个不同分类中达成成就','meta_category_count',4,'f-dragon','frame','t-allround',810),
+-- ('ach_meta_ach_20','六边形蛋','meta','累计解锁 20 个成就','meta_ach_count',20,NULL,NULL,'t-hexa',820),
+-- ('ach_meta_days_365','元老','meta','注册满 365 天','register_days',365,'sk-gold','skin','t-veteran',830)
+-- ON DUPLICATE KEY UPDATE
+--   name=VALUES(name), category=VALUES(category), description=VALUES(description),
+--   cond_type=VALUES(cond_type),
+--   reward_effect_key=VALUES(reward_effect_key), reward_effect_slot=VALUES(reward_effect_slot),
+--   reward_title_key=VALUES(reward_title_key);
+-- -- 保留后台调整的 enabled / cond_value / sort_order，重跑迁移不覆盖运营配置。
+
+-- -- ============================================================
+-- -- 验证
+-- -- ============================================================
+-- SELECT '=== 成就系统建表完成 ===' AS info;
+-- SELECT COUNT(*) AS titles_count FROM titles;
+-- SELECT COUNT(*) AS achievements_count FROM achievements;

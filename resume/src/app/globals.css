@@ -1,0 +1,124 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #fafaf9;
+  --surface: #f1f1f1;
+  --accent: #ea580c;
+  --accent-light: rgba(234, 88, 12, 0.1);
+  --success: #0d9488;
+  --border: #e7e5e4;
+  --text-primary: #292524;
+  --text-secondary: #78716c;
+  --text-muted: #a8a29e;
+  --white: #ffffff;
+  
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 100px;
+}
+
+body {
+  background: var(--background);
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  overflow: hidden;
+}
+
+/* 简单的滚动条美化 */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 10px;
+}
+
+/* --- 站内弹窗：遮罩淡入 + 面板轻微上浮（原生 CSS，不依赖动画插件） --- */
+@keyframes dialog-backdrop-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes dialog-panel-in {
+  from { opacity: 0; transform: translateY(8px) scale(0.97); }
+  to   { opacity: 1; transform: none; }
+}
+.dialog-backdrop {
+  animation: dialog-backdrop-in 0.18s ease-out both;
+}
+.dialog-panel {
+  animation: dialog-panel-in 0.24s cubic-bezier(0.22, 0.8, 0.3, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .dialog-backdrop,
+  .dialog-panel {
+    animation-duration: 0.001ms;
+  }
+}
+@media print {
+  .dialog-backdrop,
+  .dialog-panel {
+    display: none !important;
+  }
+}
+
+/* --- 移动端：改用页面滚动，简历预览等比缩小到一屏宽 --- */
+@media screen and (max-width: 767px) {
+  body {
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  html,
+  body {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .resume-canvas-fit {
+    zoom: 0.58;
+  }
+}
+
+/* --- 核心打印/导出 PDF 样式 --- */
+@media print {
+  /* 隐藏所有不需要打印的元素 */
+  aside, 
+  section:first-child, 
+  button, 
+  .no-print {
+    display: none !important;
+  }
+
+  /* 重置 body 和 main 布局 */
+  body, html, main {
+    height: auto !important;
+    overflow: visible !important;
+    background: white !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* 强制简历预览容器居中并移除阴影 */
+  .flex-1 {
+    display: block !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* 设置 A4 纸张大小和页边距 */
+  @page {
+    size: A4;
+    margin: 0;
+  }
+
+  /* 让简历内容铺满打印页 */
+  .w-\[595px\] {
+    width: 100% !important;
+    min-height: 100vh !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    padding: 40px !important; /* 打印时的内边距 */
+  }
+}

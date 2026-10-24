@@ -1,0 +1,184 @@
+/* ============================================================
+   广场三页（技能变现 / 组队共创 / 求助中心）· 移动端改版样式
+
+   引入位置：growth-schoolv3.html 的 </style> 之后（head 末尾）。
+   必须晚于主样式加载 —— 主文件里的移动端规则特异性较高
+   （:is(#page-plaza,…) .plaza-banner 这类），这里靠「同特异性后加载者胜」
+   覆盖，尽量不使用 !important。
+
+   生效范围：主体规则在 @media(max-width:768px) 内，web 端版面不受影响；
+   文件末尾两条是 T4 的连带改动（底栏红点、我的信息页顶栏补的铃铛），已单独标注。
+
+   来源：local-only/任务广场原型.html 的「本次改版」
+     · 横幅精简：隐藏「蛋蛋币余额 / 经验值 / 发布按钮」一行，只留功能说明 + 技能 chip
+     · 顶栏整行去掉（原型里的 T4）：三个按钮各有去处，见下方「一之二」
+     · 任务卡由单栏改双栏
+     · 卡片去掉认领进度条、人数靠右（结构改动在主文件 buildApiTaskCard）
+     · 「共 N 个任务」并入筛选行最右（结构改动在主文件的三处 filter-row）
+   ============================================================ */
+
+/* 计数行：节点随改版从独立一行挪进了 .filter-row（放在搜索框之后），这里让它贴行最右、不换行。
+   margin-left:auto 而不是只靠 .filter-row 里那个 flex:1 占位块 ——
+   窄屏（≤390）一行装不下时会折行，自动外边距保证折行后仍贴在那一行的最右。
+   （不在媒体查询内：桌面端筛选行同样有这个位置，只是字号保持 13px） */
+.plaza-count{font-size:13px;color:var(--muted);flex:none;white-space:nowrap;margin-left:auto}
+
+/* 筛选行的 chip 分组：把 4 个状态 chip 包一层，好让它们整体在窄屏内部横滑、
+   而不是各自换行（见下方 ≤768px 的 flex:1 1 0）。
+   web 端不加 flex 约束，行为与改前一致（这一组本来就是一行）。 */
+.chip-group{display:flex;align-items:center;gap:8px;flex-wrap:nowrap}
+
+/* 分类下拉：只在移动端出现（胶囊带在 ≤768px 隐藏、分类改由它承担）。
+   web 端不显示 —— 桌面有横向空间摆开 7 个分类，用下拉反而多一次点击。 */
+.cat-select{display:none}
+
+/* 横幅里的快捷动作条（每日签到 / 新手指引）：只在移动端显示。
+   web 端入口一个不少（侧栏「每日签到」+ 广场页顶栏「📖 新手指引」），
+   在横幅里再出现一遍就是重复入口。只有技能变现页的横幅带这条动作条。
+   （display:grid 在下方媒体查询里；不能反过来写，否则移动端会被这条 base 规则压住） */
+.banner-quick{display:none}
+
+@media(max-width:768px){
+
+  /* ---------- 一、横幅精简 ----------
+     只做隐藏，不删 DOM：#plazaPoints / #plazaExp 等节点被主脚本无兜底地赋值
+     （刷新用户信息那段 document.getElementById('plazaPoints').textContent = USER.points，
+     没有 null 判断），删节点会抛 TypeError 并中断后面的昵称 / 账号卡刷新；
+     tests/daily-checkin*.browser.js 也直接断言这些节点的文本。 */
+  :is(#page-plaza,#page-teamplaza,#page-helpplaza) .plaza-banner .badges{display:none}
+  /* 余额那一行没了，说明文字不再需要下外边距（横幅自身 gap 负责与 chip 行的间距） */
+  :is(#page-plaza,#page-teamplaza,#page-helpplaza) .plaza-banner .banner-text p{margin-bottom:0}
+
+  /* ---------- 一之一、横幅里的快捷动作条（每日签到 / 新手指引）----------
+     只有技能变现页的横幅带这一条（结构在主文件 .banner-quick）。
+     两个入口原先都在「我的信息」页（签到卡 + 新手指引行），要先离开广场页才点得到；
+     收到横幅后从广场页一次点击即可。位置在 .banner-text 内、.badges 之外 ——
+     .badges 在移动端整行隐藏（见上一节），放进去会被连带藏掉。
+     签到按钮的显隐由 JS 的 refreshCheckinStatus() 统一控制（游客 / 管理员不可见），
+     这里只管移动端版式与配色。
+     间距：p 的下外边距在移动端已归零，动作条的 margin-top 与横幅自身 gap 一致（12px）。
+     用 flex 而不是 grid：游客态下签到按钮是 display:none（仅学生登录后显示，见下），
+     此时动作条只剩「新手指引」一项 —— grid 的 1.25fr / 1fr 会让它只占第一列、右边空一块，
+     flex 的 flex:1 则会让剩下的那一项自己铺满整行。 */
+  .banner-quick{display:flex;gap:8px;margin-top:12px}
+  /* 深蓝底上签到用与标题同族的金色实心（表达「这一条带奖励」）；
+     侧栏那套紫蓝渐变在这个底子上对比不足，故单独覆盖。
+     flex:1.25 比旁边的指引略宽（basis 0 会盖掉 base 的 width:100% 与 flex-shrink:0）。 */
+  .banner-quick .checkin-btn{flex:1.25 1 0;height:40px;background:linear-gradient(135deg,#FFD978 0%,#F0B23C 100%);
+    color:#3A2D0B;box-shadow:0 2px 10px rgba(240,178,60,.32);font-weight:700}
+  /* body.side-compact（视口高 < 640px，由 JS 切换）下 base 会把 .checkin-btn 压到 32px。
+     横幅里两个按钮成对出现，只压一个就会错位，所以这里保持 40px
+     （特异性要压过 body.side-compact .checkin-btn 的 0,2,1）。 */
+  body.side-compact .banner-quick .checkin-btn{height:40px}
+  /* base 的 ::before 是紫色半透明渐变，压在金色上会偏色，换成白色微光 */
+  .banner-quick .checkin-btn::before{background:linear-gradient(135deg,rgba(255,255,255,.22),rgba(255,255,255,.04))}
+  /* 下面两条必须写：hover / checked 在 base 里是同特异性（.checkin-btn:hover / .checkin-btn.checked），
+     本文件晚加载会盖掉它们，不显式覆盖就会「悬停与已签到都变回金色」 */
+  .banner-quick .checkin-btn:hover{background:linear-gradient(135deg,#FFE28F 0%,#F5BE55 100%);
+    box-shadow:0 4px 16px rgba(240,178,60,.42)}
+  .banner-quick .checkin-btn.checked,
+  .banner-quick .checkin-btn.checked:hover{background:linear-gradient(135deg,#2D7D4F 0%,#4A9A6A 100%);
+    color:#fff;box-shadow:0 2px 8px rgba(45,125,79,.3)}
+  .banner-quick .bq-guide{flex:1 1 0;display:flex;align-items:center;justify-content:center;gap:5px;height:40px;
+    border-radius:12px;border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.10);
+    color:rgba(255,255,255,.92);font-size:12.5px;font-weight:600;font-family:inherit;cursor:pointer;
+    white-space:nowrap;transition:background .2s}
+  .banner-quick .bq-guide:hover{background:rgba(255,255,255,.18)}
+
+  /* ---------- 一之二、顶栏整行去掉（原型 T4）----------
+     理由：顶栏那三个按钮（📖 新手指引 / 🎉 邀请赚币 / 🔔 铃铛）都不是本页功能，
+     却占着页面最顶、视觉权重最大（面包屑隐藏后更明显）。移动端整行去掉，
+     页面直接从吸顶二级切换开始；web 端（>768px）保持原样，桌面入口一个不少。
+     三个按钮的去处：
+       · 邀请赚币 → 「我的信息」页原有的「邀请好友赚蛋蛋币」行，无需改动
+       · 新手指引 → 任务广场横幅的动作条里有一个入口（见上方「一之一」）
+       · 通知     → 「我的信息」页顶栏补了铃铛；底栏「我的信息」格挂未读红点（见下方四） */
+  :is(#page-plaza,#page-teamplaza,#page-helpplaza) .topbar{display:none}
+
+  /* ---------- 一之三、分类从「7 个胶囊带」收成筛选行里的下拉 ----------
+     移动端：隐藏胶囊带（#bannerEggs / #helpBannerEggs / #teamBannerEggs），
+     分类改由筛选行里的 .cat-select 下拉承担（节点与逻辑在主文件，见 initCatSelects()）。
+     ⚠️ 只隐藏这三个：八卦页的 #gossipFilterEggs 用的是同一套 .filter-eggs 类名，不能连带隐藏。
+     web 端（>768px）胶囊带照旧、下拉不显示（基础规则里 .cat-select{display:none}），
+     桌面有横向空间摆开 7 个分类，没必要让它多一次点击。 */
+  :is(#bannerEggs,#helpBannerEggs,#teamBannerEggs){display:none}
+  .cat-select{display:block;position:relative;flex:none;margin-left:auto}
+  .cat-btn{display:flex;align-items:center;gap:4px;padding:6px 10px;border-radius:12px;background:#fff;
+    border:1px solid var(--border);font-size:12px;font-weight:600;color:var(--ink2);cursor:pointer;white-space:nowrap}
+  .cat-btn .cat-emoji{font-size:13px;line-height:1}
+  .cat-btn .cat-caret{width:14px;height:14px;color:var(--muted);flex:none}
+  .cat-select.open .cat-btn{border-color:var(--primary);color:var(--primary)}
+  .cat-menu{position:absolute;top:calc(100% + 6px);right:0;z-index:14;display:none;flex-direction:column;gap:2px;
+    background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow-lg);padding:6px;min-width:152px}
+  .cat-select.open .cat-menu{display:flex}
+  .cat-menu .cat-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;font-size:12.5px;
+    font-weight:600;color:var(--ink2);cursor:pointer;white-space:nowrap}
+  .cat-menu .cat-item:hover{background:var(--bg)}
+  .cat-menu .cat-item.active{background:var(--bg2);color:var(--primary)}
+  .cat-menu .cat-item .dot{width:8px;height:8px;border-radius:50%;background:var(--ec,#888);flex:none}
+
+  /* ---------- 一之四、筛选行结构：chip + 分类强制一行，搜索独占一行 ----------
+     chip 组用 flex:1 1 0（basis 0！）+ nowrap + 内部横向滚动：
+     basis 留 auto 时，换行算法会先按 max-content 判断「chip 组 + 分类」放不下，
+     于是把分类挤到第二行；basis 0 才会让 chip 组自己收缩，分类始终留在同一行。
+     实测：320 宽 chip 组要横滑约 18px（4 个 chip 222px、可用 204px），
+     360 及以上都放得下（chip 组可用 244px+）。
+     搜索 flex-basis 100% = 无论多宽都独占一行。
+     ⚠️ 必须配 max-width:none!important：搜索框上有内联 style="max-width:240px"，
+     内联样式会把「hypothetical main size」压到 240 —— 于是 390 宽以下它又能跟 chip/分类挤一行，
+     顺带把分类下拉顶到行中间（实测菜单左边跑到 -26px）。内联样式只能用 !important 覆盖
+     （与主文件里榜单页移动端覆盖内联样式同一做法）。
+     同时隐藏 .filter-spacer（原来是它把搜索顶到右边）：它会和 chip 组一起抢剩余空间，
+     把「分类」顶到行中间；移动端分类靠自己的 margin-left:auto 贴右。web 端仍需要它。 */
+  .chip-group{flex:1 1 0;min-width:0;overflow-x:auto;scrollbar-width:none}
+  .chip-group::-webkit-scrollbar{display:none}
+  .chip-group .chip{flex:none}
+  .filter-row .search{flex:0 0 100%;max-width:none!important}
+  .filter-row .filter-spacer{display:none}
+
+  /* ---------- 二、列表改双栏 ----------
+     覆盖主文件 #plazaUserList{grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}：
+     390 宽下 auto-fill 只放得下 1 列，这里固定 2 列。
+     用 minmax(0,1fr) 而不是 1fr：允许列收缩，否则 nowrap 内容会把列撑破。 */
+  :is(#plazaUserList,#helpUserList,#teamUserList){grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+
+  /* ---------- 三、双栏后的窄宽度适配 ----------
+     列宽约 170px（390）/ 143px（320），卡内 12px 内边距后内容宽只剩 120~146px；
+     .head-top 里的金额、.foot-left 里的人数是 nowrap 的，必须允许换行，
+     否则会顶出卡片，再被 .main 的 overflow-x:clip 直接裁掉（原型实测 320 宽溢出 29px）。 */
+  :is(#plazaUserList,#helpUserList,#teamUserList) .plaza-card{padding:12px;gap:6px}
+  :is(#plazaUserList,#helpUserList,#teamUserList) .plaza-card .head-top{flex-wrap:wrap}
+  :is(#plazaUserList,#helpUserList,#teamUserList) .plaza-card .foot-left{flex-wrap:wrap}
+  /* 认领进度条已移除，人数（0/1、已入选 2/4）单独占满这一行并靠卡片最右 */
+  :is(#plazaUserList,#helpUserList,#teamUserList) .plaza-card .foot .claim-info{justify-content:flex-end}
+
+  /* ---------- 四、T4 的连带改动（不在三个广场页内，但都是这次决策的直接后果）---------- */
+
+  /* 4.1 底栏「我的信息」格上的未读通知红点。
+     复用 .bell-badge：updateNotifBadge() 会遍历页面所有 .bell-badge 写数字并切 .hide 类，
+     所以这里零 JS 改动。该格在移动端是底栏「我的」，桌面端由侧栏的同一项承担红点，
+     不会在侧栏露出来；位置对齐「我的任务」格的 .task-pending-badge（格子右上角）。 */
+  .sidebar .nav-item[data-page="mine"]{position:relative}
+  .sidebar .nav-item[data-page="mine"] .bell-badge{top:0;right:0;min-width:14px;height:14px;
+    font-size:9px;line-height:14px;padding:0 4px}
+
+  /* 4.2（原「我的信息」页的新手指引行）已移动到任务广场横幅的动作条里，见上方「一之一」 */
+
+  /* 4.3 「我的信息」页顶栏新补的铃铛：通知面板在移动端改成贴边浮层。
+     基础样式是 position:absolute;width:360px，360 宽机型会横向溢出；
+     这条与主文件里「我的任务」页的 .task-notifications .notif-panel 保持同款做法。 */
+  .profile-notifications .notif-panel{position:fixed;left:12px;right:12px;top:72px;width:auto;
+    max-height:calc(100dvh - 160px);overflow-y:auto}
+
+  /* ---------- 五、任务广场左右滑切换的换页动效 ----------
+     手势逻辑在 js/plaza-swipe.js（只调 go()），这里只负责「滑过去」的视觉反馈：
+     新页面轻微滑入 + 透明度渐显。只动 opacity/translateX，不碰 sticky 的二级切换。
+     实测只在 ≤768px 会加这两个类，web 端不受影响；reduced-motion 下关掉。 */
+  @keyframes plazaSlideInL{from{opacity:.55;transform:translateX(16px)}to{opacity:1;transform:none}}
+  @keyframes plazaSlideInR{from{opacity:.55;transform:translateX(-16px)}to{opacity:1;transform:none}}
+  .plaza-swipe-l{animation:plazaSlideInL .22s ease-out}
+  .plaza-swipe-r{animation:plazaSlideInR .22s ease-out}
+  @media(prefers-reduced-motion:reduce){
+    .plaza-swipe-l,.plaza-swipe-r{animation:none}
+  }
+}

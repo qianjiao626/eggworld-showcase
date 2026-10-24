@@ -1,0 +1,34 @@
+[
+  {
+    "name": "河北环境工程学院",
+    "campus": "",
+    "building": "",
+    "scope": "页面标题存在漏字但正文明确对应河北环境工程学院；原页未逐栋列明；当前分配及具体配置年份待核实；第三方资料仅供参考",
+    "occupancy": "6人间、8人间",
+    "bedType": "",
+    "bathroom": "无独立卫生间；公共洗衣房",
+    "description": "河北环境工程学院公开页面称宿舍为6人间或8人间，暂无独立卫生间和空调，并设有公共洗衣房。页面未逐栋核实，当前分配待核实。",
+    "sourceType": "third_party",
+    "sourceTitle": "大学生必备网·河北环境工程学院宿舍条件（页面标题漏字，正文校名一致）",
+    "sourceUrl": "https://www.dxsbb.com/news/125179.html",
+    "sourceYear": 2024,
+    "sourceYearLabel": "页面更新于2024-1-29；宿舍配置年份未注明；页面标题漏字但正文校名一致",
+    "accessedAt": "2026-09-25"
+  },
+  {
+    "name": "福建技术师范学院",
+    "campus": "",
+    "building": "",
+    "scope": "页面标题存在漏字但正文明确对应福建技术师范学院；原页未逐栋列明；当前分配及具体配置年份待核实；第三方资料仅供参考",
+    "occupancy": "4至6人间",
+    "bedType": "",
+    "bathroom": "独立卫生间、独立淋浴间",
+    "description": "福建技术师范学院公开页面称绝大部分学生宿舍为4至6人间，宿舍内分别设有独立卫生间、洗浴间和独立阳台，统一配有空调及热水器或电风扇。页面未逐栋核实，当前分配待核实。",
+    "sourceType": "third_party",
+    "sourceTitle": "大学生必备网·福建技术师范学院宿舍条件（页面标题漏字，正文校名一致）",
+    "sourceUrl": "https://www.dxsbb.com/news/123237.html",
+    "sourceYear": 2023,
+    "sourceYearLabel": "页面更新于2023-10-12；宿舍配置年份未注明；页面标题漏字但正文校名一致",
+    "accessedAt": "2026-09-25"
+  }
+]

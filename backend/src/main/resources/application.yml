@@ -1,0 +1,101 @@
+# ===== 服务配置 =====
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 26MB
+  # ===== 应用信息 =====
+  application:
+    name: eggworld-backend
+
+  # ===== 数据源：MySQL 8.x =====
+  datasource:
+    url: jdbc:mysql://localhost:3306/eggworld?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    # 本地默认 root/root；线上由未入库的 application-prod.yml 或环境变量 DB_USERNAME / DB_PASSWORD 覆盖
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:root}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+# ===== MyBatis-Plus =====
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true   # 蛇形命名 → 驼峰
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl  # 开发期打印 SQL
+  global-config:
+    db-config:
+      logic-delete-field: deleted   # 预留逻辑删除字段
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+# ===== JWT 自定义配置 =====
+eggworld:
+  # ===== 功能开关（应急回滚止血：改这里 + 重启服务即可切回旧流程，不必回滚代码）=====
+  # ⚠️ 本文件在 jar 内，线上应急改法见 releases/迁移文档/2026-09-26_任务绑定群聊.md 第八节
+  #    （服务进程工作目录下（systemd WorkingDirectory）的 config/application.yml 优先级更高，
+  #     或给 ExecStart 加 -Deggworld.features.task-auto-group=false；两种做法都需 systemctl restart eggworld）
+  features:
+    # 教学/组队任务「上线自动建群 + 认领即入队」；置 false 回到「报名进候选池 → 发布者配对」旧流程
+    task-auto-group: true
+  dormitory:
+    upload-dir: ${EGGWORLD_UPLOAD_DIR:/home/xiaos/eggworld/uploads/dormitory}
+  task-proof:
+    # 任务「技能证明图片」落盘目录（发布任务选填，任务详情页展示）；
+    # 线上需先 mkdir -p /home/xiaos/eggworld/uploads/task-proof，否则上传接口报 400
+    upload-dir: ${EGGWORLD_TASK_PROOF_UPLOAD_DIR:/home/xiaos/eggworld/uploads/task-proof}
+  # ===== 大师兄简历（学生工坊 /rs/ 静态站的 AI 对标）=====
+  # 密钥只从环境变量或未入库的 config/application.yml 注入，禁止写入本文件；
+  # 为空时接口返回「专家系统未就绪」，不影响站点其它功能。
+  resume:
+    deepseek-key: ${DEEPSEEK_API_KEY:}
+    deepseek-url: https://api.deepseek.com/chat/completions
+    timeout-seconds: 60
+    # 一次深度对标扣多少蛋蛋币（预扣，AI 失败全额退款）；改动即生效，需重启
+    analyze-cost: 50
+  jwt:
+    secret: eggworld-secret-key-please-change-in-production-at-least-32-chars  # 生产环境务必更换，至少 32 字符
+    expire-days: 7                  # token 有效期 7 天
+  chat:
+    # ===== 聊天室在线奖励（挂机金币）=====
+    retention:
+      channel-days: 30              # 公共频道消息保留天数（2026-09-20 由 90 调整为 30）
+      direct-group-days: 30         # 私聊/群聊消息保留天数（2026-09-20 由 180 调整为 30）
+      batch-size: 1000              # 每批归档条数
+    online-reward:
+      enabled: true
+      interval-seconds: 120         # 每 120 秒发 1 币（= 每分钟 0.5 币）
+      max-gap-seconds: 300          # 两次心跳间隔超过 5 分钟不计时（防挂机）
+      online-cap-coins: 20          # 每日在线金币上限（方案 B：固定 20，与稀有度无关）
+      message-bonus-coins: 2        # 发言每条 +2 币
+      message-bonus-daily-limit: 20 # 每日前 20 条发言有效
+
+  # ===== 邮件：腾讯云邮件推送 SES（API 模板发信）=====
+  # 密钥与发信地址一律外部注入，禁止写入本文件
+  #   本地开发：application-local.yml（已 gitignore）或 -Dspring-boot.run.profiles=local
+  #   生产环境：application-prod.yml（未入库）
+  # 注意：SES 仅支持「模板发信」，模板需在控制台提交并审核通过（约 1 个工作日）
+  mail:
+    from-name: 蛋蛋世界                      # 发件人显示名，需与控制台发信地址的别名一致
+    from-address: ${SES_FROM_ADDRESS:}       # 发信地址，例：noreply@mail.example.com
+    notify-enabled: true                     # 通知类邮件总开关（邀请等；验证码不受影响）
+    code-expire-minutes: 5                   # 验证码有效期 5 分钟；改动时需同步 SES 模板正文里的有效期文案
+    code-resend-interval-seconds: 60         # 同邮箱 60 秒内不能重复发送
+    ses:
+      region: ap-guangzhou                   # SES 仅支持 ap-guangzhou / ap-hongkong
+      secret-id: ${SES_SECRET_ID:}           # 未配置时降级为「验证码打印日志」，不真发邮件
+      secret-key: ${SES_SECRET_KEY:}
+      connect-timeout-seconds: 5             # 防止 API 不可达时请求卡死
+      read-timeout-seconds: 5
+      # 各场景在控制台审核通过的模板 ID（key 与 MailScene 对应）；未配置该场景则不发信
+      templates:
+        verify-code: ${SES_TEMPLATE_VERIFY_CODE:0}
+        invite-task: ${SES_TEMPLATE_INVITE_TASK:0}
+        pairing-remind: ${SES_TEMPLATE_PAIRING_REMIND:0}
+
+logging:
+  level:
+    com.eggworld: debug              # 开发期打印业务日志

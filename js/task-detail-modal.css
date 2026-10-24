@@ -1,0 +1,86 @@
+/* ============================================================
+ * 蛋蛋世界 · 任务详情弹窗（点击任务卡片后弹出的 #taskDetailModal）样式
+ * 所属页面：growth-schoolv3.html
+ * 设计依据：TODO/任务详情弹窗原型.html
+ * 更新日期：2026-09-17
+ *
+ * 这里只放「任务详情弹窗」自己的东西：
+ *   1) 发布者名片：身份行 + 评分/点赞 + 擅长标签（五维等资料点「TA 的主页」看）
+ *   2) 窄屏（≤600px）压缩版式：关键事实一行 + 长文折叠 + 吸底主按钮
+ * 桌面端（>600px）其余版式仍写在主文件 <style> 里，未改动。
+ *
+ * 两点加载/优先级约定（改之前请先读）：
+ *   · 本文件在主文件内联 <style> 之前引入，所以 @container 里的选择器统一带
+ *     .task-detail-modal 前缀 —— 靠多一个类名盖过主文件里同名的两段式规则
+ *     （如 .task-detail-card .td-status），不依赖引入顺序。
+ *   · 窄屏规则全部以 .td-sheet 为作用域；该类由 js/task-detail-modal.js 在详情渲染后加上，
+ *     所以复用 .task-detail-card 的其他弹窗（重新发布 / 修改任务 / 反馈等）不受影响。
+ * ============================================================ */
+
+/* 容器查询的容器：position:fixed;inset:0，行内尺寸=视口宽 → 等价于「手机宽度」，
+   作用域仍限制在这个组件内（PROJECT_RULES.md 2.7 第 2 条） */
+.task-detail-modal{container-type:inline-size;container-name:tdm}
+
+/* 窄屏专属元素：桌面端一律不显示
+   （.td-tags-mobile = 我的任务视角的标签行；.td-rule = 钱规则提示条、
+    .td-facts/.td-status-amount = 关键事实与吸底摘要 —— 桌面端信息网格里已有这些信息，不重复） */
+.td-facts,.td-status-amount,.td-fold-more,.td-tags-mobile,.td-rule{display:none}
+
+/* ---------- 发布者名片（桌面端与窄屏共用同一套版式） ----------
+   五维属性和其他资料不在弹窗里展开，点右侧「TA 的主页」看 */
+.task-detail-card .td-pub{display:block;padding:12px 0;margin-bottom:16px;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.task-detail-card .td-pub-row{display:flex;align-items:center;gap:10px}
+.task-detail-card .td-pub-avatar-wrap{cursor:pointer;transition:transform .2s ease;flex-shrink:0}
+.task-detail-card .td-pub-avatar-wrap:hover{transform:scale(1.05)}
+.task-detail-card .td-pub-main{flex:1;min-width:0}
+.task-detail-card .td-pub-name{display:flex;align-items:center;gap:6px;font-size:15px;font-weight:800;cursor:pointer;transition:color .2s ease;min-width:0}
+.task-detail-card .td-pub-name:hover{color:#6C5CE4}
+.task-detail-card .td-pub-lv{flex:none;font-size:10px;font-weight:700;color:#6C5CE4;background:#F2EFFB;border-radius:6px;padding:2px 6px}
+/* 学校行：详情里给全称、允许换行（广场卡片上被省略号截断） */
+.task-detail-card .td-pub-sub{display:block;font-size:12px;color:var(--muted);line-height:1.5;margin-top:3px;overflow-wrap:anywhere}
+.task-detail-card .td-pub-go{flex:none;font-size:12px;font-weight:700;color:var(--lilac);white-space:nowrap;cursor:pointer}
+/* 信息行：纯文字 + 竖线分隔，不做成一排小方块 */
+.task-detail-card .td-pub-line{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-top:10px;font-size:12px;color:var(--ink2);line-height:1.6}
+.task-detail-card .td-pub-line b{font-weight:800;color:var(--ink)}
+.task-detail-card .td-pub-line .m{color:var(--muted)}
+.task-detail-card .td-pub-line .lbl{color:var(--muted);font-weight:600}
+.task-detail-card .td-pub-line .sep{color:#D8D3C4}
+
+/* ---------- 窄屏压缩版式（≤600px） ---------- */
+@container tdm (max-width:600px){
+  /* 两侧各留 20px 空档，比桌面 560px 窄一圈；高度按内容自适应。
+     左右留白统一由卡片 padding 给（用「逐块 margin」会让生成的内联 width:100% 按钮横向溢出）；
+     吸顶头与吸底条用负 margin 撑满整宽，底部不留 padding 以免 sticky 条与屏幕底脱开 */
+  .task-detail-modal .task-detail-card.td-sheet{width:calc(100% - 40px);max-width:440px;max-height:86dvh;padding:0 16px;border-radius:18px;overscroll-behavior:contain}
+  .task-detail-modal .td-sheet>*:last-child:not(.td-status){margin-bottom:16px}
+  /* 吸顶头（标题行 + 标签行 + 关键事实）：底部一条分隔线把头部与正文分开，
+     与发布者名片的上下分隔线同色，整套“框”才统一 */
+  .task-detail-modal .td-sheet .td-head{position:sticky;top:0;z-index:3;background:#fff;margin:0 -16px;padding:12px 16px 12px;border-bottom:1px solid var(--border)}
+  .task-detail-modal .td-sheet .td-head-row{display:flex;align-items:flex-start;gap:10px}
+  .task-detail-modal .td-sheet .td-title{font-size:17px;line-height:1.42;flex:1;min-width:0;margin-bottom:0;padding-right:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .task-detail-modal .td-sheet .td-close{position:static;flex:none;width:30px;height:30px;border-radius:50%;background:#F4F1E8;font-size:15px}
+  .task-detail-modal .td-sheet .td-close:hover{background:#EDE9DF;color:var(--muted);transform:none}
+  .task-detail-modal .td-sheet .td-tags{margin:8px 0 0}
+  .task-detail-modal .td-sheet .td-tags-mobile{display:flex}
+  /* 关键事实一行：认领模式 / 人数靠左，截止倒计时靠右贴边。
+     钱不在这里重复（吸底条已有），也不做成一排小胶囊 */
+  .task-detail-modal .td-sheet .td-facts{display:flex;align-items:center;gap:10px;margin-top:8px;font-size:11.5px;color:var(--muted);line-height:1.5}
+  .task-detail-modal .td-sheet .td-facts .dl{margin-left:auto;color:var(--orange);font-weight:700;white-space:nowrap;text-align:right}
+  /* 6 格信息网格整块换成上面的关键事实（技能分类仍在标签行里） */
+  .task-detail-modal .td-sheet .td-info{display:none}
+  /* 小节间距：生成时写的是内联 margin-top:14px，窄屏收一档（内联样式需 !important，同 #profileStatChips 的既有做法） */
+  .task-detail-modal .td-sheet .td-section-title{margin-top:8px!important}
+  .task-detail-modal .td-sheet .td-desc,.task-detail-modal .td-sheet .td-req{margin-bottom:8px}
+  /* 长文默认折叠 4 行，点「展开全文」看全部 */
+  .task-detail-modal .td-sheet .td-foldable:not(.fold-open){display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+  .task-detail-modal .td-sheet .td-fold-more{display:block;padding:2px 0 0;background:none;border:none;color:var(--lilac);font-size:12px;font-weight:700;text-align:left}
+  /* 底部操作条吸底：主 CTA 常驻拇指区，左侧跟一条金额摘要 */
+  .task-detail-modal .td-sheet .td-status{position:sticky;bottom:0;z-index:3;justify-content:flex-start;gap:10px;margin:16px -16px 0;padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));background:#fff;border-top:1px solid #F1EDE2;box-shadow:0 -6px 18px rgba(27,42,74,.06)}
+  /* 钱规则提示条（按类型给资金口径，见 js/task-detail-modal.js 的 MONEY） */
+  .task-detail-modal .td-sheet .td-rule{display:block;font-size:12px;line-height:1.7;color:var(--ink2);background:var(--bg);border-radius:12px;padding:10px 12px}
+  /* 吸底金额摘要：大号金额 + 一行说明 */
+  .task-detail-modal .td-sheet .td-status-amount{display:block;flex:1;min-width:0;line-height:1.3;color:var(--ink2);overflow-wrap:anywhere}
+  .task-detail-modal .td-sheet .td-status-amount b{font-size:17px;font-weight:800;color:#8A6200}
+  .task-detail-modal .td-sheet .td-status-amount span{display:block;font-size:11px;color:var(--muted);margin-top:1px}
+  .task-detail-modal .td-sheet .td-status .btn{flex:none;max-width:64%;min-height:46px;height:auto;padding:10px 14px;font-size:15px;font-weight:800;border-radius:14px;white-space:normal;line-height:1.3;text-align:center}
+}

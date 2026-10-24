@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>蛋蛋世界 · 装扮系统效果预览 v3（含服装 / 披风）</title>
+<style>
+:root{--line:#2A3355;--ink:#EAF0FF;--ink2:#A9B6DC;--muted:#6C7BA6;--gold:#FFD54A}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  background:radial-gradient(circle at 50% 0%,#181F3C 0%,#0B1020 55%,#070A16 100%);
+  color:var(--ink);min-height:100vh;padding:34px 20px 70px}
+.wrap{max-width:1040px;margin:0 auto}
+h1{font-size:25px;font-weight:800;letter-spacing:.4px;
+  background:linear-gradient(100deg,#7C4DFF,#22D3EE,#F0ABFC,#FFD54A,#7C4DFF);
+  background-size:280% 100%;-webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;animation:shine 6s linear infinite}
+@keyframes shine{to{background-position:280% 0}}
+.sub{font-size:13px;color:var(--ink2);margin-top:10px;line-height:1.8}
+h2{font-size:15px;font-weight:700;margin:38px 0 16px;padding-left:11px;border-left:3px solid var(--gold);color:#fff}
+.card{background:linear-gradient(180deg,#141A2E,#111629);border:1px solid var(--line);border-radius:20px;padding:26px 22px}
+
+/* ===================== 装扮容器结构（7 层） ===================== */
+.egg-deco{position:relative;width:150px;height:150px;flex:none;display:grid;place-items:center;isolation:isolate}
+.egg-img{width:100%;height:100%;object-fit:cover;border-radius:50%;position:relative;z-index:5;background:#1B2340;display:block}
+.fx-core,.fx-rays,.fx-wave,.r-ring,.r-orbit,.fx-frame,.fx-charm,.fx-cloak,.fx-outfit,.fx-field{
+  position:absolute;border-radius:50%;pointer-events:none}
+.fx-field{inset:-32px;z-index:0}
+.fx-rays{inset:-64px;z-index:0}
+.fx-core{inset:-18px;z-index:1}
+.fx-wave{inset:-8px;z-index:2}
+.fx-cloak{inset:-46px;z-index:3;background-repeat:no-repeat;background-position:center;background-size:100% 100%}
+.r-ring{inset:-10px;z-index:4}
+.r-orbit{inset:-42px;z-index:4}
+.fx-outfit{inset:0;z-index:6;background-repeat:no-repeat;background-position:center 74%;background-size:42% auto}
+.fx-frame{inset:-3px;z-index:7}
+.fx-charm{right:-6px;bottom:-6px;width:44px;height:44px;z-index:8;background-size:contain;background-repeat:no-repeat;background-position:center}
+.egg-deco.breathe{animation:floatY 3.6s ease-in-out infinite}
+
+.r-orbit i{position:absolute;width:7px;height:7px;border-radius:50%;display:block}
+.r-orbit.o1{animation:spin 6s linear infinite}
+.r-orbit.o2{animation:spinRev 9s linear infinite}
+.r-orbit.o1 i:nth-child(1){left:calc(50% - 3.5px);top:-3.5px}
+.r-orbit.o1 i:nth-child(2){right:-3.5px;top:calc(50% - 3.5px)}
+.r-orbit.o1 i:nth-child(3){left:calc(50% - 3.5px);bottom:-3.5px}
+.r-orbit.o1 i:nth-child(4){left:-3.5px;top:calc(50% - 3.5px)}
+.r-orbit.o2 i:nth-child(1){left:calc(50% - 3.5px);top:-3.5px}
+.r-orbit.o2 i:nth-child(2){right:-3.5px;top:calc(50% - 3.5px)}
+.r-orbit.o2 i:nth-child(3){left:calc(50% - 3.5px);bottom:-3.5px}
+.r-orbit.o2 i:nth-child(4){left:-3.5px;top:calc(50% - 3.5px)}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes spinRev{to{transform:rotate(-360deg)}}
+@keyframes breathe{0%,100%{transform:scale(.9);opacity:.45}50%{transform:scale(1.12);opacity:1}}
+@keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+@keyframes twinkle{0%,100%{opacity:.25;transform:scale(.7)}50%{opacity:1;transform:scale(1.25)}}
+@keyframes wave{0%{transform:scale(.82);opacity:.95;border-width:3px}65%{opacity:.3}100%{transform:scale(1.85);opacity:0;border-width:1px}}
+@keyframes flicker{0%,100%{opacity:.85}42%{opacity:.35}47%{opacity:1}62%{opacity:.5}70%{opacity:.95}}
+@keyframes rise{0%{transform:translateY(14px) scale(.5);opacity:0}25%{opacity:1}100%{transform:translateY(-46px) scale(1.1);opacity:0}}
+@keyframes cloakPulse{0%,100%{transform:scale(1);opacity:.92}50%{transform:scale(1.045);opacity:1}}
+@keyframes cloakFlicker{0%,100%{opacity:1}45%{opacity:.72}52%{opacity:1}68%{opacity:.8}}
+
+/* ===================== 光环 ===================== */
+.a-moon .r-ring{background:conic-gradient(from 0deg,#8FB8FF,#E8F1FF,#4A7BD9,#B9D2FF,#8FB8FF);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 8px),#000 calc(100% - 7px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 8px),#000 calc(100% - 7px));
+  animation:spin 4.5s linear infinite}
+.a-moon .fx-core{background:radial-gradient(circle,rgba(120,170,255,.5),transparent 68%);animation:breathe 3.2s ease-in-out infinite}
+.a-moon .r-orbit.o1 i{background:#CFE1FF;box-shadow:0 0 10px 3px rgba(150,190,255,.85)}
+
+.a-thunder .r-ring{background:conic-gradient(from 0deg,#FFFFFF,#38BDF8,#818CF8,#FFFFFF,#0EA5E9,#FFFFFF);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 7px),#000 calc(100% - 6px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 7px),#000 calc(100% - 6px));
+  animation:spin 1.9s linear infinite,flicker 2.6s steps(1,end) infinite}
+.a-thunder .r-ring.r2{inset:-22px;background:conic-gradient(from 120deg,transparent 0 62%,#7DD3FC 72%,#FFFFFF 78%,transparent 88%);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#000 calc(100% - 2px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#000 calc(100% - 2px));
+  animation:spinRev 2.4s linear infinite}
+.a-thunder .fx-core{background:radial-gradient(circle,rgba(56,189,248,.55),transparent 70%);animation:breathe 1.5s ease-in-out infinite}
+.a-thunder .r-orbit.o1 i{background:#E0F2FE;box-shadow:0 0 12px 4px rgba(56,189,248,.95);animation:twinkle 1.3s ease-in-out infinite}
+.a-thunder .r-orbit.o2 i{background:#A5B4FC;box-shadow:0 0 10px 3px rgba(129,140,248,.9)}
+
+.a-ember .fx-rays{background:conic-gradient(from 0deg,
+  rgba(255,61,0,0) 0deg,rgba(255,110,0,.55) 5deg,rgba(255,61,0,0) 14deg,
+  rgba(255,179,0,0) 45deg,rgba(255,179,0,.5) 50deg,rgba(255,179,0,0) 60deg,
+  rgba(255,232,102,0) 90deg,rgba(255,232,102,.45) 95deg,rgba(255,232,102,0) 105deg,
+  rgba(255,61,0,0) 135deg,rgba(255,110,0,.55) 140deg,rgba(255,61,0,0) 150deg,
+  rgba(255,179,0,0) 180deg,rgba(255,179,0,.5) 185deg,rgba(255,179,0,0) 195deg,
+  rgba(255,232,102,0) 225deg,rgba(255,232,102,.45) 230deg,rgba(255,232,102,0) 240deg,
+  rgba(255,61,0,0) 270deg,rgba(255,110,0,.55) 275deg,rgba(255,61,0,0) 285deg,
+  rgba(255,179,0,0) 315deg,rgba(255,179,0,.5) 320deg,rgba(255,179,0,0) 330deg);
+  animation:spin 11s linear infinite;opacity:.85}
+.a-ember .r-ring{background:conic-gradient(from 0deg,#FFE066,#FF6B00,#FF2D00,#FFB300,#FFE066);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 9px),#000 calc(100% - 8px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 9px),#000 calc(100% - 8px));
+  animation:spin 3.2s linear infinite}
+.a-ember .r-ring.r2{inset:-24px;background:conic-gradient(from 200deg,transparent 0 55%,#FF8A00 68%,#FFE066 76%,transparent 90%);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 4px),#000 calc(100% - 3px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 4px),#000 calc(100% - 3px));
+  animation:spinRev 4.6s linear infinite}
+.a-ember .fx-core{background:radial-gradient(circle,rgba(255,110,0,.6),rgba(255,45,0,.2) 55%,transparent 72%);animation:breathe 2.1s ease-in-out infinite}
+.a-ember .fx-wave{border-color:rgba(255,140,0,.9);animation:wave 2.6s ease-out infinite}
+.a-ember .fx-wave.w2{animation-delay:1.3s}
+.a-ember .r-orbit.o1 i{background:#FFD166;box-shadow:0 0 12px 4px rgba(255,150,0,.95);animation:rise 2.4s ease-out infinite}
+.a-ember .r-orbit.o1 i:nth-child(2){animation-delay:.6s}
+.a-ember .r-orbit.o1 i:nth-child(3){animation-delay:1.2s}
+.a-ember .r-orbit.o1 i:nth-child(4){animation-delay:1.8s}
+.a-ember .r-orbit.o2 i{background:#FF6B00;box-shadow:0 0 10px 3px rgba(255,80,0,.9)}
+
+.a-cosmos .fx-rays{background:conic-gradient(from 0deg,
+  rgba(124,77,255,0) 0deg,rgba(124,77,255,.6) 4deg,rgba(124,77,255,0) 13deg,
+  rgba(34,211,238,0) 40deg,rgba(34,211,238,.55) 44deg,rgba(34,211,238,0) 53deg,
+  rgba(240,171,252,0) 85deg,rgba(240,171,252,.55) 89deg,rgba(240,171,252,0) 98deg,
+  rgba(124,77,255,0) 130deg,rgba(124,77,255,.6) 134deg,rgba(124,77,255,0) 143deg,
+  rgba(34,211,238,0) 175deg,rgba(34,211,238,.55) 179deg,rgba(34,211,238,0) 188deg,
+  rgba(255,213,74,0) 215deg,rgba(255,213,74,.5) 219deg,rgba(255,213,74,0) 228deg,
+  rgba(124,77,255,0) 265deg,rgba(124,77,255,.6) 269deg,rgba(124,77,255,0) 278deg,
+  rgba(240,171,252,0) 310deg,rgba(240,171,252,.55) 314deg,rgba(240,171,252,0) 323deg);
+  animation:spin 13s linear infinite;opacity:.9}
+.a-cosmos .r-ring{background:conic-gradient(from 0deg,#7C4DFF,#22D3EE,#A78BFA,#F0ABFC,#7C4DFF);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 8px),#000 calc(100% - 7px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 8px),#000 calc(100% - 7px));
+  animation:spin 3.6s linear infinite}
+.a-cosmos .r-ring.r2{inset:-22px;background:conic-gradient(from 90deg,#22D3EE,#818CF8,#22D3EE,transparent 72%);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 4px),#000 calc(100% - 3px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 4px),#000 calc(100% - 3px));
+  animation:spinRev 6s linear infinite}
+.a-cosmos .r-ring.r3{inset:-34px;background:conic-gradient(from 210deg,#F0ABFC,#7C4DFF,#F0ABFC,transparent 78%);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 2.5px),#000 calc(100% - 2px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 2.5px),#000 calc(100% - 2px));
+  animation:spin 8.5s linear infinite}
+.a-cosmos .fx-core{background:radial-gradient(circle,rgba(124,77,255,.6),rgba(34,211,238,.22) 52%,transparent 74%);animation:breathe 2.8s ease-in-out infinite}
+.a-cosmos .fx-wave{border-color:rgba(167,139,250,.95);animation:wave 3s ease-out infinite}
+.a-cosmos .fx-wave.w2{animation-delay:1.5s;border-color:rgba(34,211,238,.9)}
+.a-cosmos .r-orbit.o1 i{background:#F0ABFC;box-shadow:0 0 14px 5px rgba(240,171,252,.95);animation:twinkle 1.8s ease-in-out infinite}
+.a-cosmos .r-orbit.o1 i:nth-child(2){animation-delay:.45s}
+.a-cosmos .r-orbit.o1 i:nth-child(3){animation-delay:.9s}
+.a-cosmos .r-orbit.o1 i:nth-child(4){animation-delay:1.35s}
+.a-cosmos .r-orbit.o2 i{background:#67E8F9;box-shadow:0 0 12px 4px rgba(34,211,238,.95);animation:twinkle 2.4s ease-in-out infinite}
+.a-cosmos .r-orbit.o2 i:nth-child(3){animation-delay:.8s}
+
+/* ===================== 披风 cloak（身后层 · 向外展开，不受圆形裁切影响） ===================== */
+.cl-cloth .fx-cloak{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='c' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%233A4E7E'/%3E%3Cstop offset='1' stop-color='%23132038'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M50 2 C26 2 8 26 6 54 L2 98 C16 88 30 84 50 84 s34 4 48 14 L94 54 C92 26 74 2 50 2 Z' fill='url(%23c)' stroke='%235E79B8' stroke-width='1.5'/%3E%3C/svg%3E")}
+
+.cl-feather .fx-cloak{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='f' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23F2F8FF'/%3E%3Cstop offset='1' stop-color='%2384B0DE'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cg fill='url(%23f)' stroke='%236D9CCB' stroke-width='1.2'%3E%3Cellipse cx='20' cy='44' rx='25' ry='11' transform='rotate(-26 20 44)'/%3E%3Cellipse cx='16' cy='60' rx='22' ry='10' transform='rotate(-40 16 60)'/%3E%3Cellipse cx='13' cy='77' rx='17' ry='8' transform='rotate(-52 13 77)'/%3E%3Cellipse cx='80' cy='44' rx='25' ry='11' transform='rotate(26 80 44)'/%3E%3Cellipse cx='84' cy='60' rx='22' ry='10' transform='rotate(40 84 60)'/%3E%3Cellipse cx='87' cy='77' rx='17' ry='8' transform='rotate(52 87 77)'/%3E%3C/g%3E%3C/svg%3E")}
+
+.cl-dragon .fx-cloak{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='d' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%236B3FA8'/%3E%3Cstop offset='1' stop-color='%2323123A'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M44 34 L6 40 L26 50 L2 60 L28 68 L14 90 L46 74 L54 74 L86 90 L72 68 L98 60 L74 50 L94 40 L56 34 Z' fill='url(%23d)' stroke='%23A67CE0' stroke-width='1.6' stroke-linejoin='round'/%3E%3C/svg%3E")}
+
+.cl-flame .fx-cloak{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='fl' x1='0' y1='1' x2='0' y2='0'%3E%3Cstop offset='0' stop-color='%23FFD166'/%3E%3Cstop offset='.5' stop-color='%23FF6B00'/%3E%3Cstop offset='1' stop-color='%23B91C1C'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M44 42 C32 26 14 28 4 44 C14 40 20 42 24 48 C14 50 6 60 2 78 C12 64 24 56 36 56 C32 50 36 46 44 42 Z' fill='url(%23fl)'/%3E%3Cpath d='M56 42 C68 26 86 28 96 44 C86 40 80 42 76 48 C86 50 94 60 98 78 C88 64 76 56 64 56 C68 50 64 46 56 42 Z' fill='url(%23fl)'/%3E%3Cpath d='M50 22 C43 33 41 44 50 58 C59 44 57 33 50 22 Z' fill='%23FFE066' opacity='.92'/%3E%3C/svg%3E");
+  animation:cloakFlicker 2.2s ease-in-out infinite}
+.cl-flame .fx-glow{background:radial-gradient(circle,rgba(255,110,0,.5),transparent 68%)}
+
+.cl-galaxy .fx-cloak{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='gx' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%237C4DFF'/%3E%3Cstop offset='.5' stop-color='%2322D3EE'/%3E%3Cstop offset='1' stop-color='%23F0ABFC'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cg fill='url(%23gx)' opacity='.96'%3E%3Cellipse cx='19' cy='43' rx='26' ry='12' transform='rotate(-26 19 43)'/%3E%3Cellipse cx='15' cy='60' rx='23' ry='11' transform='rotate(-40 15 60)'/%3E%3Cellipse cx='12' cy='78' rx='18' ry='9' transform='rotate(-52 12 78)'/%3E%3Cellipse cx='81' cy='43' rx='26' ry='12' transform='rotate(26 81 43)'/%3E%3Cellipse cx='85' cy='60' rx='23' ry='11' transform='rotate(40 85 60)'/%3E%3Cellipse cx='88' cy='78' rx='18' ry='9' transform='rotate(52 88 78)'/%3E%3C/g%3E%3Cg fill='%23FFFFFF'%3E%3Ccircle cx='11' cy='45' r='1.9'/%3E%3Ccircle cx='22' cy='35' r='1.5'/%3E%3Ccircle cx='17' cy='62' r='1.7'/%3E%3Ccircle cx='89' cy='45' r='1.9'/%3E%3Ccircle cx='78' cy='35' r='1.5'/%3E%3Ccircle cx='83' cy='62' r='1.7'/%3E%3Ccircle cx='50' cy='82' r='1.6'/%3E%3C/g%3E%3C/svg%3E");
+  animation:cloakPulse 3.4s ease-in-out infinite}
+.cl-galaxy .fx-glow{background:radial-gradient(circle,rgba(124,77,255,.55),rgba(34,211,238,.2) 55%,transparent 72%);animation:breathe 3s ease-in-out infinite}
+
+/* ===================== 服装 outfit（身前层 · 落在身体下部纯色区，不会穿帮） ===================== */
+.of-uniform .fx-outfit{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 80'%3E%3Cpath d='M12 4 L50 44 L88 4 L98 18 L50 72 L2 18 Z' fill='%23FFFFFF' stroke='%2390ACD8' stroke-width='3' stroke-linejoin='round'/%3E%3Cpath d='M50 42 l-12-10 v22 z M50 42 l12-10 v22 z' fill='%23E0453F' stroke='%23A82D28' stroke-width='1.5'/%3E%3C/svg%3E")}
+
+.of-scarf .fx-outfit{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 80'%3E%3Cpath d='M6 14 C28 36 72 36 94 14 L94 32 C72 54 28 54 6 32 Z' fill='%23D9453F' stroke='%238F2320' stroke-width='2'/%3E%3Cpath d='M50 44 l-14-7 v28 l14 7 z M50 44 l14-7 v28 l-14 7 z' fill='%23E8554E' stroke='%238F2320' stroke-width='2'/%3E%3C/svg%3E")}
+
+.of-lab .fx-outfit{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 80'%3E%3Cpath d='M12 4 L50 44 L88 4 L98 20 L50 74 L2 20 Z' fill='%23FFFFFF' stroke='%23B9C6DA' stroke-width='3' stroke-linejoin='round'/%3E%3Cpath d='M50 34 C41 34 35 41 35 50 c0 11 7 20 15 20 s15-9 15-20 c0-9-6-16-15-16z' fill='none' stroke='%23A9BBD6' stroke-width='4'/%3E%3Ccircle cx='50' cy='48' r='7.5' fill='%233B82F6'/%3E%3C/svg%3E")}
+
+.of-armor .fx-outfit{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 80'%3E%3Cpath d='M50 2 L92 20 L86 60 C74 72 62 76 50 76 C38 76 26 72 14 60 L8 20 Z' fill='%23F2C14E' stroke='%23A8760B' stroke-width='3' stroke-linejoin='round'/%3E%3Cpath d='M50 14 v52' stroke='%23A8760B' stroke-width='2.5'/%3E%3Ccircle cx='50' cy='36' r='9.5' fill='%23E0453F' stroke='%23A82D28' stroke-width='2'/%3E%3C/svg%3E");
+  animation:twinkle 3.2s ease-in-out infinite}
+
+.of-rune .fx-outfit{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 80'%3E%3Cpath d='M50 2 L92 20 L86 60 C74 72 62 76 50 76 C38 76 26 72 14 60 L8 20 Z' fill='%239B7BFF' stroke='%235B3FBF' stroke-width='3' stroke-linejoin='round'/%3E%3Cpath d='M50 14 l8 16 18 3 -13 13 3 18 -16-9 -16 9 3-18 -13-13 18-3 z' fill='%23EAF0FF'/%3E%3C/svg%3E");
+  animation:twinkle 2.2s ease-in-out infinite}
+.of-rune .fx-glow{background:radial-gradient(circle,rgba(155,123,255,.5),transparent 70%)}
+
+/* ===================== 边框 ===================== */
+.f-cloud .fx-frame{border:2px solid rgba(255,255,255,.55);box-shadow:0 0 14px rgba(255,255,255,.18)}
+.f-flow .fx-frame{inset:-4px;background:conic-gradient(from 0deg,#22D3EE,#3B82F6,#7C4DFF,#22D3EE);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 6px),#000 calc(100% - 5px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 6px),#000 calc(100% - 5px));
+  animation:spin 4s linear infinite}
+.f-rainbow .fx-frame{inset:-5px;background:conic-gradient(from 0deg,#FF6B9D,#FFE66D,#4ECDC4,#7C4DFF,#FF6B9D);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 7px),#000 calc(100% - 6px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 7px),#000 calc(100% - 6px));
+  animation:spin 2.6s linear infinite}
+.f-star .fx-frame{inset:-4px;background:conic-gradient(from 0deg,#FFF7CC,#FFD54A,#FFB300,#FFF7CC);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 5px),#000 calc(100% - 4px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 5px),#000 calc(100% - 4px));
+  animation:spin 3s linear infinite,flicker 3.2s steps(1,end) infinite}
+.f-dragon .fx-frame{inset:-5px;background:conic-gradient(from 0deg,#FFE066,#FF6B00,#FF2D00,#7A1900,#FF6B00,#FFE066);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 7px),#000 calc(100% - 6px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 7px),#000 calc(100% - 6px));
+  animation:spin 2.2s linear infinite}
+.f-dragon::after{content:'';position:absolute;inset:-14px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,80,0,.5),transparent 70%);animation:breathe 1.7s ease-in-out infinite}
+
+/* ===================== 挂件 ===================== */
+.ch-crown .fx-charm{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3 8.5l4 3 5-6.5 5 6.5 4-3v9.5H3z' fill='%23FFD54A' stroke='%23A8760B' stroke-width='1.3' stroke-linejoin='round'/%3E%3Ccircle cx='12' cy='15' r='1.6' fill='%23E85D3A'/%3E%3C/svg%3E");filter:drop-shadow(0 0 6px rgba(255,213,74,.95))}
+.ch-cat .fx-charm{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 19V7l3.5 3.5h7L19 7v12z' fill='%23F4A6C0' stroke='%23A8536F' stroke-width='1.3' stroke-linejoin='round'/%3E%3Ccircle cx='9.5' cy='13' r='1.2' fill='%23A8536F'/%3E%3Ccircle cx='14.5' cy='13' r='1.2' fill='%23A8536F'/%3E%3C/svg%3E");filter:drop-shadow(0 0 6px rgba(244,166,192,.9))}
+.ch-bolt .fx-charm{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M13.5 2L5 13.5h5.5L9.5 22 19 10h-5.8z' fill='%23FFE066' stroke='%23B8860B' stroke-width='1.3' stroke-linejoin='round'/%3E%3C/svg%3E");filter:drop-shadow(0 0 7px rgba(255,224,102,.95))}
+.ch-wing .fx-charm{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 4c3 2 5 5.5 5 9 0 3-1.6 5.4-3.6 6.6-.6-2-1-3.9-1.4-6.1-.4 2.2-.8 4.1-1.4 6.1C8.6 18.4 7 16 7 13c0-3.5 2-7 5-9z' fill='%23DCEBFF' stroke='%235B8FD6' stroke-width='1.2' stroke-linejoin='round'/%3E%3C/svg%3E");filter:drop-shadow(0 0 8px rgba(180,215,255,.95))}
+.ch-cap .fx-charm{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 4l9 4-9 4-9-4z' fill='%233B4A6B' stroke='%231B2A4A' stroke-width='1.2' stroke-linejoin='round'/%3E%3Cpath d='M6.5 9.8V15c0 1.4 2.5 2.6 5.5 2.6s5.5-1.2 5.5-2.6V9.8' fill='none' stroke='%231B2A4A' stroke-width='1.4'/%3E%3C/svg%3E");filter:drop-shadow(0 0 5px rgba(255,255,255,.6))}
+
+/* ===================== 称号 ===================== */
+.title{font-size:15px;font-weight:800;letter-spacing:.5px;display:inline-block}
+.title-plain{color:var(--ink)}
+.title-gold{background:linear-gradient(100deg,#A8760B,#FFD54A 25%,#FFF9D6 50%,#FFD54A 75%,#A8760B);
+  background-size:220% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  animation:shine 3.2s linear infinite;filter:drop-shadow(0 0 8px rgba(255,213,74,.6))}
+.title-neon{background:linear-gradient(100deg,#0EA5E9,#67E8F9,#E0FBFF,#67E8F9,#0EA5E9);
+  background-size:220% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  animation:shine 2.6s linear infinite;filter:drop-shadow(0 0 10px rgba(56,189,248,.75))}
+.title-flame{background:linear-gradient(100deg,#B91C1C,#FF6B35,#FFE066,#FF6B35,#B91C1C);
+  background-size:220% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  animation:shine 2.2s linear infinite;filter:drop-shadow(0 0 10px rgba(255,107,53,.75))}
+.title-holo{background:linear-gradient(100deg,#7C4DFF,#22D3EE,#F0ABFC,#FFD54A,#7C4DFF);
+  background-size:280% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  animation:shine 4s linear infinite;filter:drop-shadow(0 0 9px rgba(167,139,250,.7))}
+
+/* ===================== 调色皮肤 ===================== */
+.sk-flame .egg-img{filter:saturate(1.55) hue-rotate(-30deg) contrast(1.1) brightness(1.03)}
+.sk-ice .egg-img{filter:saturate(1.25) hue-rotate(150deg) brightness(1.08) contrast(1.02)}
+.sk-night .egg-img{filter:saturate(.6) hue-rotate(215deg) brightness(.78) contrast(1.08)}
+.sk-gold .egg-img{filter:saturate(1.7) hue-rotate(14deg) brightness(1.08) contrast(1.05)}
+
+/* ===================== 搭配器 / 画廊 ===================== */
+.stage{display:flex;flex-direction:column;align-items:center;gap:18px;padding:26px 0 10px}
+.stage-inner{position:relative;padding:70px 60px}
+.stage .egg-deco{width:176px;height:176px}
+.name-row{text-align:center;display:flex;flex-direction:column;gap:8px;align-items:center}
+.name-sub{font-size:12px;color:var(--muted)}
+.pickers{margin-top:26px;display:flex;flex-direction:column;gap:15px}
+.pk-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.pk-label{font-size:12px;font-weight:700;color:var(--ink2);width:60px;flex:none}
+.pk-opts{display:flex;gap:7px;flex-wrap:wrap}
+.pk-btn{padding:7px 15px;border-radius:999px;border:1.5px solid var(--line);background:#1B2340;font-size:12px;font-weight:600;color:var(--ink2);cursor:pointer;transition:all .18s;font-family:inherit}
+.pk-btn:hover{border-color:#4C5C92;color:#fff}
+.pk-btn.on{background:linear-gradient(135deg,#7C4DFF,#22D3EE);border-color:transparent;color:#fff;box-shadow:0 0 16px rgba(124,77,255,.5)}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:18px}
+.gitem{background:linear-gradient(180deg,#171E36,#111629);border:1px solid var(--line);border-radius:20px;padding:34px 14px 18px;display:flex;flex-direction:column;align-items:center;gap:14px;overflow:hidden}
+.gitem .egg-deco{width:112px;height:112px}
+.gitem .fx-rays{inset:-30px}
+.gitem .r-orbit{inset:-24px}
+.gitem .fx-cloak{inset:-30px}
+.gitem .fx-charm{width:32px;height:32px;right:-4px;bottom:-4px}
+.gname{font-size:13.5px;font-weight:700}
+.gmeta{font-size:11px;color:var(--muted);text-align:center;line-height:1.6}
+.rar{font-size:10px;font-weight:800;padding:3px 10px;border-radius:7px;color:#0B1020}
+.rar-n{background:#C0C0C0}.rar-r{background:#7DD3FC}.rar-sr{background:#A78BFA}
+.rar-ssr{background:#FFB300}.rar-ur{background:linear-gradient(135deg,#FF6B6B,#FFD54A)}
+.note{background:rgba(124,77,255,.09);border:1px solid rgba(124,77,255,.3);border-radius:16px;padding:18px 20px;font-size:12.5px;line-height:1.85;color:var(--ink2);margin-top:16px}
+.note b{color:#fff}
+.warn{background:rgba(255,107,53,.09);border-color:rgba(255,107,53,.32)}
+.warn b{color:#FFB27A}
+@media (prefers-reduced-motion: reduce){*{animation:none !important}}
+@media (max-width:640px){
+  .pk-label{width:100%}
+  .gallery{grid-template-columns:repeat(auto-fill,minmax(158px,1fr))}
+  .gitem .egg-deco{width:96px;height:96px}
+  .stage .egg-deco{width:150px;height:150px}
+  .stage-inner{padding:58px 28px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>蛋蛋世界 · 装扮系统效果预览 v3</h1>
+  <p class="sub">
+    <b>7 个槽位</b>：光环 · 边框 · 挂件 · 称号 · 调色皮肤 · <b>服装（身前）</b> · <b>披风（身后）</b>。
+    服装与披风利用「身前 / 身后」双层结构：披风从头像圆形背后向外展开、天然不受裁切；服装落在蛋蛋身体下部纯色区、不会穿帮。
+    全部为纯 CSS + SVG，动画只用 <b>transform</b> 与 <b>opacity</b>。
+  </p>
+
+  <h2>一、实时搭配器</h2>
+  <div class="card">
+    <div class="stage">
+      <div class="stage-inner">
+        <div class="egg-deco breathe" id="stageDeco"></div>
+      </div>
+      <div class="name-row">
+        <span class="title title-plain deco-title" id="stageTitle">蛋蛋昵称</span>
+        <span class="name-sub" id="stageDesc"></span>
+      </div>
+    </div>
+    <div class="pickers">
+      <div class="pk-row"><span class="pk-label">光环</span><div class="pk-opts" data-slot="aura"></div></div>
+      <div class="pk-row"><span class="pk-label">披风</span><div class="pk-opts" data-slot="cloak"></div></div>
+      <div class="pk-row"><span class="pk-label">服装</span><div class="pk-opts" data-slot="outfit"></div></div>
+      <div class="pk-row"><span class="pk-label">边框</span><div class="pk-opts" data-slot="frame"></div></div>
+      <div class="pk-row"><span class="pk-label">挂件</span><div class="pk-opts" data-slot="charm"></div></div>
+      <div class="pk-row"><span class="pk-label">称号</span><div class="pk-opts" data-slot="title"></div></div>
+      <div class="pk-row"><span class="pk-label">皮肤</span><div class="pk-opts" data-slot="skin"></div></div>
+    </div>
+  </div>
+
+  <h2>二、全部商品效果</h2>
+  <p class="sub" style="margin-bottom:16px">光环 · 环层数 / 光束 / 星轨 / 冲击波 / 核心光晕</p>
+  <div class="gallery" id="galAura"></div>
+  <p class="sub" style="margin:32px 0 16px">披风 · 身后层，向外展开（不受圆形裁切影响）</p>
+  <div class="gallery" id="galCloak"></div>
+  <p class="sub" style="margin:32px 0 16px">服装 · 身前层，落在身体下部</p>
+  <div class="gallery" id="galOutfit"></div>
+  <p class="sub" style="margin:32px 0 16px">边框 · 双色环 + 外发光</p>
+  <div class="gallery" id="galFrame"></div>
+  <p class="sub" style="margin:32px 0 16px">挂件 · 带发光描边的角标</p>
+  <div class="gallery" id="galCharm"></div>
+  <p class="sub" style="margin:32px 0 16px">称号 · 渐变流光 + 外发光</p>
+  <div class="gallery" id="galTitle"></div>
+  <p class="sub" style="margin:32px 0 16px">调色皮肤 · 同一立绘换色调</p>
+  <div class="gallery" id="galSkin"></div>
+
+  <h2>三、实现说明</h2>
+  <div class="note">
+    <b>衣服系统是怎么做到不穿帮的？</b><br>
+    蛋蛋立绘本身已画好服装，直接叠加会错位。因此拆成两个图层：<br>
+    · <b>披风（身后，z-index 3）</b>：位于立绘下方，从头像圆形背后向外展开。圆形外的部分是可见的，
+    天然形成一个披风 / 翅膀的剪影 —— <b>完全不存在裁切错位问题</b>；<br>
+    · <b>服装（身前，z-index 6）</b>：位于立绘上方，但只占头像下部约 42% 宽的一小块区域（蛋蛋的身体，
+    那里是纯色衣服区、无复杂细节），叠加领结 / 胸甲 / 徽章非常自然。
+  </div>
+  <div class="note">
+    <b>性能：为什么这么炫还不卡？</b><br>
+    · 全部动画只用 <b>transform</b> 与 <b>opacity</b>，不触碰 layout 与 paint；<br>
+    · 环绕星轨用「<b>1 个旋转容器 + 4 个静态点 = 4 颗环绕星</b>」，8 颗星只占 2 个动画元素；<br>
+    · 放射光束是单个 <b>conic-gradient</b> 元素旋转，不是 12 个独立光束；<br>
+    · 列表页只渲染光环 + 边框 + 披风，跳过光束 / 星轨 / 冲击波。
+  </div>
+  <div class="note warn">
+    <b>浅色主题提示</b><br>
+    本预览是深色底（最能体现发光效果），而主站是浅色底。彩色环 / 披风 / 粒子在浅色底上仍清晰可辨，
+    但光晕会减弱。工单中提供了可选暗场层 <b>.fx-field</b>，建议只在「我的信息页」与「用户名片弹窗」启用。
+  </div>
+
+</div>
+
+<script>
+var IMG = '../assets/char-eggy-hermit.jpg';
+
+var ITEMS = {
+  aura: [
+    {k:'',           n:'无光环',   r:'',    d:''},
+    {k:'a-moon',     n:'月华',     r:'R',   d:'单环旋转 + 光晕'},
+    {k:'a-thunder',  n:'雷霆',     r:'SR',  d:'双环反向 + 弧光闪烁'},
+    {k:'a-ember',    n:'烈焰',     r:'SSR', d:'三层环 + 光束 + 冲击波 + 火星'},
+    {k:'a-cosmos',   n:'星海',     r:'UR',  d:'三层环 + 光束 + 双冲击波 + 八星环绕'}
+  ],
+  cloak: [
+    {k:'',           n:'无披风',   r:'',    d:''},
+    {k:'cl-cloth',   n:'旅人斗篷', r:'N',   d:'布质斗篷剪影'},
+    {k:'cl-feather', n:'羽翼',     r:'R',   d:'三重叠羽'},
+    {k:'cl-dragon',  n:'龙翼',     r:'SR',  d:'尖角骨翼'},
+    {k:'cl-flame',   n:'烈焰之翼', r:'SSR', d:'火焰跳动 + 火色光晕'},
+    {k:'cl-galaxy',  n:'星河之翼', r:'UR',  d:'星空渐变 + 呼吸脉冲'}
+  ],
+  outfit: [
+    {k:'',           n:'无服装',   r:'',    d:''},
+    {k:'of-uniform', n:'学生制服', r:'N',   d:'白领 + 红领结'},
+    {k:'of-scarf',   n:'暖绒围巾', r:'R',   d:'围巾 + 垂落巾尾'},
+    {k:'of-lab',     n:'科研白袍', r:'SR',  d:'白袍领 + 听诊器'},
+    {k:'of-armor',   n:'金鳞胸甲', r:'SSR', d:'金甲 + 红宝石'},
+    {k:'of-rune',    n:'星辉圣袍', r:'UR',  d:'符文胸甲 + 光晕'}
+  ],
+  frame: [
+    {k:'',           n:'默认',     r:'',    d:''},
+    {k:'f-cloud',    n:'云纹',     r:'N',   d:'静态细描边'},
+    {k:'f-flow',     n:'流光',     r:'R',   d:'双向色阶流动'},
+    {k:'f-rainbow',  n:'彩虹',     r:'SR',  d:'四色循环'},
+    {k:'f-star',     n:'星辉',     r:'SSR', d:'金色 + 闪烁'},
+    {k:'f-dragon',   n:'龙焰',     r:'UR',  d:'熔岩 + 外发光脉冲'}
+  ],
+  charm: [
+    {k:'',           n:'无挂件',   r:'',    d:''},
+    {k:'ch-cap',     n:'学士帽',   r:'N',   d:'学业向'},
+    {k:'ch-cat',     n:'猫耳',     r:'R',   d:'可爱向'},
+    {k:'ch-bolt',    n:'雷霆',     r:'SR',  d:'搞钱向'},
+    {k:'ch-wing',    n:'羽翼',     r:'SSR', d:'成长向'},
+    {k:'ch-crown',   n:'皇冠',     r:'UR',  d:'巅峰向'}
+  ],
+  title: [
+    {k:'title-plain', n:'普通',    r:'',    d:''},
+    {k:'title-gold',  n:'鎏金',    r:'R',   d:''},
+    {k:'title-neon',  n:'霓虹',    r:'SR',  d:''},
+    {k:'title-flame', n:'烈焰',    r:'SSR', d:''},
+    {k:'title-holo',  n:'全息',    r:'UR',  d:''}
+  ],
+  skin: [
+    {k:'',           n:'原色',     r:'',    d:''},
+    {k:'sk-flame',   n:'火焰蛋',   r:'R',   d:'暖色高饱和'},
+    {k:'sk-ice',     n:'冰霜蛋',   r:'SR',  d:'冷色通透'},
+    {k:'sk-night',   n:'暗夜蛋',   r:'SSR', d:'低饱和深调'},
+    {k:'sk-gold',    n:'黄金蛋',   r:'UR',  d:'高饱和暖金'}
+  ]
+};
+var LABEL={aura:'光环',cloak:'披风',outfit:'服装',frame:'边框',charm:'挂件',title:'称号',skin:'皮肤'};
+var SLOTS=['aura','cloak','outfit','frame','charm','title','skin'];
+var state={aura:'a-cosmos',cloak:'cl-galaxy',outfit:'of-rune',frame:'f-rainbow',charm:'ch-crown',title:'title-holo',skin:''};
+
+function inner(){
+  return '<span class="fx-field"></span><span class="fx-rays"></span><span class="fx-core"></span>'
+       + '<span class="fx-wave w1"></span><span class="fx-wave w2"></span>'
+       + '<span class="fx-cloak"></span>'
+       + '<span class="r-ring r1"></span><span class="r-ring r2"></span><span class="r-ring r3"></span>'
+       + '<span class="r-orbit o1"><i></i><i></i><i></i><i></i></span>'
+       + '<span class="r-orbit o2"><i></i><i></i><i></i><i></i></span>'
+       + '<img class="egg-img" src="'+IMG+'" alt="">'
+       + '<span class="fx-outfit"></span><span class="fx-frame"></span><span class="fx-charm"></span>';
+}
+function cls(){
+  var c='egg-deco breathe';
+  SLOTS.forEach(function(s){ if(state[s]) c+=' '+state[s]; });
+  return c;
+}
+function renderStage(){
+  var d=document.getElementById('stageDeco');
+  d.className=cls(); d.innerHTML=inner();
+  document.getElementById('stageTitle').className='title '+(state.title||'title-plain')+' deco-title';
+  var p=[];
+  SLOTS.forEach(function(s){
+    var it=ITEMS[s].filter(function(x){return x.k===state[s]})[0];
+    if(it&&it.k) p.push(LABEL[s]+'：'+it.n);
+  });
+  document.getElementById('stageDesc').textContent=p.length?p.join(' · '):'未穿戴任何装扮';
+}
+function buildPickers(){
+  Object.keys(ITEMS).forEach(function(slot){
+    var box=document.querySelector('.pk-opts[data-slot="'+slot+'"]');
+    (box?ITEMS[slot]:[]).forEach(function(it){
+      var b=document.createElement('button');
+      b.className='pk-btn'+(state[slot]===it.k?' on':'');
+      b.textContent=it.n;
+      b.onclick=function(){
+        state[slot]=it.k;
+        box.querySelectorAll('.pk-btn').forEach(function(x){x.classList.remove('on')});
+        b.classList.add('on'); renderStage();
+      };
+      box.appendChild(b);
+    });
+  });
+}
+function buildGallery(slot,mountId){
+  var mount=document.getElementById(mountId);
+  ITEMS[slot].forEach(function(it){
+    var el=document.createElement('div'); el.className='gitem';
+    var c='egg-deco breathe'+(it.k?' '+it.k:'');
+    var rar=it.r?'<span class="rar rar-'+it.r.toLowerCase()+'">'+it.r+'</span>':'<span class="gmeta">基础</span>';
+    el.innerHTML='<div class="'+c+'">'+inner()+'</div>'
+      +(slot==='title'?'<div class="title '+(it.k||'title-plain')+'">'+it.n+'</div>':'<div class="gname">'+it.n+'</div>')
+      +rar+(it.d?'<div class="gmeta">'+it.d+'</div>':'');
+    mount.appendChild(el);
+  });
+}
+buildPickers();
+buildGallery('aura','galAura');
+buildGallery('cloak','galCloak');
+buildGallery('outfit','galOutfit');
+buildGallery('frame','galFrame');
+buildGallery('charm','galCharm');
+buildGallery('title','galTitle');
+buildGallery('skin','galSkin');
+renderStage();
+</script>
+</body>
+</html>

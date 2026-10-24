@@ -1,0 +1,40 @@
+# ============================================================
+# 蛋蛋世界后端 systemd 服务
+# 使用方式：复制到 /etc/systemd/system/eggworld.service 后
+#   systemctl daemon-reload
+#   systemctl enable --now eggworld
+# ============================================================
+[Unit]
+Description=EggWorld Backend Service
+After=network.target
+
+[Service]
+Type=simple
+User=xiaos
+WorkingDirectory=/home/xiaos/eggworld
+# 发布前必须确认 /usr/bin/java -version 为 JDK 17+；不自动切换系统 Java。
+# 未确认 Java 版本与目录写权限前不要启用此 unit。
+# preferIPv4Stack：强制 IPv4，避免 smtp 等域名解析出 IPv6 时 Java 串行尝试挂起 20+ 秒
+ExecStart=/usr/bin/java -Djava.net.preferIPv4Stack=true -jar /home/xiaos/eggworld/eggworld.jar --spring.profiles.active=prod
+# 邮件发信参数（腾讯云 SES 的 SecretId/SecretKey、发信地址、模板 ID）：真实值已写在
+# application-prod.yml 的 eggworld.mail.*，这里不要配置环境变量！
+# 原因：SES_SECRET_ID 等环境变量优先级高于 yml，若写成占位符，
+#       会命中 VerifyCodeService 的 "your-" 占位符判断，邮件静默降级为只打印日志、不真发。
+# 如需脱离 yml 注入，建议改用 EnvironmentFile=/etc/eggworld.env（权限 600）并在该文件写真实值：
+# EnvironmentFile=/etc/eggworld.env
+# Environment=SES_SECRET_ID=your-secret-id
+# Environment=SES_SECRET_KEY=your-secret-key
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/home/xiaos/eggworld
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+Restart=always
+RestartSec=5
+# 生产环境内存较小可限制堆大小
+# Environment=JAVA_OPTS=-Xmx256m
+SuccessExitStatus=143
+
+[Install]
+WantedBy=multi-user.target

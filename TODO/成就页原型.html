@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>蛋蛋世界 · 成就特效系统 原型</title>
+<style>
+/* ===================== 装扮容器结构（7 层） ===================== */
+.egg-deco{position:relative;width:150px;height:150px;flex:none;display:grid;place-items:center;isolation:isolate}
+.egg-img{width:100%;height:100%;object-fit:cover;border-radius:50%;position:relative;z-index:5;background:#1B2340;display:block}
+.fx-core,.fx-rays,.fx-wave,.r-ring,.r-orbit,.fx-frame,.fx-charm,.fx-cloak,.fx-outfit,.fx-field{
+  position:absolute;border-radius:50%;pointer-events:none}
+.fx-field{inset:-32px;z-index:0}
+.fx-rays{inset:-64px;z-index:0}
+.fx-core{inset:-18px;z-index:1}
+.fx-wave{inset:-8px;z-index:2}
+.fx-cloak{inset:-46px;z-index:3;background-repeat:no-repeat;background-position:center;background-size:100% 100%}
+.r-ring{inset:-10px;z-index:4}
+.r-orbit{inset:-42px;z-index:4}
+.fx-outfit{inset:0;z-index:6;background-repeat:no-repeat;background-position:center 74%;background-size:42% auto}
+.fx-frame{inset:-3px;z-index:7}
+.fx-charm{right:-6px;bottom:-6px;width:44px;height:44px;z-index:8;background-size:contain;background-repeat:no-repeat;background-position:center}
+.egg-deco.breathe{animation:floatY 3.6s ease-in-out infinite}
+
+.r-orbit i{position:absolute;width:7px;height:7px;border-radius:50%;display:block}
+.r-orbit.o1{animation:spin 6s linear infinite}
+.r-orbit.o2{animation:spinRev 9s linear infinite}
+.r-orbit.o1 i:nth-child(1){left:calc(50% - 3.5px);top:-3.5px}
+.r-orbit.o1 i:nth-child(2){right:-3.5px;top:calc(50% - 3.5px)}
+.r-orbit.o1 i:nth-child(3){left:calc(50% - 3.5px);bottom:-3.5px}
+.r-orbit.o1 i:nth-child(4){left:-3.5px;top:calc(50% - 3.5px)}
+.r-orbit.o2 i:nth-child(1){left:calc(50% - 3.5px);top:-3.5px}
+.r-orbit.o2 i:nth-child(2){right:-3.5px;top:calc(50% - 3.5px)}
+.r-orbit.o2 i:nth-child(3){left:calc(50% - 3.5px);bottom:-3.5px}
+.r-orbit.o2 i:nth-child(4){left:-3.5px;top:calc(50% - 3.5px)}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes spinRev{to{transform:rotate(-360deg)}}
+@keyframes breathe{0%,100%{transform:scale(.9);opacity:.45}50%{transform:scale(1.12);opacity:1}}
+@keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+@keyframes twinkle{0%,100%{opacity:.25;transform:scale(.7)}50%{opacity:1;transform:scale(1.25)}}
+@keyframes wave{0%{transform:scale(.82);opacity:.95;border-width:3px}65%{opacity:.3}100%{transform:scale(1.85);opacity:0;border-width:1px}}
+@keyframes flicker{0%,100%{opacity:.85}42%{opacity:.35}47%{opacity:1}62%{opacity:.5}70%{opacity:.95}}
+@keyframes rise{0%{transform:translateY(14px) scale(.5);opacity:0}25%{opacity:1}100%{transform:translateY(-46px) scale(1.1);opacity:0}}
+@keyframes cloakPulse{0%,100%{transform:scale(1);opacity:.92}50%{transform:scale(1.045);opacity:1}}
+@keyframes cloakFlicker{0%,100%{opacity:1}45%{opacity:.72}52%{opacity:1}68%{opacity:.8}}
+
+/* ===================== 光环 ===================== */
+.a-moon .r-ring{background:conic-gradient(from 0deg,#8FB8FF,#E8F1FF,#4A7BD9,#B9D2FF,#8FB8FF);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 8px),#000 calc(100% - 7px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 8px),#000 calc(100% - 7px));
+  animation:spin 4.5s linear infinite}
+.a-moon .fx-core{background:radial-gradient(circle,rgba(120,170,255,.5),transparent 68%);animation:breathe 3.2s ease-in-out infinite}
+.a-moon .r-orbit.o1 i{background:#CFE1FF;box-shadow:0 0 10px 3px rgba(150,190,255,.85)}
+
+.a-thunder .r-ring{background:conic-gradient(from 0deg,#FFFFFF,#38BDF8,#818CF8,#FFFFFF,#0EA5E9,#FFFFFF);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 7px),#000 calc(100% - 6px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 7px),#000 calc(100% - 6px));
+  animation:spin 1.9s linear infinite,flicker 2.6s steps(1,end) infinite}
+.a-thunder .r-ring.r2{inset:-22px;background:conic-gradient(from 120deg,transparent 0 62%,#7DD3FC 72%,#FFFFFF 78%,transparent 88%);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#000 calc(100% - 2px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#000 calc(100% - 2px));
+  animation:spinRev 2.4s linear infinite}
+.a-thunder .fx-core{background:radial-gradient(circle,rgba(56,189,248,.55),transparent 70%);animation:breathe 1.5s ease-in-out infinite}
+.a-thunder .r-orbit.o1 i{background:#E0F2FE;box-shadow:0 0 12px 4px rgba(56,189,248,.95);animation:twinkle 1.3s ease-in-out infinite}
+.a-thunder .r-orbit.o2 i{background:#A5B4FC;box-shadow:0 0 10px 3px rgba(129,140,248,.9)}
+
+.a-ember .fx-rays{background:conic-gradient(from 0deg,
+  rgba(255,61,0,0) 0deg,rgba(255,110,0,.55) 5deg,rgba(255,61,0,0) 14deg,
+  rgba(255,179,0,0) 45deg,rgba(255,179,0,.5) 50deg,rgba(255,179,0,0) 60deg,
+  rgba(255,232,102,0) 90deg,rgba(255,232,102,.45) 95deg,rgba(255,232,102,0) 105deg,
+  rgba(255,61,0,0) 135deg,rgba(255,110,0,.55) 140deg,rgba(255,61,0,0) 150deg,
+  rgba(255,179,0,0) 180deg,rgba(255,179,0,.5) 185deg,rgba(255,179,0,0) 195deg,
+  rgba(255,232,102,0) 225deg,rgba(255,232,102,.45) 230deg,rgba(255,232,102,0) 240deg,
+  rgba(255,61,0,0) 270deg,rgba(255,110,0,.55) 275deg,rgba(255,61,0,0) 285deg,
+  rgba(255,179,0,0) 315deg,rgba(255,179,0,.5) 320deg,rgba(255,179,0,0) 330deg);
+  animation:spin 11s linear infinite;opacity:.85}
+.a-ember .r-ring{background:conic-gradient(from 0deg,#FFE066,#FF6B00,#FF2D00,#FFB300,#FFE066);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 9px),#000 calc(100% - 8px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 9px),#000 calc(100% - 8px));
+  animation:spin 3.2s linear infinite}
+.a-ember .r-ring.r2{inset:-24px;background:conic-gradient(from 200deg,transparent 0 55%,#FF8A00 68%,#FFE066 76%,transparent 90%);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 4px),#000 calc(100% - 3px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 4px),#000 calc(100% - 3px));
+  animation:spinRev 4.6s linear infinite}
+.a-ember .fx-core{background:radial-gradient(circle,rgba(255,110,0,.6),rgba(255,45,0,.2) 55%,transparent 72%);animation:breathe 2.1s ease-in-out infinite}
+.a-ember .fx-wave{border-color:rgba(255,140,0,.9);animation:wave 2.6s ease-out infinite}
+.a-ember .fx-wave.w2{animation-delay:1.3s}
+.a-ember .r-orbit.o1 i{background:#FFD166;box-shadow:0 0 12px 4px rgba(255,150,0,.95);animation:rise 2.4s ease-out infinite}
+.a-ember .r-orbit.o1 i:nth-child(2){animation-delay:.6s}
+.a-ember .r-orbit.o1 i:nth-child(3){animation-delay:1.2s}
+.a-ember .r-orbit.o1 i:nth-child(4){animation-delay:1.8s}
+.a-ember .r-orbit.o2 i{background:#FF6B00;box-shadow:0 0 10px 3px rgba(255,80,0,.9)}
+
+.a-cosmos .fx-rays{background:conic-gradient(from 0deg,
+  rgba(124,77,255,0) 0deg,rgba(124,77,255,.6) 4deg,rgba(124,77,255,0) 13deg,
+  rgba(34,211,238,0) 40deg,rgba(34,211,238,.55) 44deg,rgba(34,211,238,0) 53deg,
+  rgba(240,171,252,0) 85deg,rgba(240,171,252,.55) 89deg,rgba(240,171,252,0) 98deg,
+  rgba(124,77,255,0) 130deg,rgba(124,77,255,.6) 134deg,rgba(124,77,255,0) 143deg,
+  rgba(34,211,238,0) 175deg,rgba(34,211,238,.55) 179deg,rgba(34,211,238,0) 188deg,
+  rgba(255,213,74,0) 215deg,rgba(255,213,74,.5) 219deg,rgba(255,213,74,0) 228deg,
+  rgba(124,77,255,0) 265deg,rgba(124,77,255,.6) 269deg,rgba(124,77,255,0) 278deg,
+  rgba(240,171,252,0) 310deg,rgba(240,171,252,.55) 314deg,rgba(240,171,252,0) 323deg);
+  animation:spin 13s linear infinite;opacity:.9}
+.a-cosmos .r-ring{background:conic-gradient(from 0deg,#7C4DFF,#22D3EE,#A78BFA,#F0ABFC,#7C4DFF);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 8px),#000 calc(100% - 7px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 8px),#000 calc(100% - 7px));
+  animation:spin 3.6s linear infinite}
+.a-cosmos .r-ring.r2{inset:-22px;background:conic-gradient(from 90deg,#22D3EE,#818CF8,#22D3EE,transparent 72%);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 4px),#000 calc(100% - 3px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 4px),#000 calc(100% - 3px));
+  animation:spinRev 6s linear infinite}
+.a-cosmos .r-ring.r3{inset:-34px;background:conic-gradient(from 210deg,#F0ABFC,#7C4DFF,#F0ABFC,transparent 78%);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 2.5px),#000 calc(100% - 2px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 2.5px),#000 calc(100% - 2px));
+  animation:spin 8.5s linear infinite}
+.a-cosmos .fx-core{background:radial-gradient(circle,rgba(124,77,255,.6),rgba(34,211,238,.22) 52%,transparent 74%);animation:breathe 2.8s ease-in-out infinite}
+.a-cosmos .fx-wave{border-color:rgba(167,139,250,.95);animation:wave 3s ease-out infinite}
+.a-cosmos .fx-wave.w2{animation-delay:1.5s;border-color:rgba(34,211,238,.9)}
+.a-cosmos .r-orbit.o1 i{background:#F0ABFC;box-shadow:0 0 14px 5px rgba(240,171,252,.95);animation:twinkle 1.8s ease-in-out infinite}
+.a-cosmos .r-orbit.o1 i:nth-child(2){animation-delay:.45s}
+.a-cosmos .r-orbit.o1 i:nth-child(3){animation-delay:.9s}
+.a-cosmos .r-orbit.o1 i:nth-child(4){animation-delay:1.35s}
+.a-cosmos .r-orbit.o2 i{background:#67E8F9;box-shadow:0 0 12px 4px rgba(34,211,238,.95);animation:twinkle 2.4s ease-in-out infinite}
+.a-cosmos .r-orbit.o2 i:nth-child(3){animation-delay:.8s}
+
+/* ===================== 披风 cloak（身后层 · 向外展开，不受圆形裁切影响） ===================== */
+.cl-cloth .fx-cloak{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='c' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%233A4E7E'/%3E%3Cstop offset='1' stop-color='%23132038'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M50 2 C26 2 8 26 6 54 L2 98 C16 88 30 84 50 84 s34 4 48 14 L94 54 C92 26 74 2 50 2 Z' fill='url(%23c)' stroke='%235E79B8' stroke-width='1.5'/%3E%3C/svg%3E")}
+
+.cl-feather .fx-cloak{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='f' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23F2F8FF'/%3E%3Cstop offset='1' stop-color='%2384B0DE'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cg fill='url(%23f)' stroke='%236D9CCB' stroke-width='1.2'%3E%3Cellipse cx='20' cy='44' rx='25' ry='11' transform='rotate(-26 20 44)'/%3E%3Cellipse cx='16' cy='60' rx='22' ry='10' transform='rotate(-40 16 60)'/%3E%3Cellipse cx='13' cy='77' rx='17' ry='8' transform='rotate(-52 13 77)'/%3E%3Cellipse cx='80' cy='44' rx='25' ry='11' transform='rotate(26 80 44)'/%3E%3Cellipse cx='84' cy='60' rx='22' ry='10' transform='rotate(40 84 60)'/%3E%3Cellipse cx='87' cy='77' rx='17' ry='8' transform='rotate(52 87 77)'/%3E%3C/g%3E%3C/svg%3E")}
+
+.cl-dragon .fx-cloak{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='d' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%236B3FA8'/%3E%3Cstop offset='1' stop-color='%2323123A'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M44 34 L6 40 L26 50 L2 60 L28 68 L14 90 L46 74 L54 74 L86 90 L72 68 L98 60 L74 50 L94 40 L56 34 Z' fill='url(%23d)' stroke='%23A67CE0' stroke-width='1.6' stroke-linejoin='round'/%3E%3C/svg%3E")}
+
+.cl-flame .fx-cloak{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='fl' x1='0' y1='1' x2='0' y2='0'%3E%3Cstop offset='0' stop-color='%23FFD166'/%3E%3Cstop offset='.5' stop-color='%23FF6B00'/%3E%3Cstop offset='1' stop-color='%23B91C1C'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M44 42 C32 26 14 28 4 44 C14 40 20 42 24 48 C14 50 6 60 2 78 C12 64 24 56 36 56 C32 50 36 46 44 42 Z' fill='url(%23fl)'/%3E%3Cpath d='M56 42 C68 26 86 28 96 44 C86 40 80 42 76 48 C86 50 94 60 98 78 C88 64 76 56 64 56 C68 50 64 46 56 42 Z' fill='url(%23fl)'/%3E%3Cpath d='M50 22 C43 33 41 44 50 58 C59 44 57 33 50 22 Z' fill='%23FFE066' opacity='.92'/%3E%3C/svg%3E");
+  animation:cloakFlicker 2.2s ease-in-out infinite}
+.cl-flame .fx-glow{background:radial-gradient(circle,rgba(255,110,0,.5),transparent 68%)}
+
+.cl-galaxy .fx-cloak{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='gx' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%237C4DFF'/%3E%3Cstop offset='.5' stop-color='%2322D3EE'/%3E%3Cstop offset='1' stop-color='%23F0ABFC'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cg fill='url(%23gx)' opacity='.96'%3E%3Cellipse cx='19' cy='43' rx='26' ry='12' transform='rotate(-26 19 43)'/%3E%3Cellipse cx='15' cy='60' rx='23' ry='11' transform='rotate(-40 15 60)'/%3E%3Cellipse cx='12' cy='78' rx='18' ry='9' transform='rotate(-52 12 78)'/%3E%3Cellipse cx='81' cy='43' rx='26' ry='12' transform='rotate(26 81 43)'/%3E%3Cellipse cx='85' cy='60' rx='23' ry='11' transform='rotate(40 85 60)'/%3E%3Cellipse cx='88' cy='78' rx='18' ry='9' transform='rotate(52 88 78)'/%3E%3C/g%3E%3Cg fill='%23FFFFFF'%3E%3Ccircle cx='11' cy='45' r='1.9'/%3E%3Ccircle cx='22' cy='35' r='1.5'/%3E%3Ccircle cx='17' cy='62' r='1.7'/%3E%3Ccircle cx='89' cy='45' r='1.9'/%3E%3Ccircle cx='78' cy='35' r='1.5'/%3E%3Ccircle cx='83' cy='62' r='1.7'/%3E%3Ccircle cx='50' cy='82' r='1.6'/%3E%3C/g%3E%3C/svg%3E");
+  animation:cloakPulse 3.4s ease-in-out infinite}
+.cl-galaxy .fx-glow{background:radial-gradient(circle,rgba(124,77,255,.55),rgba(34,211,238,.2) 55%,transparent 72%);animation:breathe 3s ease-in-out infinite}
+
+/* ===================== 服装 outfit（身前层 · 落在身体下部纯色区，不会穿帮） ===================== */
+.of-uniform .fx-outfit{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 80'%3E%3Cpath d='M12 4 L50 44 L88 4 L98 18 L50 72 L2 18 Z' fill='%23FFFFFF' stroke='%2390ACD8' stroke-width='3' stroke-linejoin='round'/%3E%3Cpath d='M50 42 l-12-10 v22 z M50 42 l12-10 v22 z' fill='%23E0453F' stroke='%23A82D28' stroke-width='1.5'/%3E%3C/svg%3E")}
+
+.of-scarf .fx-outfit{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 80'%3E%3Cpath d='M6 14 C28 36 72 36 94 14 L94 32 C72 54 28 54 6 32 Z' fill='%23D9453F' stroke='%238F2320' stroke-width='2'/%3E%3Cpath d='M50 44 l-14-7 v28 l14 7 z M50 44 l14-7 v28 l-14 7 z' fill='%23E8554E' stroke='%238F2320' stroke-width='2'/%3E%3C/svg%3E")}
+
+.of-lab .fx-outfit{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 80'%3E%3Cpath d='M12 4 L50 44 L88 4 L98 20 L50 74 L2 20 Z' fill='%23FFFFFF' stroke='%23B9C6DA' stroke-width='3' stroke-linejoin='round'/%3E%3Cpath d='M50 34 C41 34 35 41 35 50 c0 11 7 20 15 20 s15-9 15-20 c0-9-6-16-15-16z' fill='none' stroke='%23A9BBD6' stroke-width='4'/%3E%3Ccircle cx='50' cy='48' r='7.5' fill='%233B82F6'/%3E%3C/svg%3E")}
+
+.of-armor .fx-outfit{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 80'%3E%3Cpath d='M50 2 L92 20 L86 60 C74 72 62 76 50 76 C38 76 26 72 14 60 L8 20 Z' fill='%23F2C14E' stroke='%23A8760B' stroke-width='3' stroke-linejoin='round'/%3E%3Cpath d='M50 14 v52' stroke='%23A8760B' stroke-width='2.5'/%3E%3Ccircle cx='50' cy='36' r='9.5' fill='%23E0453F' stroke='%23A82D28' stroke-width='2'/%3E%3C/svg%3E");
+  animation:twinkle 3.2s ease-in-out infinite}
+
+.of-rune .fx-outfit{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 80'%3E%3Cpath d='M50 2 L92 20 L86 60 C74 72 62 76 50 76 C38 76 26 72 14 60 L8 20 Z' fill='%239B7BFF' stroke='%235B3FBF' stroke-width='3' stroke-linejoin='round'/%3E%3Cpath d='M50 14 l8 16 18 3 -13 13 3 18 -16-9 -16 9 3-18 -13-13 18-3 z' fill='%23EAF0FF'/%3E%3C/svg%3E");
+  animation:twinkle 2.2s ease-in-out infinite}
+.of-rune .fx-glow{background:radial-gradient(circle,rgba(155,123,255,.5),transparent 70%)}
+
+/* ===================== 边框 ===================== */
+.f-cloud .fx-frame{border:2px solid rgba(255,255,255,.55);box-shadow:0 0 14px rgba(255,255,255,.18)}
+.f-flow .fx-frame{inset:-4px;background:conic-gradient(from 0deg,#22D3EE,#3B82F6,#7C4DFF,#22D3EE);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 6px),#000 calc(100% - 5px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 6px),#000 calc(100% - 5px));
+  animation:spin 4s linear infinite}
+.f-rainbow .fx-frame{inset:-5px;background:conic-gradient(from 0deg,#FF6B9D,#FFE66D,#4ECDC4,#7C4DFF,#FF6B9D);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 7px),#000 calc(100% - 6px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 7px),#000 calc(100% - 6px));
+  animation:spin 2.6s linear infinite}
+.f-star .fx-frame{inset:-4px;background:conic-gradient(from 0deg,#FFF7CC,#FFD54A,#FFB300,#FFF7CC);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 5px),#000 calc(100% - 4px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 5px),#000 calc(100% - 4px));
+  animation:spin 3s linear infinite,flicker 3.2s steps(1,end) infinite}
+.f-dragon .fx-frame{inset:-5px;background:conic-gradient(from 0deg,#FFE066,#FF6B00,#FF2D00,#7A1900,#FF6B00,#FFE066);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 7px),#000 calc(100% - 6px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 7px),#000 calc(100% - 6px));
+  animation:spin 2.2s linear infinite}
+.f-dragon::after{content:'';position:absolute;inset:-14px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,80,0,.5),transparent 70%);animation:breathe 1.7s ease-in-out infinite}
+
+/* ===================== 挂件 ===================== */
+.ch-crown .fx-charm{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3 8.5l4 3 5-6.5 5 6.5 4-3v9.5H3z' fill='%23FFD54A' stroke='%23A8760B' stroke-width='1.3' stroke-linejoin='round'/%3E%3Ccircle cx='12' cy='15' r='1.6' fill='%23E85D3A'/%3E%3C/svg%3E");filter:drop-shadow(0 0 6px rgba(255,213,74,.95))}
+.ch-cat .fx-charm{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 19V7l3.5 3.5h7L19 7v12z' fill='%23F4A6C0' stroke='%23A8536F' stroke-width='1.3' stroke-linejoin='round'/%3E%3Ccircle cx='9.5' cy='13' r='1.2' fill='%23A8536F'/%3E%3Ccircle cx='14.5' cy='13' r='1.2' fill='%23A8536F'/%3E%3C/svg%3E");filter:drop-shadow(0 0 6px rgba(244,166,192,.9))}
+.ch-bolt .fx-charm{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M13.5 2L5 13.5h5.5L9.5 22 19 10h-5.8z' fill='%23FFE066' stroke='%23B8860B' stroke-width='1.3' stroke-linejoin='round'/%3E%3C/svg%3E");filter:drop-shadow(0 0 7px rgba(255,224,102,.95))}
+.ch-wing .fx-charm{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 4c3 2 5 5.5 5 9 0 3-1.6 5.4-3.6 6.6-.6-2-1-3.9-1.4-6.1-.4 2.2-.8 4.1-1.4 6.1C8.6 18.4 7 16 7 13c0-3.5 2-7 5-9z' fill='%23DCEBFF' stroke='%235B8FD6' stroke-width='1.2' stroke-linejoin='round'/%3E%3C/svg%3E");filter:drop-shadow(0 0 8px rgba(180,215,255,.95))}
+.ch-cap .fx-charm{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 4l9 4-9 4-9-4z' fill='%233B4A6B' stroke='%231B2A4A' stroke-width='1.2' stroke-linejoin='round'/%3E%3Cpath d='M6.5 9.8V15c0 1.4 2.5 2.6 5.5 2.6s5.5-1.2 5.5-2.6V9.8' fill='none' stroke='%231B2A4A' stroke-width='1.4'/%3E%3C/svg%3E");filter:drop-shadow(0 0 5px rgba(255,255,255,.6))}
+
+/* ===================== 称号 ===================== */
+.title{font-size:15px;font-weight:800;letter-spacing:.5px;display:inline-block}
+.title-plain{color:var(--ink)}
+.title-gold{background:linear-gradient(100deg,#A8760B,#FFD54A 25%,#FFF9D6 50%,#FFD54A 75%,#A8760B);
+  background-size:220% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  animation:shine 3.2s linear infinite;filter:drop-shadow(0 0 8px rgba(255,213,74,.6))}
+.title-neon{background:linear-gradient(100deg,#0EA5E9,#67E8F9,#E0FBFF,#67E8F9,#0EA5E9);
+  background-size:220% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  animation:shine 2.6s linear infinite;filter:drop-shadow(0 0 10px rgba(56,189,248,.75))}
+.title-flame{background:linear-gradient(100deg,#B91C1C,#FF6B35,#FFE066,#FF6B35,#B91C1C);
+  background-size:220% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  animation:shine 2.2s linear infinite;filter:drop-shadow(0 0 10px rgba(255,107,53,.75))}
+.title-holo{background:linear-gradient(100deg,#7C4DFF,#22D3EE,#F0ABFC,#FFD54A,#7C4DFF);
+  background-size:280% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  animation:shine 4s linear infinite;filter:drop-shadow(0 0 9px rgba(167,139,250,.7))}
+
+/* ===================== 调色皮肤 ===================== */
+.sk-flame .egg-img{filter:saturate(1.55) hue-rotate(-30deg) contrast(1.1) brightness(1.03)}
+.sk-ice .egg-img{filter:saturate(1.25) hue-rotate(150deg) brightness(1.08) contrast(1.02)}
+.sk-night .egg-img{filter:saturate(.6) hue-rotate(215deg) brightness(.78) contrast(1.08)}
+.sk-gold .egg-img{filter:saturate(1.7) hue-rotate(14deg) brightness(1.08) contrast(1.05)}
+
+
+/* ===== 原型页样式（浅色主题，对齐主站配色） ===== */
+:root{--bg:#F5F1E8;--white:#fff;--ink:#1B2A4A;--ink2:#3D5078;--muted:#7A8AA8;
+  --border:#E2DCC8;--primary:#1B3A5B;--gold:#D4A017;--green:#2D7D4F}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  background:linear-gradient(180deg,#F5F1E8 0%,#F0EBE0 40%,#FBF3D9 100%);
+  color:var(--ink);min-height:100vh;padding:32px 20px 70px}
+.wrap{max-width:1060px;margin:0 auto}
+h1{font-size:24px;font-weight:800}
+.sub{font-size:13px;color:var(--muted);margin-top:8px;line-height:1.8}
+h2{font-size:15px;font-weight:700;margin:36px 0 16px;padding-left:10px;border-left:3px solid var(--gold)}
+.panel{background:var(--white);border:1px solid var(--border);border-radius:18px;padding:24px;box-shadow:0 3px 10px rgba(27,58,91,.08)}
+.grid6{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:16px}
+.lightcard{display:flex;flex-direction:column;align-items:center;gap:12px;padding:26px 10px 16px;
+  background:linear-gradient(180deg,#FFFDF8,#FBF6E9);border:1px solid var(--border);border-radius:16px}
+.lightcard .egg-deco{width:104px;height:104px}
+.lightcard .fx-rays{inset:-26px}.lightcard .fx-cloak{inset:-28px}
+.lightcard .r-orbit{inset:-22px}.lightcard .fx-charm{width:30px;height:30px}
+.lc-name{font-size:12.5px;font-weight:700;text-align:center}
+.tabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:18px}
+.tab{padding:7px 15px;border-radius:999px;border:1.5px solid var(--border);background:#fff;
+  font-size:12px;font-weight:600;color:var(--ink2);cursor:pointer;font-family:inherit}
+.tab.on{background:var(--primary);border-color:var(--primary);color:#fff}
+.alist{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
+.ach{display:flex;gap:14px;align-items:center;padding:14px;border:1px solid var(--border);
+  border-radius:16px;background:#fff;overflow:hidden}
+.ach.locked{opacity:.6;background:#FBFAF6}
+.ach.done{border-color:#C9E0CE;background:linear-gradient(180deg,#FFFFFF,#F4FBF5)}
+.ach .egg-deco{width:70px;height:70px}
+.ach .fx-rays{inset:-16px}.ach .fx-cloak{inset:-16px}.ach .r-orbit{inset:-12px}
+.ach .fx-charm{width:20px;height:20px;right:-2px;bottom:-2px}
+.ach-body{flex:1;min-width:0}
+.ach-name{font-size:13.5px;font-weight:700}
+.ach-cond{font-size:11.5px;color:var(--muted);margin-top:3px}
+.bar{height:6px;border-radius:4px;background:#EDE8DA;margin-top:9px;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:4px;background:linear-gradient(90deg,#4ECDC4,#1B3A5B)}
+.ach-ft{font-size:11px;color:var(--ink2);margin-top:7px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.pill{font-size:10px;font-weight:800;padding:2px 8px;border-radius:6px}
+.pill.on{background:#E0EFE3;color:#2D7D4F}
+.pill.off{background:#F1EFE8;color:#888780}
+.slots{display:flex;flex-direction:column;gap:13px;flex:1;min-width:280px}
+.srow{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.slbl{font-size:12px;font-weight:700;color:var(--ink2);width:50px;flex:none}
+.sopts{display:flex;gap:7px;flex-wrap:wrap}
+.sbtn{padding:6px 13px;border-radius:999px;border:1.5px solid var(--border);background:#fff;
+  font-size:12px;font-weight:600;color:var(--ink2);cursor:pointer;font-family:inherit}
+.sbtn.on{background:var(--primary);border-color:var(--primary);color:#fff}
+.stage{display:flex;gap:34px;align-items:center;flex-wrap:wrap}
+.stage-left{display:flex;flex-direction:column;align-items:center;gap:14px;padding:38px 30px}
+.stage-left .egg-deco{width:158px;height:158px}
+.lc-meta{font-size:11px;color:var(--muted)}
+.modal{max-width:400px;margin:0 auto;background:#fff;border-radius:22px;padding:30px 26px 24px;text-align:center;
+  box-shadow:0 18px 46px rgba(27,58,91,.18);border:1px solid var(--border)}
+.modal .egg-deco{width:132px;height:132px;margin:6px auto 14px}
+.modal h3{font-size:19px;font-weight:800}
+.modal p{font-size:13px;color:var(--muted);margin-top:8px;line-height:1.8}
+.modal .btn{margin-top:18px;padding:11px 34px;border-radius:999px;border:none;background:var(--primary);
+  color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
+.note{background:#FFF9E8;border:1px solid #F0E2B8;border-radius:14px;padding:16px 18px;
+  font-size:12.5px;line-height:1.85;color:var(--ink2);margin-top:16px}
+.note b{color:var(--ink)}
+.bad{background:#FDEDE6;border-color:#F5C4B3}
+.bad b{color:#C84A2A}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <h1>蛋蛋世界 · 成就特效系统 原型</h1>
+  <p class="sub">去掉商城后，特效与称号改为<b>成就解锁</b>：干好事 → 解锁特效 / 称号 → 自由穿戴。
+  本原型共 4 部分：浅色底效果实测 · 成就图鉴页 · 装扮穿戴页 · 解锁弹窗。</p>
+
+  <h2>一、浅色底效果实测（重点：验证主站配色下的观感）</h2>
+  <div class="panel"><div class="grid6" id="liteRow"></div></div>
+  <div class="note bad"><b>请重点看这一节。</b>设计预览是深色底，而主站是浅色底。
+  彩色环、披风、服装、挂件在浅色底上依然清晰，但<b>发光感会减弱</b>。
+  最后两张对比了开启可选暗场层 <code>.fx-field</code> 的差异 —— 请判断大尺寸场景是否需要启用。</div>
+
+  <h2>二、成就图鉴页</h2>
+  <div class="panel"><div class="tabs" id="achTabs"></div><div class="alist" id="achList"></div></div>
+
+  <h2>三、装扮穿戴页（7 槽位）</h2>
+  <div class="panel"><div class="stage">
+    <div class="stage-left">
+      <div class="egg-deco" id="wearDeco"></div>
+      <span class="title title-plain deco-title" id="wearTitle">蛋蛋昵称</span>
+      <span class="lc-meta" id="wearDesc"></span>
+    </div>
+    <div class="slots" id="wearSlots"></div>
+  </div></div>
+
+  <h2>四、解锁弹窗</h2>
+  <div class="panel"><div class="modal">
+    <div class="egg-deco" id="modalDeco"></div>
+    <h3>解锁新成就</h3>
+    <p><b>早起的蛋</b><br>累计签到 3 天</p>
+    <p>获得特效 <b>云纹边框</b><br>获得称号 <b>早起的蛋</b></p>
+    <button class="btn">收下</button>
+  </div></div>
+
+  <div class="note"><b>设计要点</b><br>
+  · 成就分 9 类：签到 / 发布任务 / 完成任务 / 组队共创 / 口碑评价 / 求知问答 / 邀约好友 / 大学吐槽 / 综合成就；<br>
+  · 共 <b>30 个成就</b>，解锁 <b>28 个特效 + 24 个称号</b>（全部沿用已定稿的视觉效果，零新增素材）；<br>
+  · 前 3 个成就当天即可达成，保证新用户立刻获得正反馈；<br>
+  · 称号 = <b>名称 + 样式</b>，样式按档次分 普通 / 鎏金 / 霓虹 / 烈焰 / 全息 五档。</div>
+</div>
+
+<script>
+
+var IMG='../assets/char-eggy-hermit.jpg';
+function inner(light){
+  var h='<span class="fx-core"></span>';
+  if(!light) h+='<span class="fx-rays"></span><span class="fx-wave w1"></span><span class="fx-wave w2"></span>'
+    +'<span class="r-orbit o1"><i></i><i></i><i></i><i></i></span>'
+    +'<span class="r-orbit o2"><i></i><i></i><i></i><i></i></span>';
+  h+='<span class="fx-cloak"></span><span class="r-ring r1"></span><span class="r-ring r2"></span><span class="r-ring r3"></span>'
+    +'<img class="egg-img" src="'+IMG+'" alt="">'
+    +'<span class="fx-outfit"></span><span class="fx-frame"></span><span class="fx-charm"></span>';
+  return h;
+}
+function decoCls(d,light){
+  var c='egg-deco'+(light?' deco-light':'');
+  ['aura','cloak','outfit','frame','charm','skin'].forEach(function(s){ if(d[s]) c+=' '+d[s]; });
+  return c;
+}
+var TITLES={
+ 't-newbie':{n:'早起的蛋',s:'title-plain'},'t-diligent':{n:'勤勉不辍',s:'title-gold'},
+ 't-steady':{n:'雷打不动',s:'title-neon'},'t-star':{n:'星辰不眠',s:'title-holo'},
+ 't-tasker':{n:'任务达人',s:'title-plain'},'t-lord':{n:'一方诸侯',s:'title-gold'},
+ 't-mentor':{n:'桃李满门',s:'title-neon'},'t-buddy':{n:'靠谱搭子',s:'title-plain'},
+ 't-worker':{n:'黄金打工人',s:'title-gold'},'t-model':{n:'劳模蛋',s:'title-flame'},
+ 't-legend':{n:'传奇蛋',s:'title-holo'},'t-core':{n:'团队核心',s:'title-neon'},
+ 't-partner':{n:'最佳拍档',s:'title-neon'},'t-goldsign':{n:'金字招牌',s:'title-gold'},
+ 't-acclaim':{n:'众望所归',s:'title-holo'},'t-sharp':{n:'一针见血',s:'title-plain'},
+ 't-brain':{n:'智囊',s:'title-neon'},'t-genius':{n:'智多星',s:'title-holo'},
+ 't-guide':{n:'引路人',s:'title-plain'},'t-network':{n:'人脉王',s:'title-holo'},
+ 't-frank':{n:'有话直说',s:'title-plain'},'t-allround':{n:'全能蛋',s:'title-flame'},
+ 't-hexa':{n:'六边形蛋',s:'title-flame'},'t-veteran':{n:'元老',s:'title-holo'}
+};
+var EFFNAME={
+ 'a-moon':'月华','a-thunder':'雷霆','a-ember':'烈焰','a-cosmos':'星海',
+ 'cl-cloth':'旅人斗篷','cl-feather':'羽翼','cl-dragon':'龙翼','cl-flame':'烈焰之翼','cl-galaxy':'星河之翼',
+ 'of-uniform':'学生制服','of-scarf':'暖绒围巾','of-lab':'科研白袍','of-armor':'金鳞胸甲','of-rune':'星辉圣袍',
+ 'f-cloud':'云纹边框','f-flow':'流光边框','f-rainbow':'彩虹边框','f-star':'星辉边框','f-dragon':'龙焰边框',
+ 'ch-cap':'学士帽','ch-cat':'猫耳','ch-bolt':'雷霆挂件','ch-wing':'羽翼挂件','ch-crown':'皇冠',
+ 'sk-flame':'火焰蛋','sk-ice':'冰霜蛋','sk-night':'暗夜蛋','sk-gold':'黄金蛋'
+};
+function slotOf(k){
+  var p=k.split('-')[0];
+  return p==='a'?'aura':p==='cl'?'cloak':p==='of'?'outfit':p==='f'?'frame':p==='ch'?'charm':'skin';
+}
+var CAT={checkin:'签到',publish:'发布任务',complete:'完成任务',team:'组队共创',rating:'口碑评价',
+  gossip:'求知问答',invite:'邀约好友',complaint:'大学吐槽',meta:'综合成就'};
+
+var ACH=[
+ {c:'checkin',n:'初来乍到',d:'累计签到 1 天',eff:'a-moon',cur:1,goal:1},
+ {c:'checkin',n:'早起的蛋',d:'累计签到 3 天',eff:'f-cloud',t:'t-newbie',cur:1,goal:3},
+ {c:'checkin',n:'小有坚持',d:'连续签到 7 天',eff:'ch-cap',cur:1,goal:7},
+ {c:'checkin',n:'勤勉不辍',d:'累计签到 15 天',eff:'of-scarf',t:'t-diligent',cur:1,goal:15},
+ {c:'checkin',n:'雷打不动',d:'连续签到 30 天',eff:'a-thunder',t:'t-steady',cur:1,goal:30},
+ {c:'checkin',n:'星辰不眠',d:'累计签到 100 天',eff:'a-cosmos',t:'t-star',cur:1,goal:100},
+ {c:'publish',n:'初出茅庐',d:'发布第 1 个任务',eff:'cl-cloth',cur:1,goal:1},
+ {c:'publish',n:'任务达人',d:'累计发布 5 个任务',eff:'ch-bolt',t:'t-tasker',cur:2,goal:5},
+ {c:'publish',n:'一方诸侯',d:'累计发布 15 个任务',eff:'f-flow',t:'t-lord',cur:2,goal:15},
+ {c:'publish',n:'桃李满门',d:'累计发布 30 个任务',eff:'cl-dragon',t:'t-mentor',cur:2,goal:30},
+ {c:'complete',n:'热心肠',d:'完成第 1 个任务',eff:'of-uniform',cur:1,goal:1},
+ {c:'complete',n:'靠谱搭子',d:'累计完成 5 个任务',eff:'ch-cat',t:'t-buddy',cur:4,goal:5},
+ {c:'complete',n:'黄金打工人',d:'累计完成 15 个任务',eff:'of-armor',t:'t-worker',cur:4,goal:15},
+ {c:'complete',n:'劳模蛋',d:'累计完成 30 个任务',eff:'cl-flame',t:'t-model',cur:4,goal:30},
+ {c:'complete',n:'传奇蛋',d:'累计完成 60 个任务',eff:'of-rune',t:'t-legend',cur:4,goal:60},
+ {c:'team',n:'并肩作战',d:'首次组队完成',eff:'cl-feather',cur:0,goal:1},
+ {c:'team',n:'团队核心',d:'组队完成 5 次',eff:'ch-wing',t:'t-core',cur:0,goal:5},
+ {c:'team',n:'最佳拍档',d:'组队完成 10 次',eff:'sk-ice',t:'t-partner',cur:0,goal:10},
+ {c:'rating',n:'好评如潮',d:'首次收到 5 星评价',eff:'sk-flame',cur:0,goal:1},
+ {c:'rating',n:'金字招牌',d:'累计收到 10 条 5 星评价',t:'t-goldsign',cur:0,goal:10},
+ {c:'rating',n:'众望所归',d:'口碑均分 ≥4.8 且评价数 ≥20',eff:'f-star',t:'t-acclaim',cur:0,goal:1},
+ {c:'gossip',n:'一针见血',d:'首次回答被采纳',eff:'of-lab',t:'t-sharp',cur:0,goal:1},
+ {c:'gossip',n:'智囊',d:'累计被采纳 10 次',eff:'a-ember',t:'t-brain',cur:0,goal:10},
+ {c:'gossip',n:'蛋总智多星',d:'累计被采纳 30 次',eff:'cl-galaxy',t:'t-genius',cur:0,goal:30},
+ {c:'invite',n:'引路人',d:'成功邀请 1 位好友',eff:'f-rainbow',cur:0,goal:1},
+ {c:'invite',n:'人脉王',d:'成功邀请 5 位好友',eff:'ch-crown',t:'t-network',cur:0,goal:5},
+ {c:'complaint',n:'有话直说',d:'首次参与大学吐槽',eff:'sk-night',t:'t-frank',cur:0,goal:1},
+ {c:'meta',n:'全能蛋',d:'在 4 个不同分类中达成成就',eff:'f-dragon',t:'t-allround',cur:0,goal:1},
+ {c:'meta',n:'六边形蛋',d:'累计解锁 20 个成就',t:'t-hexa',cur:0,goal:20},
+ {c:'meta',n:'元老',d:'注册满 365 天',eff:'sk-gold',t:'t-veteran',cur:0,goal:1}
+];
+
+var LITE=[
+ {n:'雷霆 + 彩虹边框',d:{aura:'a-thunder',frame:'f-rainbow'}},
+ {n:'烈焰 + 龙焰边框',d:{aura:'a-ember',frame:'f-dragon'}},
+ {n:'星海 + 皇冠',d:{aura:'a-cosmos',charm:'ch-crown'}},
+ {n:'星河之翼 + 星辉圣袍',d:{cloak:'cl-galaxy',outfit:'of-rune'}},
+ {n:'暗场层 开启',d:{aura:'a-cosmos',cloak:'cl-galaxy',frame:'f-rainbow'},field:1},
+ {n:'暗场层 关闭',d:{aura:'a-cosmos',cloak:'cl-galaxy',frame:'f-rainbow'}}
+];
+var lr=document.getElementById('liteRow');
+LITE.forEach(function(it){
+  var el=document.createElement('div'); el.className='lightcard';
+  var h=inner().replace('<span class="fx-core"></span>',
+    (it.field?'<span class="fx-field"></span>':'')+'<span class="fx-core"></span>');
+  el.innerHTML='<div class="'+decoCls(it.d)+' breathe">'+h+'</div><div class="lc-name">'+it.n+'</div>';
+  lr.appendChild(el);
+});
+
+var tabBox=document.getElementById('achTabs'), cur='all';
+['all'].concat(Object.keys(CAT)).forEach(function(c){
+  var b=document.createElement('button');
+  b.className='tab'+(c==='all'?' on':'');
+  b.textContent=(c==='all'?'全部':CAT[c]);
+  b.onclick=function(){
+    cur=c;
+    tabBox.querySelectorAll('.tab').forEach(function(x){x.classList.remove('on')});
+    b.classList.add('on'); renderAch();
+  };
+  tabBox.appendChild(b);
+});
+function renderAch(){
+  var box=document.getElementById('achList'); box.innerHTML='';
+  ACH.filter(function(a){return cur==='all'||a.c===cur;}).forEach(function(a){
+    var done=a.cur>=a.goal, pct=done?100:Math.min(99,Math.round(a.cur/a.goal*100));
+    var d={}; if(a.eff) d[slotOf(a.eff)]=a.eff;
+    var t=a.t?TITLES[a.t]:null;
+    var el=document.createElement('div');
+    el.className='ach '+(done?'done':'locked');
+    el.innerHTML='<div class="'+decoCls(d,true)+'">'+inner(true)+'</div>'
+      +'<div class="ach-body">'
+      +'<div class="ach-name">'+a.n+'</div>'
+      +'<div class="ach-cond">'+a.d+'</div>'
+      +'<div class="bar"><i style="width:'+pct+'%"></i></div>'
+      +'<div class="ach-ft"><span class="pill '+(done?'on':'off')+'">'+(done?'已解锁':'未解锁')+'</span>'
+      +(a.eff?'<span>特效 · '+EFFNAME[a.eff]+'</span>':'')
+      +(t?'<span class="title '+t.s+'" style="font-size:11.5px">称号 · '+t.n+'</span>':'')
+      +'</div></div>';
+    box.appendChild(el);
+  });
+}
+renderAch();
+
+var state={aura:'a-cosmos',cloak:'cl-galaxy',outfit:'of-rune',frame:'f-rainbow',charm:'ch-crown',title:'t-star',skin:''};
+var SLOTS=[['aura','光环',['','a-moon','a-thunder','a-ember','a-cosmos']],
+ ['cloak','披风',['','cl-cloth','cl-feather','cl-dragon','cl-flame','cl-galaxy']],
+ ['outfit','服装',['','of-uniform','of-scarf','of-lab','of-armor','of-rune']],
+ ['frame','边框',['','f-cloud','f-flow','f-rainbow','f-star','f-dragon']],
+ ['charm','挂件',['','ch-cap','ch-cat','ch-bolt','ch-wing','ch-crown']],
+ ['title','称号',['','t-newbie','t-diligent','t-steady','t-star','t-goldsign']],
+ ['skin','皮肤',['','sk-flame','sk-ice','sk-night','sk-gold']]];
+function renderWear(){
+  var dd={}; ['aura','cloak','outfit','frame','charm','skin'].forEach(function(s){dd[s]=state[s]});
+  var d=document.getElementById('wearDeco');
+  d.className=decoCls(dd)+' breathe'; d.innerHTML=inner();
+  var t=state.title?TITLES[state.title]:null;
+  document.getElementById('wearTitle').className='title '+((t&&t.s)||'title-plain')+' deco-title';
+  document.getElementById('wearDesc').textContent=t?('称号：'+t.n):'未佩戴称号';
+}
+var wbox=document.getElementById('wearSlots');
+SLOTS.forEach(function(s){
+  var row=document.createElement('div'); row.className='srow';
+  var lbl=document.createElement('span'); lbl.className='slbl'; lbl.textContent=s[1];
+  var opts=document.createElement('div'); opts.className='sopts';
+  s[2].forEach(function(k){
+    var b=document.createElement('button');
+    b.className='sbtn'+(state[s[0]]===k?' on':'');
+    b.textContent=k?(EFFNAME[k]||(TITLES[k]&&TITLES[k].n)||'—'):'不佩戴';
+    b.onclick=function(){
+      state[s[0]]=k;
+      opts.querySelectorAll('.sbtn').forEach(function(x){x.classList.remove('on')});
+      b.classList.add('on'); renderWear();
+    };
+    opts.appendChild(b);
+  });
+  row.appendChild(lbl); row.appendChild(opts); wbox.appendChild(row);
+});
+renderWear();
+
+var m=document.getElementById('modalDeco');
+m.className=decoCls({frame:'f-cloud',charm:'ch-cap'})+' breathe';
+m.innerHTML=inner();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+[
+  {"name":"东华理工大学长江学院","actual":"赣东学院","url":"https://www.dxsbb.com/news/17448.html","mapping":"目录旧校名对应现名赣东学院"},
+  {"name":"兰州理工大学技术工程学院","actual":"兰州信息科技学院","url":"https://www.dxsbb.com/news/23680.html","mapping":"目录旧校名对应现名兰州信息科技学院"},
+  {"name":"兰州财经大学陇桥学院","actual":"兰州工商学院","url":"https://www.dxsbb.com/news/23670.html","mapping":"目录旧校名对应现名兰州工商学院"},
+  {"name":"华东交通大学理工学院","actual":"南昌交通学院","url":"https://www.dxsbb.com/news/17386.html","mapping":"目录旧校名对应现名南昌交通学院"},
+  {"name":"安徽工业大学工商学院","actual":"马鞍山学院","url":"https://m.dxsbb.com/news/18136.html","mapping":"目录旧校名对应现名马鞍山学院"},
+  {"name":"广东技术师范学院天河学院","actual":"广州理工学院","url":"https://www.dxsbb.com/news/23067.html","mapping":"目录旧校名对应现名广州理工学院"},
+  {"name":"浙江医学高等专科学校","actual":"杭州医学院","url":"https://www.dxsbb.com/news/92544.html","mapping":"目录旧校名对应现名杭州医学院"},
+  {"name":"福建师范大学闽南科技学院","actual":"闽南科技学院","url":"https://www.dxsbb.com/news/19323.html","mapping":"目录旧校名对应现名闽南科技学院"},
+  {"name":"福建阳光学院","actual":"阳光学院","url":"https://www.dxsbb.com/news/19437.html","mapping":"目录名称/旧校名对应现名阳光学院"},
+  {"name":"钦州学院","actual":"北部湾大学","url":"https://www.dxsbb.com/news/19845.html","mapping":"目录旧校名对应现名北部湾大学"},
+  {"name":"长沙通信职业技术学院","actual":"湖南邮电职业技术学院","url":"https://www.dxsbb.com/news/22093.html","mapping":"目录旧校名对应现名湖南邮电职业技术学院"},
+  {"name":"陕西汽车科技职业学院","actual":"西安汽车职业大学","url":"https://www.dxsbb.com/news/23281.html","mapping":"目录旧校名对应现名西安汽车职业大学"}
+]

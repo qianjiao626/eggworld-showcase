@@ -1,0 +1,199 @@
+/* ============================================================
+   移动端「发布任务」入口 + 发布页改版 · 样式（仅在 ≤768px 生效）
+   ------------------------------------------------------------
+   为什么单独一个文件：主文件已经很挤，移动端支持尽量外置
+   （与 js/plaza-mobile.css、js/plaza-swipe.js 同一约定）。
+   引入位置：growth-schoolv3.html 的 </style> 之后，紧挨 js/plaza-mobile.css
+   —— 必须晚于主样式加载，靠加载顺序覆盖，尽量不用 !important。
+   配套脚本：js/publish-mobile.js（底栏那一格、选类型面板、发布页 DOM 重排都由它注入）。
+
+   三块内容：
+     ① 底栏第 5 格「发布」（圆钮）
+     ② 选任务类型面板（点圆钮弹出）
+     ③ 发布页 #page-publish 的移动端版式：
+        去卡片、控件改填充、技能分类两个下拉、认领模式与金额并排一行、
+        低频项折叠、提交吸底、吸顶行「‹ 返回广场 + 发布XX任务」
+
+   与原型（local-only/发布任务入口原型.html）的一处刻意差异：
+     原型里底栏是页面的 flex 兄弟节点，所以给底栏加了 12px 顶部空档让圆钮「凸出去」；
+     真实页面底栏是 position:fixed 浮层（z-index 50，且 overflow:hidden 会裁掉探出部分），
+     圆钮本来就压不到、也不用改 .sidebar 高度 —— 所以这里不加空档，圆钮整颗留在底栏内，
+     提交吸底条用 bottom:68px（+ 安全区）贴在底栏上沿即可。
+   ============================================================ */
+
+/* ---------- web 端（>768px）一律不显示脚本注入的三个节点 ----------
+   脚本是无条件注入的（底栏那一格、面板、遮罩），而下面的样式全在 ≤768px 里；
+   不给这条兜底的话，web 端侧栏会多出一个没样式的「发布」按钮，
+   面板与遮罩会以无样式块的形式落在页面最底部。 */
+body .sidebar .nav-publish,
+.np-mask,
+.np-sheet{display:none}
+
+@media(max-width:768px){
+
+  /* ================= ① 底栏第 5 格：发布 =================
+     尺寸与主文件里 .nav-item 的移动端样式逐项对齐（flex:1 / 58px / 10px 字号）。
+     用独立类名 .nav-publish：主文件给所有 .nav-item 统绑了 go(data-page)，
+     而这一格不切页（只弹面板），挂那个类会被 go(null) 打到。 */
+  body .sidebar .nav-publish{
+    flex:1 1 0;min-width:0;max-width:110px;height:58px;padding:4px 3px;border-radius:10px;position:relative;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    border:0;background:transparent;font-family:inherit;font-size:10px;font-weight:600;
+    color:rgba(255,255,255,.62);white-space:nowrap;cursor:pointer;-webkit-tap-highlight-color:transparent
+  }
+  body .sidebar .nav-publish .np-fab{
+    width:54px;height:54px;border-radius:50%;margin-top:-2px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
+    background:linear-gradient(135deg,#FF8A4C,#E85D3A);color:#fff;box-shadow:0 5px 14px rgba(0,0,0,.28)
+  }
+  body .sidebar .nav-publish .np-fab svg{width:21px;height:21px}
+  body .sidebar .nav-publish .np-fab .np-t{font-size:9.5px;font-weight:700;letter-spacing:.2px;line-height:1}
+
+  /* ================= ② 选任务类型面板 =================
+     层级：要盖住底栏（z-index 50）与反馈浮标（100），但要低于登录 / 注册浮层（150）——
+     访客点「发布」时 go('publish') 会拦下来弹注册引导，面板不能压住它。所以取 130/131。 */
+  .np-mask{display:block;position:fixed;inset:0;z-index:130;background:rgba(18,26,42,.44);opacity:0;pointer-events:none;
+    transition:opacity .2s}
+  .np-mask.on{opacity:1;pointer-events:auto}
+  .np-sheet{display:block;position:fixed;left:0;right:0;bottom:0;z-index:131;background:#fff;border-radius:20px 20px 0 0;
+    padding:0 14px calc(12px + env(safe-area-inset-bottom));transform:translateY(105%);
+    transition:transform .26s cubic-bezier(.34,1.56,.64,1);box-shadow:0 -12px 34px rgba(27,58,91,.22);
+    pointer-events:none}   /* 收起动画期间（约 260ms）不要拦住点击 */
+  .np-sheet.on{transform:none;pointer-events:auto}
+  .np-grip{width:38px;height:4px;border-radius:999px;background:#E2DCC8;margin:8px auto 10px}
+  .np-head{display:flex;align-items:baseline;gap:8px;padding:0 4px 10px}
+  .np-head h3{font-size:15px;font-weight:800;color:#1B2A4A}
+  .np-head .s{font-size:11.5px;color:#7A8AA8}
+  .np-row{display:flex;align-items:center;gap:12px;width:100%;border:0;border-radius:16px;background:#F5F1E8;
+    padding:11px 12px;margin-bottom:8px;text-align:left;font-family:inherit;cursor:pointer}
+  .np-ic{width:40px;height:40px;border-radius:13px;display:flex;align-items:center;justify-content:center;
+    flex:none;font-size:20px;background:#fff}
+  .np-tx{flex:1;min-width:0}
+  .np-tx .t{display:block;font-size:13.5px;font-weight:700;color:#1B2A4A}
+  .np-tx .d{display:block;font-size:11.5px;color:#7A8AA8;line-height:1.5;margin-top:2px}
+  .np-tx .m{display:block;font-size:11px;color:#E85D3A;margin-top:3px;font-weight:600}
+  .np-arrow{width:16px;height:16px;color:#B0BCD0;flex:none}
+  .np-cancel{width:100%;height:46px;border-radius:16px;border:0;background:#F5F1E8;
+    font-family:inherit;font-size:13.5px;font-weight:700;color:#3D5078;cursor:pointer;margin-top:2px}
+
+  /* ================= ③ 发布页（#page-publish） =================
+     去框版式：不再用卡片，表单直接铺在页面底色上（靠留白 + 小标题分组）；
+     控件、chip、下拉按钮、折叠条一律「白底填充」，聚焦时才给一圈淡色光晕。 */
+
+  /* 吸顶行：左「‹ 返回广场」、右「发布教学任务 / 发布求助任务 / 发布组队任务」（文案由脚本写）。
+     去掉面包屑、去掉底边线，改用极淡投影与内容分层；返回按钮去掉白底药丸（那也是一个「框」）。
+     ⚠️ 选择器要带 body:has(#studentNav[style*="flex"])：主文件里那条
+     body:has(#studentNav[style*="flex"]) .topbar{position:static;height:auto;…} 的特异性比
+     #page-publish .topbar 高，只写后者压不住。 */
+  body:has(#studentNav[style*="flex"]) #page-publish .topbar{
+    position:sticky;top:0;z-index:6;height:44px;min-height:0;border-bottom:0;padding:6px 0;
+    box-shadow:0 6px 14px rgba(27,58,91,.06)
+  }
+  #page-publish .topbar .crumb{display:none}
+  #page-publish .back-btn{margin-right:0;padding:0 2px;border:0;background:transparent;gap:2px;
+    font-size:12.5px;font-weight:700;color:#1B3A5B}
+  #page-publish .back-btn svg{width:15px;height:15px}
+  #page-publish .pm-title{margin-left:auto;font-size:15px;font-weight:800;color:#1B2A4A;text-align:right}
+
+  #page-publish .pm-body{padding:0 0 0 4px;display:flex;flex-direction:column;gap:16px}
+  #page-publish .pm-sub{font-size:11.5px;color:#7A8AA8;line-height:1.6;padding:0 4px}
+  #page-publish .pm-sec{font-size:12.5px;font-weight:800;color:#1B2A4A;padding:0 4px;margin-top:6px}
+  #page-publish .pm-fld{display:flex;flex-direction:column;gap:7px;min-width:0}
+  /* 用后代选择器：#maxClaimersWrap 等包装层里的 label 也要吃到这套样式 */
+  #page-publish .pm-fld .field-lbl{font-size:12.5px;font-weight:700;color:#3D5078;padding-left:4px;margin:0}
+  #page-publish .pm-fld .field-lbl span{font-weight:400;font-size:11px;color:#7A8AA8}
+  /* 「最多可选人数」：跟着认领模式显隐，内部 label + 输入框竖排 */
+  #page-publish #maxClaimersWrap{display:flex;flex-direction:column;gap:7px}
+
+  /* 控件：白底填充、无描边；16px 是硬要求 —— iOS 在 <16px 的输入框上聚焦会整页放大 */
+  #page-publish .input,
+  #page-publish .input-num,
+  #page-publish .input-date,
+  #page-publish .textarea{
+    display:block;width:100%;height:46px;padding:0 14px;border:0;border-radius:12px;background:#fff;
+    font-family:inherit;font-size:16px;color:#1B2A4A;box-shadow:none;transition:box-shadow .18s
+  }
+  #page-publish .textarea{height:88px;padding:12px 14px;line-height:1.6;resize:none}
+  #page-publish #publishRequirements{height:104px}
+  #page-publish .input:focus,
+  #page-publish .input-num:focus,
+  #page-publish .input-date:focus,
+  #page-publish .textarea:focus{outline:none;box-shadow:0 0 0 3px rgba(27,58,91,.14)}
+
+  /* chip：白底填充、选中=主色填充；触控 44px（现状 33px 偏小） */
+  #page-publish .score-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  #page-publish .chip{
+    flex:none;display:inline-flex;align-items:center;justify-content:center;gap:4px;height:44px;padding:0 14px;
+    border:0;border-radius:13px;background:#fff;font-size:13px;font-weight:600;color:#7A8AA8;cursor:pointer
+  }
+  #page-publish .chip.active{background:#1B3A5B;color:#fff}
+
+  /* 认领模式与金额并排一行；窄屏（320）下 chip 自己折到第二行，不挤压金额。
+     金额口径那句话（#publishRewardHint）整行放在这一行下面。 */
+  #page-publish .pm-claim-money{display:flex;gap:10px;align-items:flex-start}
+  #page-publish .pm-claim-money>.pm-fld{flex:1 1 0;min-width:0}
+  #page-publish .pm-claim-money>.pm-money-fld{flex:0 0 auto}
+  #page-publish .pm-money{display:flex;align-items:center;gap:8px}
+  #page-publish .pm-money .input-num{width:96px;flex:none;text-align:center;font-weight:700}
+  #page-publish .pm-unit{font-size:12.5px;color:#3D5078;white-space:nowrap}
+  #page-publish #publishReward[readonly]{background:#EFEADD;color:#7A8AA8}
+  #page-publish .pm-hint{font-size:11.5px;color:#7A8AA8;line-height:1.6;padding-left:4px}
+  #page-publish .pm-hint b{color:#E85D3A}
+
+  /* 报名截止的「自定义 [30] 天」：整体当一个 chip，里面的数字框去掉所有框线 */
+  #page-publish #signupDlCustom{display:inline-flex;align-items:center;gap:4px;height:44px;padding:0 10px;
+    border-radius:13px;background:#fff}
+  #page-publish #signupDlCustom .input-num{width:56px;height:34px;padding:0;border:0;background:transparent;
+    text-align:center;font-weight:700}
+  #page-publish #signupDlCustom>span{font-size:13px;color:#3D5078}
+
+  /* 技能分类：两个下拉（结构与 js/plaza-mobile.css 的 .cat-select 一致，按钮按表单控件放大） */
+  #page-publish #publishSkillRow{display:none}       /* 原来的两级 chip 行隐藏，改由下拉驱动 */
+  /* 任务类型那一行：移动端不显示，但节点必须留着给 submitPublish() 读选中态（见 js 里的说明） */
+  #page-publish .pm-hidden-type{display:none}
+  #page-publish .pm-selrow{display:flex;gap:8px}
+  #page-publish .pm-selrow .np-sel{flex:1 1 0;min-width:0}
+  .np-sel{position:relative}
+  .np-sel .np-selb{display:flex;align-items:center;gap:6px;width:100%;height:46px;padding:0 12px;border:0;
+    border-radius:12px;background:#fff;font-family:inherit;font-size:14px;font-weight:600;color:#3D5078;
+    cursor:pointer;transition:box-shadow .18s}
+  .np-sel .np-selb .e{font-size:15px;line-height:1;flex:none}
+  .np-sel .np-selb .n{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left}
+  .np-sel .np-selb .c{width:16px;height:16px;color:#7A8AA8;flex:none;transition:transform .18s}
+  .np-sel.on .np-selb{color:#1B3A5B;box-shadow:0 0 0 3px rgba(27,58,91,.14)}
+  .np-sel.on .np-selb .c{transform:rotate(180deg)}
+  .np-sel .np-menu{position:absolute;top:calc(100% + 8px);left:0;right:0;z-index:14;display:none;
+    flex-direction:column;gap:2px;background:#fff;border-radius:14px;padding:6px;max-height:264px;overflow-y:auto;
+    box-shadow:0 16px 40px rgba(27,58,91,.22)}
+  .np-sel.on .np-menu{display:flex}
+  .np-sel .np-item{display:flex;align-items:center;gap:8px;min-height:44px;padding:0 10px;border-radius:10px;
+    font-size:13px;font-weight:600;color:#3D5078;cursor:pointer}
+  .np-sel .np-item.active{background:#EFEADD;color:#1B3A5B}
+  .np-sel .np-item .dot{width:8px;height:8px;border-radius:50%;background:var(--ec,#888);flex:none}
+
+  /* 折叠低频项：一条白色圆角填充条（不是卡片、无描边）；原生 details/summary，零 JS */
+  #page-publish .pm-fold{background:#fff;border-radius:12px}
+  #page-publish .pm-fold>summary{list-style:none;display:flex;align-items:center;gap:8px;min-height:56px;
+    padding:12px 14px;cursor:pointer}
+  #page-publish .pm-fold>summary::-webkit-details-marker{display:none}
+  #page-publish .pm-fold>summary .st{font-size:13.5px;font-weight:700;color:#1B2A4A;flex:none}
+  #page-publish .pm-fold>summary .ss{font-size:11px;color:#7A8AA8;margin-left:auto;text-align:right;line-height:1.4}
+  #page-publish .pm-fold>summary .chev{width:16px;height:16px;color:#B0BCD0;flex:none;transition:transform .2s}
+  #page-publish .pm-fold[open]>summary .chev{transform:rotate(90deg)}
+  #page-publish .pm-fold .pm-foldbody{padding:0 14px 14px;display:flex;flex-direction:column;gap:16px}
+  #page-publish .pm-fold.mint>summary .st{color:#2E9E63}
+  /* 折叠条是白底，里面的控件改用页面底色填充，否则白压白看不出形状 */
+  #page-publish .pm-fold .input,
+  #page-publish .pm-fold .input-num,
+  #page-publish .pm-fold .input-date,
+  #page-publish .pm-fold .chip,
+  #page-publish .pm-fold #signupDlCustom{background:#F5F1E8}
+  /* 须知原文：整段搬进折叠条，只调字号行高 */
+  #page-publish .pm-fold .pm-know>div{font-size:12px;color:#3D5078;line-height:1.75}
+
+  /* 提交：吸底在底栏上沿（底栏是 fixed 浮层，所以 bottom 用底栏高度） */
+  #page-publish .foot-bar{position:sticky;bottom:calc(68px + env(safe-area-inset-bottom));z-index:40;
+    margin:12px 0 0;padding:10px 12px 12px;border-radius:0;background:rgba(245,241,232,.97);
+    backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);box-shadow:0 -6px 14px rgba(27,58,91,.06)}
+  #page-publish .foot-bar .btn{width:100%;height:48px;border-radius:14px;font-size:15px;font-weight:700}
+}

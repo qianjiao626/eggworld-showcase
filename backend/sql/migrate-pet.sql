@@ -1,0 +1,28 @@
+-- Apply only after a production database backup. Additive migration.
+CREATE TABLE IF NOT EXISTS pets (
+  id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  user_id BIGINT NOT NULL,
+  slot INT NOT NULL DEFAULT 1,
+  species_id VARCHAR(40) NOT NULL,
+  nickname VARCHAR(40) NULL,
+  stage TINYINT NOT NULL DEFAULT 0,
+  shiny TINYINT NOT NULL DEFAULT 0,
+  stats_json VARCHAR(500) NOT NULL,
+  intimacy INT NOT NULL DEFAULT 0,
+  satiety INT NOT NULL DEFAULT 60,
+  mood INT NOT NULL DEFAULT 60,
+  energy INT NOT NULL DEFAULT 100,
+  cleanliness INT NOT NULL DEFAULT 80,
+  last_tick DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  KEY idx_pets_user (user_id, slot)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS pet_inventory (
+  id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  user_id BIGINT NOT NULL,
+  item_id VARCHAR(40) NOT NULL,
+  qty INT NOT NULL DEFAULT 0,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY uk_pet_inventory (user_id, item_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

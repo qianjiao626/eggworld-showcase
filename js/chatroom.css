@@ -1,0 +1,379 @@
+/* ============================================================
+   蛋蛋世界 · 协作工作台（2026-09-27 重构：三栏工作台 / 零 Emoji 工匠风）
+   ------------------------------------------------------------
+   设计来源：local-only/聊天室原型.html
+   结构：左「会话流」310px / 中「协同终端」flex:1 / 右「任务协作合约」280px，
+        二级侧边栏（原 .lab-shell / .lab-list / .lab-panel）已整体切除，
+        外壳直接铺满工作区；任务群归档（read_only=1）后移入左栏「归档库」只读封存。
+   配色：原型的中性石板色 + 蓝（#2563EB），刻意不用 Emoji，靠字标 / 状态点 / 栅格说话。
+        ⚠️ 全部变量以 --cr- 前缀**声明在 .chatroom-shell / .chatroom-modal / .chat-admin-grid 上**，
+        绝不写进 :root —— 主站在 :root 定义了同名 --primary/--ink/--muted，覆盖会波及全站。
+   约束：浅色主题、无新依赖、动画只用 transform/opacity、
+         不在滚动容器上做 backdrop-blur、注释里也不出现 Emoji。
+   ============================================================ */
+.chatroom-shell,
+.chatroom-modal,
+.chat-admin-grid{
+  /* 与主站同一套配色：奶油暖底 + 白卡片 + 藏青墨色 + 薄荷主色。
+     这里直接引用主站 :root 的变量（带兜底值），站点换肤时协作工作台自动跟随，
+     不再维护一套独立的冷灰蓝色板。 */
+  --cr-panel:var(--white,#fff);
+  --cr-canvas:var(--bg,#F5F1E8);
+  --cr-rail:var(--rule,#E8E2D2);
+  --cr-sunken:var(--bg-tint,#F0EBE0);
+  --cr-hover:#F7F4EC;
+  --cr-border:var(--border,#E2DCC8);
+  --cr-border-strong:#D8CFB9;
+  --cr-ink:var(--ink,#1B2A4A);
+  --cr-ink2:var(--ink2,#3D5078);
+  --cr-muted:var(--muted,#7A8AA8);
+  --cr-faint:var(--faint,#B0BCD0);
+  --cr-accent:var(--primary,#1B3A5B);
+  --cr-accent-tint:var(--primary-tint,#E8EDF3);
+  --cr-success:var(--green,#2D7D4F);
+  --cr-success-tint:var(--green-tint,#E0EFE3);
+  --cr-danger:var(--red,#D4452F);
+  --cr-orange:var(--orange,#E85D3A);
+  --cr-orange-tint:var(--orange-tint,#FDEDE6);
+  --cr-cta:linear-gradient(135deg,#4ECDC4,#45B7D1);   /* 与主站 .btn-primary 同款 */
+  --cr-shadow:var(--shadow,0 3px 10px rgba(27,58,91,.08));
+  --cr-mono:"SF Mono","Roboto Mono",Menlo,Consolas,monospace;
+  --cr-ease:cubic-bezier(.32,.72,0,1);
+}
+
+/* ---------- 骨架：三栏铺满工作区 ----------
+   页面顶部不再有面包屑行，主区顶部留白也去掉，外壳从工作区最上沿开始；
+   高度 = 视口 - 主区剩余 padding(底部 24)，页面本身不出现第二条滚动条。 */
+body:has(#page-lab.active) .main{padding-top:0}
+.chatroom-shell{position:relative;display:grid;grid-template-columns:310px minmax(0,1fr) 280px;
+  height:calc(100vh - 24px);min-height:440px;min-width:0;background:var(--cr-canvas);
+  border:1px solid var(--cr-border);border-radius:18px;box-shadow:var(--cr-shadow);
+  overflow:hidden;overscroll-behavior-x:none}
+.chatroom-list-panel,.chatroom-main-panel,.chatroom-side-panel{min-width:0;min-height:0;display:flex;flex-direction:column}
+
+/* ============================================================
+   一、左栏：会话流（两侧栏用更深一档的暖底，与中栏画布形成明确分区）
+   ============================================================ */
+.chatroom-list-panel{background:var(--cr-rail);border-right:1px solid var(--cr-border-strong)}
+.chatroom-list-head{padding:14px 14px 10px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.chatroom-list-title{font-size:13px;font-weight:800;letter-spacing:.04em;color:var(--cr-ink)}
+.chatroom-list-title::before{content:"";display:inline-block;width:8px;height:8px;margin-right:8px;
+  background:var(--cr-accent);border-radius:2px;vertical-align:1px}
+.chatroom-new-btn{appearance:none;border:1px solid var(--cr-border-strong);background:var(--cr-panel);
+  color:var(--cr-ink);font-family:inherit;font-size:12px;font-weight:700;padding:5px 10px;border-radius:6px;
+  cursor:pointer;transition:background .18s var(--cr-ease),border-color .18s var(--cr-ease)}
+.chatroom-new-btn:hover{background:var(--cr-hover);border-color:var(--cr-faint)}
+
+/* 双态收纳：活跃会话 / 归档库 */
+.chatroom-scope{display:flex;gap:2px;margin:0 14px 10px;padding:2px;background:var(--cr-sunken);
+  border:1px solid var(--cr-border);border-radius:7px}
+.chatroom-scope-btn{flex:1;appearance:none;border:0;background:transparent;font-family:inherit;
+  font-size:12px;font-weight:700;color:var(--cr-muted);padding:6px 0;border-radius:5px;cursor:pointer;
+  transition:background .15s var(--cr-ease),color .15s var(--cr-ease)}
+.chatroom-scope-btn:hover{color:var(--cr-ink)}
+.chatroom-scope-btn.active{background:linear-gradient(135deg,#EAF4F3,#F7F1E7);color:var(--cr-accent);box-shadow:none}
+.chatroom-scope-btn:focus-visible{outline:2px solid var(--cr-accent);outline-offset:1px}
+
+.chatroom-conversations{overflow-y:auto;flex:1;padding:2px 8px 12px;scrollbar-width:thin;scrollbar-color:var(--cr-border-strong) transparent}
+.chatroom-conversations::-webkit-scrollbar{width:8px}
+.chatroom-conversations::-webkit-scrollbar-thumb{background:var(--cr-border-strong);border-radius:8px;border:2px solid transparent;background-clip:content-box}
+
+/* 列表项：盒模型恒定（border 常驻 1px transparent、不留 padding 变化），
+   选中只换底色与描边 —— 点击时尺寸、行高、滚动位置都不动，列表绝不跳。 */
+.chat-conv{position:relative;display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:7px;
+  border:1px solid transparent;background:transparent;cursor:pointer;
+  transition:background .15s var(--cr-ease),border-color .15s var(--cr-ease)}
+.chat-conv:hover{background:var(--cr-hover)}
+.chat-conv.active{background:linear-gradient(135deg,#EAF4F3,#F7F1E7);border-color:#D9E9E5}
+.chat-conv:focus-visible{outline:2px solid var(--cr-accent);outline-offset:-2px}
+.chat-conv-avatar{width:38px;height:38px;flex:none;border-radius:6px;display:grid;place-items:center;
+  font-size:12px;font-weight:800;color:var(--cr-ink);background:var(--cr-sunken);border:1px solid var(--cr-border);
+  cursor:pointer;transition:background .15s var(--cr-ease),color .15s var(--cr-ease),border-color .15s var(--cr-ease)}
+.chat-conv.active .chat-conv-avatar{background:var(--cr-accent);border-color:var(--cr-accent);color:#fff}
+.chat-conv-body{min-width:0;flex:1;display:flex;flex-direction:column;gap:3px}
+.chat-conv-title{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.chat-conv-title > span:first-child{font-size:13px;font-weight:700;color:var(--cr-ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chat-conv-time{font-size:10.5px;font-weight:600;color:var(--cr-faint);flex:none;font-family:var(--cr-mono)}
+.chat-conv-tail{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.chat-conv-lead{display:flex;align-items:center;gap:6px;min-width:0;flex:1}
+.chat-conv-preview{font-size:12px;color:var(--cr-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.chat-conv-badge{min-width:17px;height:17px;padding:0 5px;border-radius:9px;background:var(--cr-danger);color:#fff;
+  font-size:10px;font-weight:800;display:inline-grid;place-items:center;flex:none}
+
+/* 印刷级中文分类小标：教学 / 组队 / 悬赏 / 求助 / 频道 / 私聊 / 归档
+   底色一律取主站已有的语义色浅底（金 / 绿 / 紫 / 橙 / 靛 / 蓝），不另造色板 */
+.chat-conv-tag{flex:none;font-size:10px;font-weight:700;line-height:1.5;padding:0 5px;border-radius:3px;
+  background:var(--cr-sunken);color:var(--cr-muted)}
+.chat-conv-tag.teach{background:var(--gold-tint,#FBF3D9);color:#946200}
+.chat-conv-tag.team{background:var(--green-tint,#E0EFE3);color:var(--green,#2D7D4F)}
+.chat-conv-tag.reward{background:var(--purple-tint,#EFEBF5);color:var(--purple,#6B5B95)}
+.chat-conv-tag.help{background:var(--orange-tint,#FDEDE6);color:var(--orange,#E85D3A)}
+.chat-conv-tag.channel{background:var(--cr-sunken);color:var(--cr-ink2)}
+.chat-conv-tag.dm{background:var(--lilac-tint,#E0EBF5);color:var(--lilac,#3B6BA5)}
+.chat-conv-tag.archived{background:var(--rule,#E8E2D2);color:var(--cr-muted)}
+
+.chatroom-empty{display:grid;place-content:center;justify-items:center;gap:6px;min-height:100%;
+  padding:40px 24px;text-align:center;color:var(--cr-faint);line-height:1.7}
+.chatroom-empty strong{font-size:13.5px;font-weight:800;color:var(--cr-ink)}
+.chatroom-empty span{font-size:12px;max-width:26ch}
+
+/* ============================================================
+   二、中栏：协同终端
+   ============================================================ */
+.chatroom-main-panel{position:relative;background:var(--cr-canvas)}
+
+/* 未选中会话时的点阵占位板 */
+.chatroom-blank{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+  background:var(--cr-canvas);text-align:center;padding:24px}
+.chatroom-blank-mark{width:44px;height:44px;margin-bottom:10px;border:1px dashed var(--cr-border-strong);border-radius:4px;
+  background-image:radial-gradient(var(--cr-border-strong) 1px,transparent 1px);background-size:7px 7px;background-position:center}
+.chatroom-blank-title{margin:0;font-family:var(--cr-mono);font-size:12.5px;font-weight:700;color:var(--cr-faint);letter-spacing:.02em}
+.chatroom-blank-hint{margin:0;font-size:11.5px;color:var(--cr-faint)}
+
+/* 终端视图：只有选中会话时才出现 */
+.chatroom-terminal{display:none;flex:1;min-height:0;flex-direction:column}
+.chatroom-shell.chat-selected .chatroom-blank{display:none}
+.chatroom-shell.chat-selected .chatroom-terminal{display:flex}
+
+.chatroom-main-head{height:56px;flex:none;padding:0 16px 0 8px;border-bottom:1px solid var(--cr-border-strong);
+  display:flex;align-items:center;gap:10px;background:var(--cr-rail)}
+.chatroom-back{display:none;appearance:none;border:0;background:transparent;color:var(--cr-ink);
+  padding:8px 6px;border-radius:7px;cursor:pointer;align-items:center}
+.chatroom-back:hover{background:var(--cr-hover)}
+.chatroom-head-center{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.chatroom-main-head h3{margin:0;font-size:14px;font-weight:800;letter-spacing:-.01em;color:var(--cr-ink);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chatroom-main-head p{margin:0;font-size:11.5px;color:var(--cr-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chatroom-head-right{display:flex;align-items:center;gap:8px;flex:none}
+
+/* 任务状态胶囊：进行中（绿）/ 待确认（蓝）/ 已归档（灰），几何状态呼吸点 */
+.chatroom-task-status{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;
+  padding:3px 9px;border-radius:999px;white-space:nowrap;background:var(--cr-success-tint);color:var(--cr-success);
+  transition:background .3s var(--cr-ease),color .3s var(--cr-ease)}
+.chatroom-task-status.is-pending{background:var(--cr-accent-tint);color:var(--cr-accent)}
+.chatroom-task-status.is-archived{background:var(--cr-sunken);color:var(--cr-muted)}
+.chatroom-task-status .dot-indicator{width:6px;height:6px;border-radius:50%;background:currentColor;
+  animation:chatDotPulse 2.4s ease-in-out infinite}
+@keyframes chatDotPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
+
+.chatroom-info-btn{display:none;appearance:none;border:0;background:transparent;color:var(--cr-ink);
+  padding:7px;border-radius:7px;cursor:pointer;align-items:center}
+.chatroom-info-btn:hover{background:var(--cr-hover)}
+
+/* 今日泡点（在线奖励）：纯文字，不用图标 */
+.chatroom-bubble{display:flex;align-items:center;gap:5px;background:var(--cr-canvas);
+  border:1px solid var(--cr-border-strong);border-radius:6px;padding:4px 10px;font-size:11.5px;
+  color:var(--cr-muted);white-space:nowrap;transition:transform .22s var(--cr-ease),border-color .22s var(--cr-ease)}
+.chatroom-bubble-text b{font-family:var(--cr-mono);font-weight:800;color:var(--cr-ink);margin:0 1px}
+.chatroom-bubble.flash{animation:chatBubbleFlash .9s var(--cr-ease)}
+.chatroom-bubble.capped{background:var(--cr-sunken);color:var(--cr-faint)}
+@keyframes chatBubbleFlash{0%{transform:scale(1)}35%{transform:scale(1.08);border-color:var(--cr-accent)}100%{transform:scale(1)}}
+
+.chatroom-messages-wrap{position:relative;flex:1;min-height:0;display:flex;flex-direction:column}
+.chatroom-messages{position:relative;flex:1;min-height:0;overflow-y:auto;padding:16px 18px 12px;
+  background:var(--cr-canvas);scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:var(--cr-border-strong) transparent;
+  display:flex;flex-direction:column;gap:14px}
+.chatroom-messages::-webkit-scrollbar{width:9px}
+.chatroom-messages::-webkit-scrollbar-thumb{background:var(--cr-border-strong);border-radius:8px;border:2px solid transparent;background-clip:content-box}
+
+.chat-day{display:flex;align-items:center;justify-content:center;gap:12px;margin:2px 0 4px}
+.chat-day span{font-size:10.5px;font-weight:700;letter-spacing:.06em;color:var(--cr-faint);
+  background:var(--cr-panel);border:1px solid var(--cr-border);padding:2px 9px;border-radius:999px;white-space:nowrap}
+
+.chat-message{display:flex;gap:10px;align-items:flex-start;max-width:82%;animation:chatIn .28s var(--cr-ease) both}
+.chat-message.mine{align-self:flex-end;flex-direction:row-reverse}
+.chat-message-avatar{width:32px;height:32px;flex:none;border-radius:6px;display:grid;place-items:center;
+  font-size:11px;font-weight:800;color:var(--cr-ink);background:var(--cr-panel);border:1px solid var(--cr-border-strong);cursor:pointer;
+  transition:border-color .18s var(--cr-ease)}
+.chat-message-avatar:hover{border-color:var(--cr-accent)}
+.chat-message-avatar:focus-visible{outline:2px solid var(--cr-accent);outline-offset:2px}
+.chat-message.mine .chat-message-avatar{background:var(--cr-ink);border-color:var(--cr-ink);color:#fff;cursor:default}
+.chat-message-body{min-width:0;display:flex;flex-direction:column;gap:4px}
+.chat-message.mine .chat-message-body{align-items:flex-end}
+.chat-message.grouped .chat-message-avatar{visibility:hidden}
+.chat-message.grouped .chat-message-name{display:none}
+.chat-message-name{font-size:11px;font-weight:600;color:var(--cr-faint);font-family:var(--cr-mono)}
+.chat-message-content{padding:9px 13px;border-radius:4px 10px 10px 10px;font-size:13px;line-height:1.6;
+  background:var(--cr-panel);border:1px solid var(--cr-border);color:var(--cr-ink);
+  word-break:break-word;white-space:pre-wrap}
+.chat-message.mine .chat-message-content{background:var(--cr-ink);border-color:var(--cr-ink);color:#fff;border-radius:10px 4px 10px 10px}
+.chat-message.recalled .chat-message-content{color:var(--cr-faint);font-style:italic;background:var(--cr-sunken);border-style:dashed}
+.chat-message-actions{display:flex;gap:6px;opacity:0;transition:opacity .2s var(--cr-ease)}
+.chat-message:hover .chat-message-actions,.chat-message:focus-within .chat-message-actions{opacity:1}
+.chat-act{appearance:none;border:1px solid var(--cr-border);background:var(--cr-panel);color:var(--cr-muted);
+  font-family:inherit;font-size:11px;font-weight:700;padding:2px 8px;border-radius:5px;cursor:pointer;
+  transition:color .18s var(--cr-ease),border-color .18s var(--cr-ease)}
+.chat-act:hover{color:var(--cr-danger);border-color:var(--cr-danger)}
+.chat-act:focus-visible{outline:2px solid var(--cr-accent);outline-offset:2px;opacity:1}
+@keyframes chatIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+.chatroom-jump{position:absolute;right:16px;bottom:12px;z-index:4;width:32px;height:32px;border-radius:6px;
+  border:1px solid var(--cr-border-strong);background:var(--cr-panel);color:var(--cr-ink);cursor:pointer;
+  display:none;place-items:center;box-shadow:var(--cr-shadow);transition:transform .2s var(--cr-ease)}
+.chatroom-jump.show{display:grid}
+.chatroom-jump:hover{transform:translateY(-2px)}
+.chatroom-jump:active{transform:scale(.95)}
+
+/* 输入区 */
+.chatroom-composer{flex:none;border-top:1px solid var(--cr-border-strong);padding:11px 16px 13px;background:var(--cr-rail)}
+.chatroom-status{font-size:11px;color:var(--cr-muted);padding:0 2px 6px;min-height:15px;display:flex;align-items:center;gap:6px}
+.chatroom-status:not(:empty)::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--cr-success)}
+.chatroom-composer textarea{width:100%;min-height:68px;max-height:160px;resize:vertical;box-sizing:border-box;
+  border:1px solid var(--cr-border);border-radius:7px;padding:9px 11px;font:inherit;font-size:13px;line-height:1.6;
+  color:var(--cr-ink);background:var(--cr-canvas);outline:none;
+  transition:border-color .18s var(--cr-ease),background .18s var(--cr-ease)}
+.chatroom-composer textarea::placeholder{color:var(--cr-faint)}
+.chatroom-composer textarea:focus{border-color:var(--cr-accent);background:var(--cr-canvas)}
+.chatroom-compose-actions{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:8px}
+.chatroom-hint{font-size:11px;color:var(--cr-faint);line-height:1.5}
+.chatroom-counter{font-family:var(--cr-mono);color:var(--cr-faint);margin-left:6px}
+.chatroom-counter.warn{color:var(--cr-danger);font-weight:700}
+.chatroom-error{color:var(--cr-danger);font-size:12px;margin-top:6px;min-height:15px}
+
+/* 归档只读（read_only=1）：输入区整体换成这段锁定说明
+   ⚠️ 本规则不能写 display —— syncArchiveState() 用 style.display='' 恢复显示，
+      若 CSS 里写了 display:none，取消归档时就再也显示不出来。 */
+.chatroom-archived{flex:none;margin:0 16px 16px;padding:18px 16px;text-align:center;
+  background:var(--cr-sunken);border:1px solid var(--cr-border);border-radius:12px;
+  color:var(--cr-muted);font-size:12px;font-weight:600;line-height:1.8}
+.chatroom-archived span{display:block}
+
+/* ============================================================
+   三、右栏：任务协作合约
+   ============================================================ */
+.chatroom-side-panel{background:var(--cr-rail);border-left:1px solid var(--cr-border-strong);overflow-y:auto;
+  padding:16px;gap:18px;scrollbar-width:thin;scrollbar-color:var(--cr-border-strong) transparent}
+.chatroom-side-section{flex:none;display:flex;flex-direction:column}
+.chatroom-side-grow{flex:1;min-height:0}
+.chatroom-side-title{font-size:11px;font-weight:800;letter-spacing:.04em;color:var(--cr-muted);margin-bottom:10px}
+.chatroom-side-empty{font-size:12px;color:var(--cr-faint);line-height:1.7}
+
+.chatroom-task-card{border:1px solid var(--cr-border);border-radius:12px;padding:14px;background:var(--cr-panel);
+  display:flex;flex-direction:column;gap:11px}
+.contract-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.contract-code{font-family:var(--cr-mono);font-size:10.5px;font-weight:800;color:var(--cr-muted);letter-spacing:.02em}
+.contract-badge{font-size:10px;font-weight:700;padding:1px 6px;border-radius:4px;border:1px solid currentColor;
+  color:var(--cr-success);background:var(--cr-success-tint)}
+.contract-badge.is-pending{color:var(--cr-accent);background:var(--cr-accent-tint)}
+.contract-badge.is-archived{color:var(--cr-muted);background:var(--cr-sunken)}
+.contract-title{font-size:13.5px;font-weight:800;line-height:1.45;color:var(--cr-ink);word-break:break-word}
+.contract-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:9px 0;
+  border-top:1px dashed var(--cr-border);border-bottom:1px dashed var(--cr-border)}
+.contract-cell{display:flex;flex-direction:column;gap:2px;min-width:0}
+.contract-key{font-size:10px;color:var(--cr-faint)}
+.contract-val{font-family:var(--cr-mono);font-size:11.5px;font-weight:800;color:var(--cr-ink);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.contract-note{font-size:11px;color:var(--cr-muted);line-height:1.6}
+.contract-ops{display:flex;flex-direction:column;gap:8px}
+.chatroom-task-btn{width:100%;padding:9px;border-radius:6px;border:1px solid transparent;font-family:inherit;
+  font-size:12px;font-weight:800;cursor:pointer;transition:filter .18s var(--cr-ease)}
+.chatroom-task-btn.submit{background:var(--cr-success);color:#fff}
+.chatroom-task-btn.confirm{background:var(--cr-cta);color:#fff}
+.chatroom-task-btn:disabled{background:var(--cr-sunken);border-color:var(--cr-border);color:var(--cr-muted);cursor:not-allowed}
+.chatroom-task-btn:not(:disabled):hover{filter:brightness(1.08)}
+.chatroom-task-btn:focus-visible{outline:2px solid var(--cr-ink);outline-offset:2px}
+
+.chatroom-member-list{display:flex;flex-direction:column;gap:11px;overflow-y:auto;min-height:0}
+.chatroom-member{display:flex;align-items:center;gap:9px}
+.chatroom-member-avatar{width:28px;height:28px;flex:none;border-radius:5px;display:grid;place-items:center;
+  font-size:11px;font-weight:800;color:var(--cr-ink);background:var(--cr-sunken);border:1px solid var(--cr-border)}
+.chatroom-member-avatar.owner{background:var(--cr-ink);border-color:var(--cr-ink);color:#fff}
+.chatroom-member-avatar.claimer{background:linear-gradient(135deg,#EAF4F3,#F7F1E7);border-color:#D9E9E5;color:var(--cr-accent)}
+.chatroom-member-body{min-width:0;display:flex;flex-direction:column;gap:2px;flex:1}
+.chatroom-member-name{font-size:12.5px;font-weight:700;color:var(--cr-ink);display:flex;align-items:center;gap:5px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chatroom-member-me{font-size:10.5px;font-weight:400;color:var(--cr-faint)}
+.chatroom-member-role{font-size:10px;color:var(--cr-muted)}
+
+/* ============================================================
+   四、弹窗与后台
+   ============================================================ */
+.chatroom-modal{position:fixed;inset:0;background:rgba(15,23,42,.42);display:none;place-items:center;z-index:800;padding:18px}
+.chatroom-modal.show{display:grid;animation:chatFade .18s var(--cr-ease) both}
+@keyframes chatFade{from{opacity:0}to{opacity:1}}
+.chatroom-modal-card{background:var(--cr-panel);border:1px solid var(--cr-border);border-radius:10px;
+  width:min(520px,100%);max-height:85vh;overflow:auto;padding:20px;box-shadow:0 20px 40px rgba(15,23,42,.12);
+  animation:chatPop .22s var(--cr-ease) both}
+@keyframes chatPop{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.chatroom-modal-card h3{margin:0 0 10px;font-size:15px;font-weight:800;color:var(--cr-ink)}
+.chatroom-modal-narrow{width:min(380px,100%);padding:20px}
+.chatroom-modal-desc{margin:0;font-size:12.5px;color:var(--cr-muted);line-height:1.7}
+.chatroom-modal-warning{margin-top:12px;padding:10px 12px;border-radius:7px;background:var(--cr-orange-tint);
+  border:1px solid rgba(232,93,58,.3);color:var(--cr-orange);font-size:12px;font-weight:600;line-height:1.7}
+.chatroom-modal-actions{display:flex;gap:10px;margin-top:18px}
+.chatroom-modal-actions .btn{flex:1;padding:10px;border-radius:7px;font-size:13px;font-weight:700}
+.chatroom-form-row{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+.chatroom-form-row label{font-size:12px;font-weight:800;color:var(--cr-ink)}
+.chatroom-form-row input,.chatroom-form-row textarea,.chatroom-form-row select{border:1px solid var(--cr-border);
+  border-radius:7px;padding:9px 11px;font:inherit;font-size:13px;background:var(--cr-canvas);color:var(--cr-ink);outline:none;
+  transition:border-color .18s var(--cr-ease),background .18s var(--cr-ease)}
+.chatroom-form-row input:focus,.chatroom-form-row textarea:focus,.chatroom-form-row select:focus{border-color:var(--cr-accent);background:var(--cr-panel)}
+
+/* 聊天室后台治理（chatadmin 页）：沿用同一套变量，保持观感一致 */
+.chat-admin-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.chat-admin-card{background:var(--cr-panel);border:1px solid var(--cr-border);border-radius:8px;padding:16px;box-shadow:var(--cr-shadow)}
+.chat-admin-card h3{margin:0 0 12px;font-size:14px;font-weight:800;color:var(--cr-ink)}
+.chat-admin-row{display:flex;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid var(--cr-border);font-size:13px}
+.chat-admin-row:last-child{border-bottom:0}
+.chat-admin-row span{color:var(--cr-muted);flex:1}
+.chat-admin-form{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}
+
+/* 移动端右侧合约抽屉的遮罩（桌面端不显示） */
+.chatroom-drawer-mask{display:none;position:absolute;inset:0;background:rgba(15,23,42,.4);z-index:20;opacity:0;transition:opacity .28s var(--cr-ease)}
+
+/* ============================================================
+   五、响应式
+   ============================================================ */
+/* 窄桌面 / 平板：右栏收进抽屉，用头部按钮打开 */
+@media(max-width:1180px) and (min-width:769px){
+  body .chatroom-shell{grid-template-columns:290px minmax(0,1fr)}
+  body .chatroom-side-panel{position:absolute;top:0;right:0;bottom:0;width:288px;transform:translateX(100%);
+    transition:transform .28s var(--cr-ease);box-shadow:-4px 0 24px rgba(15,23,42,.12);z-index:30}
+  body .chatroom-side-panel.show{transform:translateX(0)}
+  body .chatroom-info-btn{display:flex}
+  body .chatroom-drawer-mask{display:block;pointer-events:none}
+  body .chatroom-drawer-mask.show{opacity:1;pointer-events:auto}
+}
+
+/* 手机：列表 ⇄ 终端左右推拉（微信级 Push/Pop）+ 右侧合约抽屉 */
+@media(max-width:768px){
+  /* 顶部留白同样去掉：高度 = 视口 - 底栏(84) - env 安全区（主区底部 padding） */
+  body .chatroom-shell{display:block;position:relative;height:calc(100dvh - 84px - env(safe-area-inset-bottom,0px));
+    min-height:0;border-radius:14px}
+  body .chatroom-list-panel{position:absolute;inset:0;border-right:0;
+    transition:transform .3s var(--cr-ease),opacity .3s var(--cr-ease);z-index:1}
+  body .chatroom-main-panel{position:absolute;inset:0;transform:translateX(100%);
+    transition:transform .3s var(--cr-ease);z-index:2;box-shadow:-4px 0 20px rgba(15,23,42,.06)}
+  body .chatroom-shell.chat-open .chatroom-list-panel{transform:translateX(-26%);opacity:0;pointer-events:none}
+  body .chatroom-shell.chat-open .chatroom-main-panel{transform:translateX(0)}
+  body .chatroom-side-panel{position:absolute;top:0;right:0;bottom:0;width:85%;max-width:320px;transform:translateX(100%);
+    transition:transform .28s var(--cr-ease);box-shadow:-4px 0 24px rgba(15,23,42,.12);z-index:30}
+  body .chatroom-side-panel.show{transform:translateX(0)}
+  body .chatroom-drawer-mask{display:block;pointer-events:none}
+  body .chatroom-drawer-mask.show{opacity:1;pointer-events:auto}
+  body .chatroom-list-head{padding:12px 12px 9px}
+  body .chatroom-scope{margin:0 12px 9px}
+  body .chatroom-back{display:flex}
+  body .chatroom-info-btn{display:flex}
+  body .chatroom-main-head{height:52px;padding:0 10px 0 4px}
+  body .chatroom-main-head h3{font-size:13.5px}
+  body .chatroom-task-status{font-size:10px;padding:2px 7px}
+  body .chatroom-bubble{padding:3px 8px;font-size:11px}
+  body .chatroom-messages{padding:12px 12px 10px}
+  body .chat-message{max-width:88%}
+  body .chat-message-actions{opacity:1}
+  body .chatroom-composer{padding:9px 12px 10px}
+  body .chatroom-compose-actions{align-items:flex-end}
+  body .chatroom-hint{max-width:58%}
+  body .chatroom-jump{right:12px;bottom:10px}
+  body .chatroom-archived{margin:0 12px 12px}
+  .chat-admin-grid{grid-template-columns:1fr}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .chat-conv,.chat-conv-avatar,.chatroom-scope-btn,.chatroom-new-btn,.chatroom-composer textarea,
+  .chat-message-avatar,.chat-act,.chatroom-jump,.chatroom-task-btn,.chatroom-bubble,
+  .chatroom-side-panel,.chatroom-list-panel,.chatroom-main-panel,.chatroom-drawer-mask{transition:none}
+  .chat-message,.chatroom-modal.show,.chatroom-modal-card,.chatroom-task-status .dot-indicator,.chatroom-bubble.flash{animation:none}
+  .chatroom-messages{scroll-behavior:auto}
+}

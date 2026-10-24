@@ -1,0 +1,53 @@
+/* ============================================================
+   「我的」页-我的任务 Tab · 移动端改版（仅在 ≤768px 生效）
+   ------------------------------------------------------------
+   为什么单独一个文件：主文件已经很挤，移动端支持尽量外置
+   （与 js/plaza-mobile.css、js/publish-mobile.css 同一约定）。
+   引入位置：growth-schoolv3.html 的 </style> 之后，紧挨 js/publish-mobile.css
+   —— 必须晚于主样式加载，靠加载顺序覆盖，尽量不用 !important。
+   配套脚本：js/mytasks-mobile.js（只干一件事：把 h2「我的任务」搬进顶栏）。
+
+   本次三处：
+     ① 顶栏：面包屑「蛋蛋世界 / 我的任务」隐藏；h2「我的任务」由脚本搬进顶栏（占原来的位置），
+        顶栏高度压到 44px，与其它页的移动端吸顶行一致
+     ② 标题行里的「＋ 发布技能」按钮隐藏（底栏中间那颗「发布」圆钮已经承担这个入口）
+     ③ 任务状态栏拆成两行：
+          第一行 待我处理 / 进行中 / 已完成
+          第二行 已过期 / 我的打听
+        用 6 列网格实现（前三个各占 2 列，后两个各占 3 列），不用插 DOM 节点
+   ============================================================ */
+
+@media(max-width:768px){
+
+  /* ---------- ① 顶栏：去面包屑，标题搬进来 ----------
+     ⚠️ 选择器必须带 body:has(#studentNav[style*="flex"])：主文件里那条
+     body:has(#studentNav[style*="flex"]) .topbar{position:static;height:auto;…} 的特异性比
+     #page-mine .topbar 高，只写后者压不住。 */
+  body:has(#studentNav[style*="flex"]) #page-mine .topbar{
+    position:sticky;top:0;z-index:6;height:44px;min-height:0;padding:4px 0 0;align-items:center
+  }
+  #page-mine .topbar .crumb{display:none}
+  /* 搬进来的 h2：没搬之前它吃的是 .title-row .t h2 那套 24px，这里给回移动端的口径 */
+  #page-mine .topbar .mt-title{font-size:15px;font-weight:800;color:var(--ink);margin-right:auto;line-height:1.2}
+
+  /* ---------- ② 标题行：发布按钮隐藏，只留那句说明 ---------- */
+  #mine-panel-tasks .title-row{align-items:flex-start}
+  #mine-panel-tasks .title-row .btn{display:none}
+  #mine-panel-tasks .title-row .t p{font-size:11.5px;color:var(--muted);margin-top:2px;line-height:1.6}
+
+  /* ---------- ③ 状态栏两行 ----------
+     6 列网格：待我处理 / 进行中 / 已完成 各占 2 列（正好一行），
+     已过期 / 我的打听 各占 3 列（第二行铺满）。
+     原来的 .stage-sep 分隔线在主文件的移动端规则里已经是 display:none，网格里不占格。 */
+  #mine-panel-tasks .stage-tabs{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;
+    overflow:visible;padding-bottom:0;margin-bottom:14px}
+  #mine-panel-tasks .mytask-tab{flex:none;min-width:0;justify-content:center;padding:9px 6px;font-size:12px;
+    text-align:center;white-space:nowrap;overflow:hidden}
+  #mine-panel-tasks .mytask-tab[data-tab="todo"],
+  #mine-panel-tasks .mytask-tab[data-tab="active"],
+  #mine-panel-tasks .mytask-tab[data-tab="done"]{grid-column:span 2}
+  #mine-panel-tasks .mytask-tab[data-tab="expired"],
+  #mine-panel-tasks .mytask-tab[data-tab="gossip"]{grid-column:span 3}
+  /* 计数气泡：窄格里不再占固定最小宽，避免把「待我处理」挤出去 */
+  #mine-panel-tasks .mytask-tab .tab-count{min-width:0;padding:1px 5px}
+}

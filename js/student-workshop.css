@@ -1,0 +1,121 @@
+/* ============================================================
+   学生工坊 · 入口列表样式（移动端广场 tab + 桌面侧栏入口共用）
+   ------------------------------------------------------------
+   沿用全站卡片语言：白底 + 1px --border 描边 + 柔和阴影 + 圆角，
+   图标用浅色系 tint 底（与 tag-tint 一致），避免独立皮肤感。
+   仅在 #page-workshop / #page-catcabin 作用域下，不污染其它页面。
+   ============================================================ */
+
+/* 工坊入口列表：窄屏单列，稍宽两列；桌面（>768px）工作区更宽，三列起步、超宽四列。
+   移动端断点行为与改前完全相同。 */
+#page-workshop .workshop-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+@media (min-width: 480px) {
+  #page-workshop .workshop-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (min-width: 900px) {
+  #page-workshop .workshop-grid { grid-template-columns: repeat(3, 1fr); gap: 14px; }
+}
+@media (min-width: 1400px) {
+  #page-workshop .workshop-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+#page-workshop .workshop-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: transform .2s var(--bounce), box-shadow .2s;
+  -webkit-tap-highlight-color: transparent;
+}
+#page-workshop .workshop-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+#page-workshop .workshop-card:active { transform: scale(.98); }
+#page-workshop .workshop-card:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+
+#page-workshop .ws-icon {
+  flex: none;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  line-height: 1;
+}
+#page-workshop .ws-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+#page-workshop .ws-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+}
+#page-workshop .ws-desc {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+#page-workshop .ws-go {
+  flex: none;
+  font-size: 22px;
+  color: var(--faint);
+  line-height: 1;
+}
+
+/* 工坊子页（猫咪小屋）顶部返回栏：与工坊页同一套视觉，替代原吸顶二级 tab。
+   返回钮用全站页头的纯文字面包屑语言（无底色/描边/阴影），融入米色页头不突兀；
+   与游戏画面内引擎的深色圆形悬浮钮层级不同（页面级回工坊 / 游戏内回地图），不会混淆。 */
+#page-catcabin .workshop-sub-head {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+  flex: none;
+}
+#page-catcabin .workshop-back {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 44px;
+  flex: none;
+  padding: 0 10px 0 0;
+  border: none;
+  border-radius: 0;
+  background: none;
+  color: var(--muted);
+  font-size: 13.5px;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  box-shadow: none;
+  transition: color .15s;
+}
+#page-catcabin .workshop-back:hover { color: var(--primary); }
+#page-catcabin .workshop-back:active { color: var(--primary-dark); }
+#page-catcabin .workshop-sub-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink);
+}

@@ -1,0 +1,59 @@
+# ============================================================
+# 蛋蛋世界 Nginx 配置（部署到子路径 /xs/）
+# 使用方式：复制到服务器 /etc/nginx/conf.d/eggworld.conf 后
+#   nginx -t && systemctl reload nginx
+# ============================================================
+
+# ---- HTTP（备案通过前用 IP:80 测试；备案通过后 301 跳 HTTPS） ----
+server {
+    listen 80;
+    server_name dsxnb.com www.dsxnb.com;
+
+    # 前端静态文件（growth-school.html 重命名为 index.html 后放此目录）
+    location /xs/ {
+        alias /www/eggworld/xs/;
+        index index.html;
+        try_files $uri $uri/ /xs/index.html;
+    }
+
+    # 后端 API 反代：/xs/api/* → 本地 8090 的 /api/*（8080 已被其他项目占用）
+    location /xs/api/ {
+        proxy_pass http://127.0.0.1:8090/api/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    # 根路径重定向到 /xs/
+    location = / {
+        return 301 /xs/;
+    }
+}
+
+# ---- HTTPS（备案通过 + 证书就绪后启用，注释掉 listen 80 的跳转即可） ----
+#server {
+#    listen 443 ssl;
+#    server_name dsxnb.com www.dsxnb.com;
+#
+#    ssl_certificate     /etc/nginx/ssl/dsxnb.com.pem;
+#    ssl_certificate_key /etc/nginx/ssl/dsxnb.com.key;
+#    ssl_protocols       TLSv1.2 TLSv1.3;
+#    ssl_ciphers         HIGH:!aNULL:!MD5;
+#
+#    location /xs/ {
+#        alias /www/eggworld/xs/;
+#        index index.html;
+#        try_files $uri $uri/ /xs/index.html;
+#    }
+#    location /xs/api/ {
+#        proxy_pass http://127.0.0.1:8090/api/;
+#        proxy_set_header Host $host;
+#        proxy_set_header X-Real-IP $remote_addr;
+#        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+#        proxy_set_header X-Forwarded-Proto $scheme;
+#    }
+#    location = / {
+#        return 301 /xs/;
+#    }
+#}

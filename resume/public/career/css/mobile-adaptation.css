@@ -1,0 +1,165 @@
+@media (max-width: 767px) {
+  .career-index-page,
+  .career-question-page,
+  .career-pay-page {
+    overflow-x: hidden;
+  }
+
+  .career-index-page .max-w-\[1280px\],
+  .career-question-page .max-w-\[1280px\],
+  .career-pay-page .max-w-\[960px\] {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .career-index-page main > section:first-child > div {
+    padding: 1.25rem;
+  }
+
+  .career-index-page main > section:first-child h1 {
+    font-size: clamp(2rem, 9vw, 3rem);
+    line-height: 1.1;
+  }
+
+  .career-index-page main > section:first-child a,
+  .career-index-page main > section:last-child button {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    height: auto;
+    padding: 0.875rem 1rem;
+    font-size: 1rem;
+  }
+
+  .career-index-page footer .flex,
+  .career-question-page footer .flex,
+  .career-pay-page footer .flex {
+    flex-wrap: wrap;
+  }
+
+  .career-index-page footer .flex.gap-8,
+  .career-question-page footer .flex.gap-8,
+  .career-pay-page footer .flex.gap-8 {
+    justify-content: center;
+    gap: 0.75rem 1rem;
+  }
+
+  .career-question-page main {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .career-question-page #question-list-scroll {
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+  }
+
+  .career-question-page #question-list-scroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  .career-question-page #question-list {
+    display: flex;
+    flex-wrap: nowrap;
+    width: max-content;
+    min-width: 100%;
+  }
+
+  .career-question-page #question-list > div {
+    flex: 0 0 auto;
+  }
+
+  .career-question-page #question-options label {
+    padding: 1rem;
+  }
+
+  .career-question-page #question-stem,
+  .career-question-page #question-options p {
+    overflow-wrap: anywhere;
+  }
+
+  .career-question-page #main img,
+  .career-question-page #main canvas,
+  .career-question-page #main video,
+  .career-question-page #main svg,
+  .career-question-page #main table,
+  .career-question-page #main pre,
+  .career-question-page #main code {
+    max-width: 100%;
+  }
+
+  .career-question-page #main img,
+  .career-question-page #main canvas,
+  .career-question-page #main video {
+    height: auto;
+  }
+
+  .career-question-page #main pre,
+  .career-question-page #main code {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .career-question-page #main table {
+    display: block;
+    overflow-x: auto;
+  }
+
+  .career-pay-page .layout-container,
+  .career-pay-page .layout-content-container {
+    width: 100%;
+  }
+
+  .career-pay-page .layout-content-container {
+    max-width: 100%;
+  }
+
+  .career-pay-page .px-4.md\:px-40 {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+
+  .career-pay-page .layout-content-container > header,
+  .career-pay-page .layout-content-container > main,
+  .career-pay-page .layout-content-container > footer {
+    border-radius: 0.75rem;
+  }
+
+  .career-pay-page main img,
+  .career-pay-page main canvas,
+  .career-pay-page main svg {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .career-pay-page main .aspect-square > div {
+    max-width: min(12rem, 70vw);
+    max-height: min(12rem, 70vw);
+  }
+
+  .career-pay-page main .grid.grid-cols-2 {
+    grid-template-columns: 1fr;
+  }
+
+  .career-pay-page #wechat-pay-modal {
+    align-items: flex-end;
+    padding: 0.5rem;
+  }
+
+  .career-pay-page #wechat-pay-modal > #modal-container {
+    max-height: calc(100dvh - 1rem);
+    width: 100%;
+    max-width: 100%;
+    overflow: auto;
+    border-radius: 1.25rem 1.25rem 0.5rem 0.5rem;
+  }
+
+  .career-pay-page #wechat-pay-modal canvas,
+  .career-pay-page #wechat-pay-modal img,
+  .career-pay-page #wechat-pay-modal svg {
+    max-width: min(12rem, 70vw);
+    max-height: min(12rem, 70vw);
+  }
+}

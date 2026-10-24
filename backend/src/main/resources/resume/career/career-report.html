@@ -1,0 +1,42 @@
+<article class="career-dossier">
+    <header class="cd-head">
+        <p class="cd-meta">
+            <span class="cd-dot" aria-hidden="true"></span>
+            <span>CAREER DOSSIER</span>
+            <span class="cd-date">测评日期 {{DATE}}</span>
+        </p>
+        <div class="cd-head-main">
+            <div class="cd-head-copy">
+                <h1 class="cd-title">你的职业测评报告</h1>
+                <p class="cd-sub">基于 19 项个人条件的路径匹配结果。每条路径给出方向判断、关键结论与可执行动作，按顺序读即可。</p>
+            </div>
+            <div class="cd-owner">
+                <span class="cd-owner-label">PREPARED FOR</span>
+                <span class="cd-owner-name">{{USER}}</span>
+            </div>
+        </div>
+        <div class="cd-actions">
+            <button type="button" class="cd-btn" onclick="downloadPDF()">
+                <span class="material-symbols-outlined">picture_as_pdf</span>
+                <span>保存为 PDF</span>
+            </button>
+        </div>
+    </header>
+    <div class="cd-body">{{REPORTS}}</div>
+    <footer class="cd-foot">
+        <div class="cd-next">
+            <p class="cd-kicker">NEXT MOVE</p>
+            <h3>下一步行动建议</h3>
+            <p>先把岗位问题拆成具体求助，再把做过的项目写进简历。</p>
+            <div class="cd-next-actions">
+                <a class="cd-cta" href="/#publish-help">去蛋蛋世界发布求助任务，学习岗位经验技能<span
+                        class="material-symbols-outlined">north_east</span></a>
+                <a class="cd-cta cd-cta--ghost" href="/rs/resume/create">开启提升，去写简历<span
+                        class="material-symbols-outlined">arrow_forward</span></a>
+            </div>
+        </div>
+        <div class="cd-return">
+            <a href="/#workshop">← 返回蛋蛋世界</a>
+        </div>
+    </footer>
+</article>
